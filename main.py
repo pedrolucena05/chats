@@ -1,0 +1,555 @@
+import threading
+import argparse
+from datetime import datetime
+import os
+from os.path import join
+import logging
+import time
+import queue
+import random
+import requests
+from dotenv import load_dotenv
+from functools import wraps
+
+from flask import request, jsonify, current_app, Blueprint
+from sqlalchemy import event
+from sqlalchemy.exc import OperationalError
+
+from filelock import FileLock
+
+from clientResponse import respClient
+from databaseWrite import store_message
+from dbConfig import db
+from appCreate import create_app
+from databaseRead import clientStatus
+
+from tableClasses import Message, Cliente
+from sqlalchemy import func, desc
+
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+LOG_FILE = os.path.join(BASE_DIR, "app.log")
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s",
+    handlers=[
+        logging.FileHandler(LOG_FILE, encoding="utf-8"),
+        logging.StreamHandler()
+    ],
+    force=True
+)
+
+log = logging.getLogger("bot")
+log.setLevel(logging.INFO)
+log.info("Logger OK. Escrevendo em: %s", LOG_FILE)
+
+# App initalizer
+app = create_app()
+
+
+# 
+# DATABASE CONFIG
+#
+instance_folder = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'instance')
+os.makedirs(instance_folder, exist_ok=True)
+
+load_dotenv()
+
+WHATSAPP_ACCESS_TOKEN = os.getenv("WHATSAPP_ACCESS_TOKEN")
+DEFAULT_PHONE_NUMBER_ID = os.getenv("WHATSAPP_PHONE_NUMBER_ID")
+GRAPH_API_VERSION = os.getenv("GRAPH_API_VERSION", "v24.0")
+VERIFY_TOKEN = os.getenv("VERIFY_TOKEN")
+
+    
+MAX_MESSAGES_PER_NUMBER = 20
+MAX_USERS = 600      
+
+WORKER_IDLE_TIMEOUT = int(os.getenv("WORKER_IDLE_TIMEOUT", 10 * 60))  # segundos
+
+# Retry config (exponencial)
+RETRY_MAX_ATTEMPTS = int(os.getenv("RETRY_MAX_ATTEMPTS", 5))
+RETRY_BASE_DELAY = float(os.getenv("RETRY_BASE_DELAY", 0.5))  # segundos
+RETRY_MAX_DELAY = float(os.getenv("RETRY_MAX_DELAY", 20.0))  # cap do delay
+
+workers = {}  # number -> worker dict
+workers_lock = threading.Lock()
+
+
+def send_whatsapp_message(phone_number_id: str, to: str, text: str) -> dict:
+    """
+    Envia texto via WhatsApp Cloud API (POST /{phone_number_id}/messages).
+    Lança requests.HTTPError em erros.
+    """
+    if not WHATSAPP_ACCESS_TOKEN:
+        raise RuntimeError("WHATSAPP_ACCESS_TOKEN não configurado")
+
+    log.info("Dentro da funlçao de envio")
+
+    endpoint = f"https://graph.facebook.com/{GRAPH_API_VERSION}/{phone_number_id}/messages"
+    headers = {
+        "Authorization": f"Bearer {WHATSAPP_ACCESS_TOKEN}",
+        "Content-Type": "application/json",
+    }
+    payload = {
+        "messaging_product": "whatsapp",
+        "to": to,
+        "type": "text",
+        "text": {"body": text},
+    }
+    resp = requests.post(endpoint, json=payload, headers=headers, timeout=10)
+    resp.raise_for_status()
+
+    log.info("Função de envio finalizada com sucesso (dentro da função)")
+    return resp.json()
+
+
+DASHBOARD_API_KEY = os.getenv("DASHBOARD_API_KEY", "")
+
+def require_api_key(fn):
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        key = request.headers.get("X-API-Key", "")
+        if not DASHBOARD_API_KEY or key != DASHBOARD_API_KEY:
+            return jsonify({"error": "unauthorized"}), 401
+        return fn(*args, **kwargs)
+    return wrapper
+
+def send_whatsapp_with_retry(phone_number_id: str, to: str, text: str, max_attempts: int = RETRY_MAX_ATTEMPTS, base_delay: float = RETRY_BASE_DELAY, max_delay: float = RETRY_MAX_DELAY) -> bool:
+    """
+    Tenta enviar com retry exponencial + jitter.
+    Retorna True se enviado com sucesso; False se falhou após tentativas.
+    """
+    attempt = 0
+
+    if text == "" or text == None:
+        return True
+    while attempt < max_attempts:
+        try:
+            resp = send_whatsapp_message(phone_number_id, "558199998295", text)
+            log.info(f"Função de envio finalizada com sucesso ({resp})")
+            return True
+        except Exception as e:
+            attempt += 1
+            # cálculo exponencial com cap e jitter
+            exp = (2 ** (attempt - 1)) * base_delay
+            delay = min(exp, max_delay)
+            # jitter: +/- 0.5*delay
+            jitter = random.uniform(-0.5 * delay, 0.5 * delay)
+            sleep_time = max(0.0, delay + jitter)
+            current_app.logger.warning(f"Envio falhou (attempt {attempt}/{max_attempts}) para {to}: {e}. Retry em {sleep_time:.2f}s")
+            log.info(f"Envio falhou (attempt {attempt}/{max_attempts}) para {to}: {e}. Retry em {sleep_time:.2f}s")
+            print(f"Envio falhou (attempt {attempt}/{max_attempts}) para {to}: {e}. Retry em {sleep_time:.2f}s")
+            time.sleep(sleep_time)
+    current_app.logger.error(f"Falha ao enviar mensagem para {to} após {max_attempts} tentativas.")
+    log.info(f"Envio falhou (attempt {attempt}/{max_attempts}) para {to}: {e}. Retry em {sleep_time:.2f}s")
+    print(f"Envio falhou (attempt {attempt}/{max_attempts}) para {to}: {e}. Retry em {sleep_time:.2f}s")
+    return False
+
+
+def start_worker_if_missing(number: str, user_name: str):
+    """
+    Cria e inicia um worker (thread + queue + state) caso não exista ou esteja morto.
+    """
+    with workers_lock:
+        w = workers.get(number)
+        if w and w.get("thread") and w["thread"].is_alive():
+            return w
+        # criar novo worker
+        q = queue.Queue()
+        state = {"respMan": None, "respOrder": None, "lastIn": None}
+        t = threading.Thread(target=worker_loop, args=(number, q, state, user_name), name=f"worker-{number}", daemon=True)
+        worker = {"thread": t, "queue": q, "state": state, "last_active": time.time()}
+        workers[number] = worker
+        t.start()
+        return worker
+
+
+def worker_loop(number: str, q: queue.Queue, state: dict, user_name: str):
+    """
+    Loop que roda dentro da thread do worker.
+    Reproduz o comportamento do terminal_loop: inicializa clientStatus, gera mensagem inicial,
+    processa itens da fila sequencialmente, chama respClient, store_message e envia resposta via Cloud API com retry.
+    """
+    global lock
+    '''with app.app_context():
+        
+        try:
+            state["respMan"], state["respOrder"], state["lastIn"] = clientStatus(number)
+        except Exception:
+            current_app.logger.exception("Erro em clientStatus na inicialização do worker")
+            state["respMan"], state["respOrder"], state["lastIn"] = 0, 0, ""'''
+
+
+
+    # PROCESSAMENTO CONTÍNUO
+    while True:
+        try:
+            item = q.get(timeout=1.0)
+        except queue.Empty:
+            # verifica inatividade para finalizar worker
+            if time.time() - workers[number]["last_active"] > WORKER_IDLE_TIMEOUT:
+                current_app.logger.info(f"Worker {number} inativo por {WORKER_IDLE_TIMEOUT}s — finalizando.")
+                break
+            continue
+
+        if item is None:
+            # sinal para despertar/stop (opcional)
+            continue
+
+        text = item.strip()
+        workers[number]["last_active"] = time.time()
+
+        # fluxo normal: salvar entrada, atualizar status, chamar respClient, salvar resposta e enviar via API
+        with app.app_context():
+            
+
+            try:
+                state["respMan"], state["respOrder"], state["lastIn"] = clientStatus(number)
+            except Exception:
+                state["respMan"], state["respOrder"], state["lastIn"] = 0, 0, ""
+                log.info("Erro em clientStatus durante processamento (worker)")
+
+            log.info(f"Worker {number} Antes do respClient: Resp Order: {state['respOrder']}, Resp man: {state['respMan']}")
+
+            try:
+                reply, state["respMan"], resps_order = respClient(text, state["respMan"], state["respOrder"])
+            except Exception:
+                current_app.logger.exception("Erro em respClient (worker)")
+                reply = "Desculpe, ocorreu um erro ao processar sua mensagem."
+
+            current_app.logger.debug(f"Worker {number} Depois do respClient: Resp Order: {resps_order}, Resp man: {state['respMan']}, lastIn: {state['lastIn']}")
+
+            try:
+                store_message(number, text, 'in', state["respMan"], resps_order, True, user_name)
+            except Exception:
+                current_app.logger.exception("Erro ao salvar resposta (worker)")
+
+            try:
+                store_message(number, reply, 'out', state["respMan"], resps_order, True, user_name)
+            except Exception:
+                current_app.logger.exception("Erro ao salvar resposta (worker)")
+
+            try:
+                store_message(number, reply, 'out', state["respMan"], resps_order, False, user_name)
+            except Exception:
+                current_app.logger.exception("Erro ao salvar resposta (worker)")
+
+            # envio via WhatsApp Cloud API com retry exponencial
+            phone_number_id = DEFAULT_PHONE_NUMBER_ID or None
+            if not phone_number_id:
+                current_app.logger.warning("PHONE_NUMBER_ID não definido; não será enviado via Cloud API")
+            else:
+                try:
+                    ok = send_whatsapp_with_retry(phone_number_id, number, reply)
+                    if not ok:
+                        current_app.logger.error(f"Não foi possível enviar resposta para {number} após tentativas.")
+                except Exception:
+                    current_app.logger.exception("Exceção inesperada ao tentar enviar via WhatsApp Cloud API")
+
+    # remover worker do mapa (cleanup)
+    with workers_lock:
+        w = workers.get(number)
+        if w and w.get("thread") and w["thread"].ident == threading.get_ident():
+            # se for o mesmo objeto/thread, remova
+            del workers[number]
+    current_app.logger.info(f"Worker {number} finalizado.")
+
+
+api = Blueprint("api", __name__, url_prefix="/api")
+
+@api.get("/clients")
+@require_api_key
+def list_clients():
+    # Lista clientes com last_ts
+    rows = (
+        db.session.query(
+            Cliente.phone,
+            Cliente.user_name,
+            Cliente.qtsMensagens,
+            getattr(Cliente, "status", None),  # se não existir, vira None
+            func.max(Message.ts).label("last_ts"),
+        )
+        .outerjoin(Message, Message.cliente_id == Cliente.phone)
+        .group_by(Cliente.phone, Cliente.user_name, Cliente.qtsMensagens, getattr(Cliente, "status", None))
+        .order_by(desc("last_ts"))
+        .all()
+    )
+
+    out = []
+    for phone, user_name, qts, status, last_ts in rows:
+        out.append({
+            "phone": phone,
+            "user_name": user_name,
+            "qts": int(qts or 0),
+            "status": status,
+            "last_ts": last_ts.isoformat() if last_ts else None
+        })
+    return jsonify(out)
+
+@api.get("/messages/<phone>")
+@require_api_key
+def list_messages(phone):
+    phone = phone.strip()
+    msgs = (
+        db.session.query(Message)
+        .filter(Message.cliente_id == phone)
+        .order_by(Message.ts.asc(), Message.id.asc())
+        .limit(300)
+        .all()
+    )
+    return jsonify([m.to_dict() for m in msgs])
+
+@api.patch("/clients/<phone>/status")
+@require_api_key
+def update_status(phone):
+    phone = phone.strip()
+    data = request.get_json(force=True) or {}
+    status = (data.get("status") or "Nenhum").strip()
+
+    # Se você tiver coluna Cliente.status, atualize aqui
+    if not hasattr(Cliente, "status"):
+        return jsonify({"error": "Cliente.status não existe no modelo"}), 400
+
+    updated = (
+        db.session.query(Cliente)
+        .filter(Cliente.phone == phone)
+        .update({Cliente.status: status}, synchronize_session=False)
+    )
+    if not updated:
+        db.session.rollback()
+        return jsonify({"error": "cliente_not_found"}), 404
+
+    db.session.commit()
+    return jsonify({"ok": True, "phone": phone, "status": status})
+
+@api.post("/messages")
+@require_api_key
+def send_message_from_dashboard():
+    """
+    Tkinter manda: { "to": "55...", "text": "..." }
+    Opcional: também salva no DB.
+    """
+    data = request.get_json(force=True) or {}
+    to = (data.get("to") or "").strip()
+    text = (data.get("text") or "").strip()
+
+    if not to or not text:
+        return jsonify({"error": "to/text required"}), 400
+
+    # salva no banco (out)
+    store_message(to, text, "out", respMan=0, resps_order=0, notFlags=True)
+
+    # envia via WhatsApp (se você quiser)
+    phone_number_id = DEFAULT_PHONE_NUMBER_ID
+    ok = send_whatsapp_with_retry(phone_number_id, to, text)
+
+    return jsonify({"ok": bool(ok)})
+
+@app.route("/bot", methods=["GET", "POST"])
+def webhook_handler():
+    if request.method == "GET":
+        mode = request.args.get("hub.mode")
+        token = request.args.get("hub.verify_token")
+        challenge = request.args.get("hub.challenge")
+        if mode == "subscribe" and token == VERIFY_TOKEN:
+            return challenge, 200
+        return "Forbidden", 403
+
+    # POST: parse payload
+    payload = request.get_json(silent=True) or {}
+    phone = None
+    text = None
+    phone_number_id = None
+    userName = None
+
+    log.info("------------------ NOVA REQUISICAO -------------------")
+
+    try:
+        entry = payload.get("entry") or payload.get("entries") or []
+        if entry:
+            change = entry[0].get("changes", [{}])[0]
+            value = change.get("value", {})
+
+            contacts = value.get("contacts") or []
+            if not contacts:
+                # fallback: alguns payloads colocam contacts dentro da mensagem
+                messages = value.get("messages", [])
+                if messages:
+                    contacts = messages[0].get("contacts") or []
+                
+
+            if contacts:
+                userName = contacts[0].get("profile", {}).get("name")
+                if userName:
+                    userName = userName.strip()  # opcional: limpar espaços
+
+                log.info(f"Nome do Remetente: {userName}")
+
+            phone_number_id = value.get("metadata", {}).get("phone_number_id") or DEFAULT_PHONE_NUMBER_ID
+            messages = value.get("messages", [])
+            if messages:
+                msg = messages[0]
+                phone = msg.get("from") or msg.get("wa_id")
+                if msg.get("type") == "text":
+                    text = msg.get("text", {}).get("body")
+                else:
+                    text = msg.get("text", {}).get("body") if msg.get("text") else None
+
+            log.info(f"ID: {phone_number_id}")
+            log.info(f"Mensagem: {msg}")
+            log.info(f"Phone Number: {phone}")
+            log.info(f"TExto: {text}")
+
+            if userName:
+                pass
+                
+            else:
+                userName = phone
+
+    
+
+    except Exception:
+        current_app.logger.exception("Erro ao parsear payload webhook")
+
+    # fallbacks
+    if not phone:
+        if "from" in payload:
+            phone = payload.get("from")
+    if "text" in payload and text is None:
+        tx = payload.get("text")
+        text = tx.get("body") if isinstance(tx, dict) else str(tx)
+
+    if not phone or text is None:
+        current_app.logger.warning("Webhook sem número ou texto; ignorando")
+        return jsonify({"status": "ignored"}), 200
+
+    # garante criação do worker e enfileira
+    worker = start_worker_if_missing(phone, userName)
+    worker["queue"].put(text)
+    worker["last_active"] = time.time()
+
+    return jsonify({"status": "queued"}), 200
+
+
+def terminal_loop():
+    print("=== Simulação em terminal iniciada ===")
+    print("Digite 'exit' para sair. Para reiniciar diálogo com outro número digite '!novo' (sem aspas).")
+    current_number = input("Número do cliente (ex: 5511999999999): ").strip()
+    if not current_number:
+        print("Número inválido. Saindo.")
+        return
+    print("Iniciando conversa com:", current_number)
+    respMan, respOrder, lastIn = clientStatus(current_number)
+    # show initial prompt (call respClient with empty to generate menu)
+    initial, respMan, resps_order = respClient("", respMan, respOrder)
+    # armazena apenas a resposta inicial (não armazenamos mensagem 'vazia' recebida)
+    with app.app_context():
+        try:
+            store_message(current_number, initial, 'out', respMan, resps_order, True)
+        except Exception:
+            app.logger.exception("erro ao salvar resposta inicial")
+
+    print (lastIn)
+    print("Bot:", initial)
+
+    while True:
+        try:
+            user = input("Você: ").strip()
+            print("\n\n")
+        except (KeyboardInterrupt, EOFError):
+            print("\nSaindo...")
+            break
+
+        if user.lower() in ('exit', 'sair', 'quit'):
+            print("Encerrando simulação.")
+            break
+
+        # salva mensagem do usuário e resposta do bot (dentro do app context)
+        with app.app_context():
+            try:
+                store_message(current_number, user, 'in', respMan, resps_order, True)
+            except Exception:
+                app.logger.exception("erro ao salvar mensagem recebida terminal")
+            respMan, respOrder, lastIn = clientStatus(current_number)
+
+            print("Antes do respClient")
+            print (f"Resp Order: {respOrder}")
+            print (f"Resp man: {respMan}")
+
+            reply, respMan, resps_order = respClient(lastIn, respMan, respOrder)
+
+            print("\n\nDepois do resp client")
+            print (f"Resp Order: {resps_order}")
+            print (f"Resp man: {respMan}")
+            print("last in: ", lastIn)
+            print("Bot:", reply)
+
+            try:
+                store_message(current_number, reply, 'out', respMan, resps_order, True)
+            except Exception:
+                app.logger.exception("erro ao salvar resposta terminal")
+
+
+def is_db_locked_sqlite(engine) -> bool:
+    conn = engine.raw_connection()  # raw para executar SQL SQLite direto
+    try:
+        # Tenta iniciar transação que exige lock de escrita
+        conn.execute("BEGIN IMMEDIATE")
+        # se chegou aqui, obteve lock — desfaz e libera
+        conn.rollback()
+        return False  # NÃO está bloqueado
+    except OperationalError as e:
+        msg = str(e).lower()
+        if "database is locked" in msg:
+            return True   # está bloqueado
+        raise
+    finally:
+        conn.close()
+
+
+
+    
+# -------------------------
+# util: roda Flask em thread
+# -------------------------
+def run_flask_in_thread(host='0.0.0.0', port=5000):
+    def _run():
+        # use_reloader=False para evitar execução dupla na thread
+        app.run(host=host, port=port, debug=False, use_reloader=False)
+    t = threading.Thread(target=_run, daemon=True)
+    t.start()
+    return t
+
+
+# -------------------------
+# main
+# -------------------------
+if __name__ == '__main__':
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--server-only', action='store_true', help='executa apenas o servidor Flask (sem terminal)')
+    parser.add_argument('--host', default='0.0.0.0', help='host Flask (default 0.0.0.0)')
+    parser.add_argument('--port', type=int, default=5000, help='porta Flask (default 5000)')
+    args = parser.parse_args()
+
+
+    # cria as tabelas caso não existam
+    with app.app_context():
+        db.create_all()
+        # garante que cada nova conexão defina PRAGMAs essenciais
+
+
+    run_flask_in_thread(host=args.host, port=args.port)
+    print(f"Flask rodando em http://{args.host}:{args.port} (em background)")
+
+
+    '''if not args.server_only:
+        terminal_loop()
+    else:'''
+
+    try:
+        while True:
+            pass
+    except KeyboardInterrupt:
+        print("Servidor finalizado.")
