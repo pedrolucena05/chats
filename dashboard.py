@@ -51,6 +51,8 @@ WHATSAPP_ACCESS_TOKEN = os.getenv("WHATSAPP_ACCESS_TOKEN")
 DEFAULT_PHONE_NUMBER_ID = os.getenv("WHATSAPP_PHONE_NUMBER_ID")
 GRAPH_API_VERSION = os.getenv("GRAPH_API_VERSION", "v24.0")
 VERIFY_TOKEN = os.getenv("VERIFY_TOKEN")
+API_BASE = os.getenv("API_BASE", "https://SEU-DOMINIO.com/api")
+API_KEY  = os.getenv("DASHBOARD_API_KEY", "SUA_CHAVE_AQUI")
 
 # configuração
 REFRESH_MS = 2000         # atualiza a cada 2s
@@ -79,7 +81,15 @@ if not logger.handlers:
     logger.setLevel(logging.DEBUG)
 
 
+SESSION = requests.Session()
+SESSION.headers.update({
+    "X-API-Key": API_KEY,          # ajuste para o header que seu @require_api_key usa
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+})
 
+def _url(path: str) -> str:
+    return f"{API_BASE.rstrip('/')}/{path.lstrip('/')}"
 
 
     
@@ -220,26 +230,26 @@ class Watchdog:
 # ---------- Helpers DB (usam flask_app.app_context()) ----------
 def get_all_clients():
     """Retorna lista de clientes ordenada pelo último ts (mais recente primeiro)."""
-    with flask_app.app_context():
-        rows = (db.session.query(
-                    Cliente.phone, Cliente.qtsMensagens, db.func.max(Message.ts).label('last_ts'))
-                .outerjoin(Message, Message.cliente_id == Cliente.phone)
-                .group_by(Cliente.phone)
-                .order_by(db.desc('last_ts'))
-                .all())
-        return rows
+    r = SESSION.get(_url("/clients"), timeout=15)
+    r.raise_for_status()
+    
+    return r.json()  # lista de dicts
 
-def get_messages_for_phone(phone, limit=MAX_SHOW_MESSAGES):
-    """Retorna as últimas `limit` mensagens (cronológicas asc) para o phone (Telefone)."""
-    with flask_app.app_context():
-        cliente = Cliente.query.filter_by(phone=phone).first()
-        if not cliente:
-            return []
-        msgs = (Message.query.filter_by(cliente_id=cliente.id)
-                .order_by(Message.ts.desc())
-                .limit(limit).all())
-        msgs.reverse()
-        return msgs
+def get_messages_for_phone(phone, limit=20):
+    """Retorna mensagens cronológicas asc para o phone."""
+    phone = (phone or "").strip()
+    if not phone:
+        return []
+
+    r = SESSION.get(_url(f"/messages/{phone}"), timeout=15)
+    if r.status_code == 404:
+        return []
+    r.raise_for_status()
+
+    msgs = r.json()  # lista de dicts (m.to_dict())
+    if limit and len(msgs) > limit:
+        msgs = msgs[-limit:]  # pega as últimas N mantendo ordem asc
+    return msgs
     
 
 @safe
