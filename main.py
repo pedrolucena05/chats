@@ -346,6 +346,42 @@ def send_message_from_dashboard():
 
     return jsonify({"ok": bool(ok)})
 
+@api.post("/store-message")
+@require_api_key
+def api_store_message():
+    data = request.get_json(force=True) or {}
+
+    phone = (data.get("phone") or "").strip()
+    content = data.get("content")
+    direction = (data.get("direction") or "").strip()
+    respMan = data.get("respMan", 0)
+    resps_order = data.get("resps_order", 0)
+    notFlags = bool(data.get("notFlags", True))
+    name = (data.get("name") or "").strip()
+
+    if not phone:
+        return jsonify({"error": "phone required"}), 400
+    if direction not in ("in", "out"):
+        return jsonify({"error": "direction must be 'in' or 'out'"}), 400
+    if content is None:
+        return jsonify({"ok": True, "message": None})
+
+    # REUSA sua função do servidor (a que você já tem no backend)
+    msg = store_message(
+        phone=phone,
+        content=str(content),
+        direction=direction,
+        respMan=int(respMan or 0),
+        resps_order=int(resps_order or 0),
+        notFlags=notFlags,
+        name=name
+    )
+
+    return jsonify({
+        "ok": True,
+        "message": msg.to_dict() if msg else None
+    })
+
 @app.route("/bot", methods=["GET", "POST"])
 def webhook_handler():
     if request.method == "GET":
