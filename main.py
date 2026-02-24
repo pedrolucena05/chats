@@ -256,9 +256,9 @@ def worker_loop(number: str, q: queue.Queue, state: dict, user_name: str):
     current_app.logger.info(f"Worker {number} finalizado.")
 
 
-api = Blueprint("api", __name__, url_prefix="/api")
 
-@api.patch("/clients/<phone>/username")
+
+@app.patch("/clients/<phone>/username")
 @require_api_key
 def update_client_username(phone):
     phone = (phone or "").strip()
@@ -293,7 +293,7 @@ from sqlalchemy import desc
 
 MAX_SHOW_MESSAGES = 20  # ou use o mesmo valor que você usa no dashboard
 
-@api.get("/clients/<phone>/messages/latest")
+@app.get("/clients/<phone>/messages/latest")
 @require_api_key
 def get_latest_messages_for_client(phone):
     phone = (phone or "").strip()
@@ -336,7 +336,7 @@ def get_latest_messages_for_client(phone):
         "messages": [m.to_dict() for m in qmsgs]  # mantém ordem desc como sua query
     })
 
-@api.get("/clients")
+@app.get("/clients")
 @require_api_key
 def list_clients():
     # Lista clientes com last_ts
@@ -365,7 +365,7 @@ def list_clients():
         })
     return jsonify(out)
 
-@api.get("/clients/<phone>/username")
+@app.get("/clients/<phone>/username")
 @require_api_key
 def get_client_username(phone):
     phone = (phone or "").strip()
@@ -383,7 +383,7 @@ def get_client_username(phone):
 
     return jsonify({"phone": phone, "user_name": user_name})
 
-@api.patch("/clients/<phone>/resp-reset")
+@app.patch("/clients/<phone>/resp-reset")
 @require_api_key
 def resp_reset(phone):
     phone_key = (phone or "").strip()
@@ -422,7 +422,7 @@ def resp_reset(phone):
         db.session.rollback()
         return jsonify({"error": "unexpected_error", "detail": str(e)}), 500
 
-@api.get("/messages/<phone>")
+@app.get("/messages/<phone>")
 @require_api_key
 def list_messages(phone):
     phone = phone.strip()
@@ -435,7 +435,7 @@ def list_messages(phone):
     )
     return jsonify([m.to_dict() for m in msgs])
 
-@api.patch("/clients/<phone>/status")
+@app.patch("/clients/<phone>/status")
 @require_api_key
 def update_status(phone):
     phone = phone.strip()
@@ -458,7 +458,7 @@ def update_status(phone):
     db.session.commit()
     return jsonify({"ok": True, "phone": phone, "status": status})
 
-@api.post("/messages")
+@app.post("/messages")
 @require_api_key
 def send_message_from_dashboard():
     """
@@ -481,7 +481,7 @@ def send_message_from_dashboard():
 
     return jsonify({"ok": bool(ok)})
 
-@api.get("/messages/<phone>/latest-id")
+@app.get("/messages/<phone>/latest-id")
 @require_api_key
 def get_latest_message_id(phone):
     phone = (phone or "").strip()
@@ -503,7 +503,7 @@ def get_latest_message_id(phone):
     latest_id = int(last[0]) if last else 0
     return jsonify({"phone": phone, "latest_id": latest_id})
 
-@api.get("/clients/with-last-ts")
+@app.get("/clients/with-last-ts")
 @require_api_key
 def clients_with_last_ts():
     rows = (
@@ -530,7 +530,7 @@ def clients_with_last_ts():
 
     return jsonify(out)
 
-@api.get("/messages/<phone>/latest-direction")
+@app.get("/messages/<phone>/latest-direction")
 @require_api_key
 def get_latest_direction(phone):
     phone = (phone or "").strip()
@@ -550,7 +550,7 @@ def get_latest_direction(phone):
         "direction": direction  # "in", "out" ou None
     })
 
-@api.post("/store-message")
+@app.post("/store-message")
 @require_api_key
 def api_store_message():
     data = request.get_json(force=True) or {}
