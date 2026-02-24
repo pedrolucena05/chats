@@ -13,7 +13,7 @@ from functools import wraps
 
 from flask import request, jsonify, current_app, Blueprint
 from sqlalchemy import event
-from sqlalchemy.exc import OperationalError
+from sqlalchemy.exc import OperationalError, DatabaseError
 
 from filelock import FileLock
 
@@ -258,6 +258,84 @@ def worker_loop(number: str, q: queue.Queue, state: dict, user_name: str):
 
 api = Blueprint("api", __name__, url_prefix="/api")
 
+@api.patch("/clients/<phone>/username")
+@require_api_key
+def update_client_username(phone):
+    phone = (phone or "").strip()
+    if not phone:
+        return jsonify({"error": "phone required"}), 400
+
+    data = request.get_json(force=True) or {}
+    current_name = (data.get("user_name") or "").strip()
+
+    if not current_name:
+        return jsonify({"error": "user_name required"}), 400
+
+    updated = (
+        db.session.query(Cliente)
+        .filter(Cliente.phone == phone)
+        .update({Cliente.user_name: current_name}, synchronize_session=False)
+    )
+
+    if not updated:
+        db.session.rollback()
+        return jsonify({"error": "cliente_not_found"}), 404
+
+    db.session.commit()
+
+    return jsonify({
+        "ok": True,
+        "phone": phone,
+        "user_name": current_name
+    })
+
+from sqlalchemy import desc
+
+MAX_SHOW_MESSAGES = 20  # ou use o mesmo valor que você usa no dashboard
+
+@api.get("/clients/<phone>/messages/latest")
+@require_api_key
+def get_latest_messages_for_client(phone):
+    phone = (phone or "").strip()
+    if not phone:
+        return jsonify({"error": "phone required"}), 400
+
+    # (opcional) permitir que o dashboard escolha o limite via querystring
+    limit = request.args.get("limit", None)
+    try:
+        limit = int(limit) if limit is not None else MAX_SHOW_MESSAGES
+    except ValueError:
+        return jsonify({"error": "limit must be int"}), 400
+    limit = max(1, min(limit, 300))  # trava segurança
+
+    cliente = db.session.query(Cliente).filter(Cliente.phone == phone).first()
+    if not cliente:
+        return jsonify({"error": "cliente_not_found", "latest_id": 0, "messages": []}), 404
+
+    # última mensagem (para pegar latest_id)
+    last = (
+        db.session.query(Message.id)
+        .filter(Message.cliente_id == cliente.phone)
+        .order_by(desc(Message.ts), desc(Message.id))
+        .first()
+    )
+    latest_id = int(last[0]) if last else 0
+
+    # últimas N mensagens
+    qmsgs = (
+        db.session.query(Message)
+        .filter(Message.cliente_id == cliente.phone)
+        .order_by(desc(Message.ts), desc(Message.id))
+        .limit(limit)
+        .all()
+    )
+
+    return jsonify({
+        "phone": cliente.phone,
+        "latest_id": latest_id,
+        "messages": [m.to_dict() for m in qmsgs]  # mantém ordem desc como sua query
+    })
+
 @api.get("/clients")
 @require_api_key
 def list_clients():
@@ -286,6 +364,63 @@ def list_clients():
             "last_ts": last_ts.isoformat() if last_ts else None
         })
     return jsonify(out)
+
+@api.get("/clients/<phone>/username")
+@require_api_key
+def get_client_username(phone):
+    phone = (phone or "").strip()
+    if not phone:
+        return jsonify({"error": "phone required"}), 400
+
+    user_name = (
+        db.session.query(Cliente.user_name)
+        .filter(Cliente.phone == phone)
+        .scalar()
+    )
+
+    if user_name is None:
+        return jsonify({"error": "cliente_not_found"}), 404
+
+    return jsonify({"phone": phone, "user_name": user_name})
+
+@api.patch("/clients/<phone>/resp-reset")
+@require_api_key
+def resp_reset(phone):
+    phone_key = (phone or "").strip()
+    if not phone_key:
+        return jsonify({"error": "phone required"}), 400
+
+    try:
+        cliente = (
+            db.session.query(Cliente)
+            .filter(Cliente.phone == phone_key)
+            .with_for_update(nowait=True)  # ou skip_locked=True
+            .one_or_none()
+        )
+
+        if cliente is None:
+            db.session.rollback()
+            return jsonify({"error": "cliente_not_found"}), 404
+
+        cliente.respManual = 0
+        cliente.resps_order = 0
+
+        db.session.commit()
+        return jsonify({"ok": True, "phone": phone_key, "respManual": 0, "resps_order": 0})
+
+    except OperationalError as e:
+        # normalmente é lock nowait / busy
+        db.session.rollback()
+        return jsonify({"error": "lock_busy", "detail": str(e)}), 409
+
+    except DatabaseError as e:
+        db.session.rollback()
+        pgcode = getattr(getattr(e, "orig", None), "pgcode", None)
+        return jsonify({"error": "db_error", "pgcode": pgcode, "detail": str(e)}), 500
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "unexpected_error", "detail": str(e)}), 500
 
 @api.get("/messages/<phone>")
 @require_api_key
@@ -345,6 +480,75 @@ def send_message_from_dashboard():
     ok = send_whatsapp_with_retry(phone_number_id, to, text)
 
     return jsonify({"ok": bool(ok)})
+
+@api.get("/messages/<phone>/latest-id")
+@require_api_key
+def get_latest_message_id(phone):
+    phone = (phone or "").strip()
+    if not phone:
+        return jsonify({"error": "phone required"}), 400
+
+    # (opcional) valida se cliente existe
+    cliente = db.session.query(Cliente).filter(Cliente.phone == phone).first()
+    if not cliente:
+        return jsonify({"phone": phone, "latest_id": 0})
+
+    last = (
+        db.session.query(Message.id)
+        .filter(Message.cliente_id == phone)  # ou == cliente.phone
+        .order_by(desc(Message.ts), desc(Message.id))
+        .first()
+    )
+
+    latest_id = int(last[0]) if last else 0
+    return jsonify({"phone": phone, "latest_id": latest_id})
+
+@api.get("/clients/with-last-ts")
+@require_api_key
+def clients_with_last_ts():
+    rows = (
+        db.session.query(
+            Cliente.phone,
+            Cliente.qtsMensagens,
+            func.max(Message.ts).label("last_ts"),
+            Cliente.user_name,
+        )
+        .outerjoin(Message, Message.cliente_id == Cliente.phone)
+        .group_by(Cliente.phone, Cliente.qtsMensagens, Cliente.user_name)
+        .order_by(desc("last_ts"))
+        .all()
+    )
+
+    out = []
+    for phone, qtsMensagens, last_ts, user_name in rows:
+        out.append({
+            "phone": phone,
+            "qtsMensagens": int(qtsMensagens or 0),
+            "last_ts": last_ts.isoformat() if last_ts else None,
+            "user_name": user_name,
+        })
+
+    return jsonify(out)
+
+@api.get("/messages/<phone>/latest-direction")
+@require_api_key
+def get_latest_direction(phone):
+    phone = (phone or "").strip()
+    if not phone:
+        return jsonify({"error": "phone required"}), 400
+
+    direction = (
+        db.session.query(Message.direction)
+        .filter(Message.cliente_id == phone)
+        .order_by(Message.ts.desc(), Message.id.desc())
+        .limit(1)
+        .scalar()
+    )
+
+    return jsonify({
+        "phone": phone,
+        "direction": direction  # "in", "out" ou None
+    })
 
 @api.post("/store-message")
 @require_api_key

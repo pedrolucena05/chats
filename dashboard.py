@@ -24,27 +24,6 @@ from dotenv import load_dotenv
 import requests
 
 
-# IMPORTS DO SEU APP LOCAL
-# NOTE: import the Flask app under a distinct name to avoid clobbering it with the Tk instance.
-try:
-    # renomeando o Flask app para flask_app para evitar conflitos
-    from dbConfig import db
-    from databaseWrite import store_message
-    from tableClasses import Message, Cliente
-    from appCreate import create_app
-
-    flask_app = create_app()
-except Exception as e:
-    raise RuntimeError("Não foi possível importar appLocal: " + str(e))
-
-# tenta importar respClient se existir (opcional)
-try:
-    from clientResponse import respClient
-except Exception:
-    respClient = None
-
-
-
 load_dotenv()
 
 WHATSAPP_ACCESS_TOKEN = os.getenv("WHATSAPP_ACCESS_TOKEN")
@@ -61,17 +40,12 @@ MAX_SHOW_MESSAGES = 50    # quantas mensagens mostrar
 incoming_cids = set()
 incoming_lock = threading.Lock()
 
-LOCK_DIR = flask_app.instance_path  # -> ex: /home/user/projeto/instance
-os.makedirs(LOCK_DIR, exist_ok=True)   # garante que a pasta exista
-LOCK_FILE = os.path.join(LOCK_DIR, "chat.db.lock")
-lock = FileLock(LOCK_FILE)
 
 LOCK_TIMEOUT = 20
 DB_RETRY_MAX = 15
 DB_RETRY_DELAY = 0.2  # segundos
 
-with flask_app.app_context():
-    Session = sessionmaker(bind=db.engine)
+
 
 logger = logging.getLogger("chat_dashboard")
 if not logger.handlers:
@@ -90,6 +64,48 @@ SESSION.headers.update({
 
 def _url(path: str) -> str:
     return f"{API_BASE.rstrip('/')}/{path.lstrip('/')}"
+
+def get_all_clients_http(self):
+    r = SESSION.get(_url("/clients/with-last-ts"), timeout=15)
+    r.raise_for_status()
+    return r.json()
+
+def get_latest_direction_for_phone(phone: str) -> str | None:
+    r = SESSION.get(_url(f"/messages/{phone.strip()}/latest-direction"), timeout=10)
+    r.raise_for_status()
+    return r.json().get("direction")
+
+def get_username_http(phone: str) -> str | None:
+    phone = (phone or "").strip()
+    r = SESSION.get(_url(f"/clients/{phone}/username"), timeout=10)
+    if r.status_code == 404:
+        return None
+    r.raise_for_status()
+    return r.json().get("user_name")
+
+def update_username_http(phone: str, user_name: str) -> bool:
+    phone = (phone or "").strip()
+    payload = {"user_name": user_name.strip()}
+
+    r = SESSION.patch(
+        _url(f"/clients/{phone}/username"),
+        json=payload,
+        timeout=10
+    )
+
+    if r.status_code == 404:
+        return False
+
+    r.raise_for_status()
+    return bool(r.json().get("ok"))
+
+def get_latest_messages_http(phone: str, limit: int = 20) -> dict:
+    phone = (phone or "").strip()
+    r = SESSION.get(_url(f"/clients/{phone}/messages/latest?limit={limit}"), timeout=15)
+    if r.status_code == 404:
+        return {"latest_id": 0, "messages": []}
+    r.raise_for_status()
+    return r.json()
 
 
     
@@ -250,11 +266,33 @@ def get_messages_for_phone(phone, limit=20):
     if limit and len(msgs) > limit:
         msgs = msgs[-limit:]  # pega as últimas N mantendo ordem asc
     return msgs
-    
+
+def store_message_remote(phone: str, content: str, direction: str,
+                         respMan: int = 0, resps_order: int = 0,
+                         notFlags: bool = True, name: str = ""):
+    if not phone:
+        raise ValueError("phone required")
+    if direction not in ("in", "out"):
+        raise ValueError("direction must be 'in' or 'out'")
+
+    payload = {
+        "phone": phone.strip(),
+        "content": content,
+        "direction": direction,
+        "respMan": int(respMan or 0),
+        "resps_order": int(resps_order or 0),
+        "notFlags": bool(notFlags),
+        "name": name or "",
+    }
+
+    r = SESSION.post(_url("/store-message"), json=payload, timeout=20)
+    r.raise_for_status()
+    return r.json().get("message")  # dict ou None
+   
 
 @safe
 def save_message_via_store(phone: str, content: str, direction: str, respMan: int, resps_order: int, notFlags: bool):
-    with flask_app.app_context():
+    
         if not phone:
             raise ValueError("phone required")
         if direction not in ('in', 'out', None):
@@ -263,17 +301,14 @@ def save_message_via_store(phone: str, content: str, direction: str, respMan: in
         saved_msg = None  # vamos retornar isso no final (se quiser)
 
         # 1) Salvar no banco (sem dar return aqui)
-        try:
-            if callable(store_message):
-                if notFlags:
-                    saved_msg = store_message(phone, content, direction, None, None, True)
-                else:
-                    store_message(phone, content, direction, respMan, resps_order, False)
-        except Exception:
-            # fallback manual
-            pass
 
-        if saved_msg is None and notFlags:
+        if notFlags:
+            saved_msg = store_message_remote(phone, content, direction, None, None, True)
+        else:
+            store_message_remote(phone, content, direction, respMan, resps_order, False)
+
+
+        '''if saved_msg is None and notFlags:
             # fallback manual de insert
             for attempt in range(1, DB_RETRY_MAX + 1):
                 session = Session()
@@ -294,9 +329,9 @@ def save_message_via_store(phone: str, content: str, direction: str, respMan: in
                     session.rollback()
                     raise
                 finally:
-                    session.close()
+                    session.close()'''
 
-        if (saved_msg is None) and (notFlags is False):
+        '''if (saved_msg is None) and (notFlags is False):
             # fallback manual de update
             session = Session()
             try:
@@ -306,7 +341,7 @@ def save_message_via_store(phone: str, content: str, direction: str, respMan: in
                     cliente.resps_order = int(resps_order)
                     session.commit()
             finally:
-                session.close()
+                session.close()'''
 
         # 2) Enviar pelo WhatsApp (só faz sentido quando direction == 'out' e notFlags == True)
         if direction == "out" and notFlags:
@@ -336,6 +371,19 @@ def save_message_via_store(phone: str, content: str, direction: str, respMan: in
             logger.info("WhatsApp OK %s: %s", resp.status_code, resp.text)
 
         return saved_msg
+
+def resp_reset_http(phone: str) -> bool:
+    phone = (phone or "").strip()
+    r = SESSION.patch(_url(f"/clients/{phone}/resp-reset"), timeout=10)
+
+    if r.status_code == 404:
+        return False
+    if r.status_code == 409:
+        # lock busy: você pode retry aqui se quiser
+        return False
+
+    r.raise_for_status()
+    return bool(r.json().get("ok"))
 
 
 
@@ -437,42 +485,24 @@ class ChatDashboard(tk.Tk):
         attempt = 0
         while True:
             attempt += 1
-            session = Session()  # Session = sessionmaker(bind=engine)
+            
             try:
                 # bloqueia a linha para atualizar (falha imediatamente se já bloqueada)
-                cliente = (
-                    session.query(Cliente)
-                    .filter_by(phone=phone_key)
-                    .with_for_update(nowait=True)   # ou skip_locked=True conforme necessidade
-                    .one_or_none()
-                )
-
-                if cliente is None:
-                    session.rollback()
-                    print("Nenhum cliente encontrado para", repr(phone_key))
-                    return False
-
-                # modificar o objeto
-                cliente.respManual = 0
-                cliente.resps_order = 0
-
-                session.commit()
+                resp = resp_reset_http(phone_key)
 
                 # remover de self.respMan aqui (faça fora deste método ou com lock)
-                print("Update+commit bem-sucedido para", repr(phone_key))
-                return True
+                if resp:
+                    return True
 
             except OperationalError as e:
                 # Pode ser erro de lock (dependendo do DB) -> retry
-                session.rollback()
-                session.close()
+                
                 print(f"Tentativa {attempt} falhou por OperationalError para {repr(phone_key)}: {e}")
 
             except DatabaseError as e:
                 # Verifique códigos específicos (Postgres: '40P01' deadlock, '40001' serialization failure)
                 pgcode = getattr(getattr(e, 'orig', None), 'pgcode', None)
-                session.rollback()
-                session.close()
+                
                 print(f"Tentativa {attempt} falhou por DatabaseError (pgcode={pgcode}) para {repr(phone_key)}: {e}")
 
                 # se não for um erro transiente, talvez queira abortar:
@@ -480,11 +510,7 @@ class ChatDashboard(tk.Tk):
 
             except Exception as e:
                 # erro inesperado
-                try:
-                    session.rollback()
-                except Exception:
-                    pass
-                session.close()
+                
                 print("Erro inesperado:", e)
                 return False
 
@@ -870,8 +896,8 @@ class ChatDashboard(tk.Tk):
             self._auto_refresh_job = self.after(self._auto_refresh_interval, self._auto_refresh_tick)
 
 
-    @safe
-    def _get_sqlite_path_from_flask_config():
+    
+    '''def _get_sqlite_path_from_flask_config():
         """Retorna caminho absoluto do arquivo sqlite usado pelo SQLAlchemy do flask_app, ou None."""
         uri = flask_app.config.get('SQLALCHEMY_DATABASE_URI') or ''
         if not uri:
@@ -890,7 +916,7 @@ class ChatDashboard(tk.Tk):
         parsed = urlparse(uri)
         if parsed.scheme == 'sqlite':
             return parsed.path
-        return None
+        return None'''
     
     @safe
     def _maybe_hide_newmsg_button(self):
@@ -903,17 +929,10 @@ class ChatDashboard(tk.Tk):
             pass
     
     @safe
-    def get_latest_message_id_for_phone(self, phone):
-        """Retorna o id da última mensagem (maior id) para o cliente (ou 0)."""
-        with flask_app.app_context():
-            cliente = Cliente.query.filter_by(phone=phone).first()
-            if not cliente:
-                return 0
-            last = (Message.query
-                    .filter_by(cliente_id=cliente.phone)
-                    .order_by(Message.ts.desc(), Message.id.desc())
-                    .first())
-            return (last.id if last else 0)
+    def get_latest_message_id_for_phone(phone: str) -> int:
+        r = SESSION.get(_url(f"/messages/{phone.strip()}/latest-id"), timeout=10)
+        r.raise_for_status()
+        return int(r.json().get("latest_id") or 0)
 
     @safe
     def _bind_keys(self):
@@ -1049,7 +1068,10 @@ class ChatDashboard(tk.Tk):
         try:
             session = Session()
             try:
-                rows = (session.query(Cliente.phone, Cliente.qtsMensagens, func.max(Message.ts).label('last_ts'), Cliente.user_name).outerjoin(Message, Message.cliente_id == Cliente.phone).group_by(Cliente.phone).order_by(desc('last_ts')).all())
+                rows = get_all_clients_http()
+
+                rows = [[d["phone"], d["qtsMensagens"], d["last_ts"], d["user_name"]] for d in rows]
+
                 for r in rows:
                     phone = str(r[0]) if r[0] is not None else ''
 
@@ -1061,7 +1083,7 @@ class ChatDashboard(tk.Tk):
                     print (self.status_var.get())
                     save_client_if_not_exists(phone, user_name)
 
-                    direction = (session.query(Message.direction).filter(Message.cliente_id == phone).order_by(Message.ts.desc(), Message.id.desc()).limit(1).scalar())
+                    direction =  get_latest_direction_for_phone(phone)
 
                     cid_key = str(phone) if phone is not None else None
                     if direction == 'in':
@@ -1126,29 +1148,24 @@ class ChatDashboard(tk.Tk):
         if status == "Nenhum" and phone:
             try:
                 statuses = {"Bom Jesus", "Aurora Sábado", "Aurora Domingo", "Apipucos", "Lindu", "Igarassu"}
-                with flask_app.app_context():
-                    session = db.session
+                
                     
-                    current_name = (session.query(Cliente.user_name).filter(Cliente.phone == phone).scalar())
                     
-                    if current_name:
-                        current_name = current_name.split("     (")
-                    
-                    if current_name and len(current_name) > 1 and current_name[-1].endswith(")") and any(status in current_name[-1] for status in statuses):
-                        current_name = current_name[0]
-                        updated = (session.query(Cliente).filter(Cliente.phone == phone).update({Cliente.user_name: current_name},synchronize_session=False))
+                current_name = get_username_http(phone)
+                
+                if current_name:
+                    current_name = current_name.split("     (")
+                
+                if current_name and len(current_name) > 1 and current_name[-1].endswith(")") and any(status in current_name[-1] for status in statuses):
+                    current_name = current_name[0]
+                    updated = update_username_http(phone, current_name)
 
-                        if updated:
-                            session.commit()
-                            
-                        else:
-                            session.rollback()
                             
 
 
 
             except SQLAlchemyError as e:
-                session.rollback()
+                print(e)
                 
 
         
@@ -1157,27 +1174,10 @@ class ChatDashboard(tk.Tk):
                 
                 new_name = get_username_from_file(phone)
                 new_name = new_name + f"     ({self.status_var.get()})"
-                with flask_app.app_context():
-                    session = db.session
-
-                    updated = (
-                        session.query(Cliente)
-                        .filter(Cliente.phone == phone)
-                        .update(
-                            {Cliente.user_name: new_name},
-                            synchronize_session=False
-                        )
-                    )
-
-                    if updated:
-                        session.commit()
-                        
-                    else:
-                        session.rollback()
-                        
+                updated = update_username_http(phone, current_name)
 
             except SQLAlchemyError as e:
-                session.rollback()
+                
                 print("Erro ao atualizar status:", e)
 
     @safe
@@ -1198,10 +1198,7 @@ class ChatDashboard(tk.Tk):
                 return
             phone = sel[0]
 
-            with flask_app.app_context():
-                session = db.session
-
-                current_name = (session.query(Cliente.user_name).filter(Cliente.phone == phone).scalar())
+            current_name = get_username_http(phone)
 
             
             if current_name:
@@ -1297,36 +1294,7 @@ class ChatDashboard(tk.Tk):
             # libera com pequeno atraso (10ms) — evita reentrância imediata
             self.after(10, _unset)
         
-    @safe
-    def create_new_client(self):
-        phone = simpledialog.askstring("Novo cliente", "Telefone (ex: 5511999...):", parent=self)
-        if not phone:
-            return
-        with flask_app.app_context():
-            existing = Cliente.query.filter_by(phone=phone).first()
-            if existing:
-                messagebox.showinfo("Info", "Cliente já existe.")
-                return
-            c = Cliente(phone=phone, qtsMensagens=0)
-            db.session.add(c)
-            db.session.commit()
-        self.populate_clients()
-    @safe
-    def remove_selected_client(self):
-        if not self.selected_phone:
-            messagebox.showwarning("Aviso", "Nenhum cliente selecionado.")
-            return
-        if not messagebox.askyesno("Confirma", f"Remover cliente {self.selected_phone} e todas as mensagens?"):
-            return
-        with flask_app.app_context():
-            cliente = Cliente.query.filter_by(phone=self.selected_phone).first()
-            if cliente:
-                db.session.delete(cliente)
-                db.session.commit()
-        self.selected_phone = None
-        self.lbl_name.config(text="Selecione um cliente")
-        self.populate_clients()
-        self.refresh_messages()
+
 
     @safe
     def refresh_messages(self, force=False):
@@ -1410,27 +1378,17 @@ class ChatDashboard(tk.Tk):
 
             session = Session()
             try:
-                cliente = session.query(Cliente).filter_by(phone=phone).first()
-                if cliente:
-                    last = (session.query(Message)
-                            .filter_by(cliente_id=cliente.phone)
-                            .order_by(Message.ts.desc(), Message.id.desc())
-                            .first())
-                    latest_id = (last.id if last else 0)
-
-                    qmsgs = (session.query(Message)
-                            .filter_by(cliente_id=cliente.phone)
-                            .order_by(Message.ts.desc(), Message.id.desc())
-                            .limit(MAX_SHOW_MESSAGES)
-                            .all())
-                    qmsgs.reverse()
-                    for m in qmsgs:
-                        msgs.append({
-                            'id': m.id,
-                            'ts': m.ts.strftime("%Y-%m-%d %H:%M:%S"),
-                            'direction': m.direction,
-                            'content': m.content
-                        })
+                resp = get_latest_messages_http(phone, 20)
+                qmsgs = resp.get("messages", [])
+                qmsgs = [[m["id"], m["ts"], m["direction"], m["content"]]for m in qmsgs]
+                qmsgs.reverse()
+                for m in qmsgs:
+                    msgs.append({
+                        'id': m[0],
+                        'ts': m[1],
+                        'direction': m[2],
+                        'content': m[3]
+                    })
             finally:
                 session.close()
         except Exception as e:
