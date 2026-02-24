@@ -21,7 +21,7 @@ def create_app(config_override: dict | None = None) -> Flask:
 
     db.init_app(app)
 
-    app.register_blueprint(db)
+    
 
     # cria tabelas (opcional)
     with app.app_context():
