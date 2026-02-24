@@ -65,7 +65,7 @@ SESSION.headers.update({
 def _url(path: str) -> str:
     return f"{API_BASE.rstrip('/')}/{path.lstrip('/')}"
 
-def get_all_clients_http(self):
+def get_all_clients_http():
     r = SESSION.get(_url("/clients/with-last-ts"), timeout=15)
     r.raise_for_status()
     return r.json()
