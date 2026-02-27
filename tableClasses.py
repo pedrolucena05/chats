@@ -17,7 +17,7 @@ class Cliente(db.Model):
     )
 
     def to_dict(self):
-        return {"phone": self.phone, "UserName": self.user_name, "qtsMensagens": self.qtsMensagens, "respManual": self.respManual, "resps_order": self.resps_order}
+        return {"phone": self.phone, "UserName": self.user_name, "qtsMensagens": self.qtsMensagens, "respManual": self.respMan}
 
 
 class Message(db.Model):
@@ -37,5 +37,6 @@ class Message(db.Model):
             "cliente_id": self.cliente_id,
             "direction": self.direction,
             "content": self.content,
-            "ts": self.ts.isoformat()
+            "ts": self.ts.isoformat(),
+            "status": self.status
         }
