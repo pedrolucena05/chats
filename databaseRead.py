@@ -15,7 +15,7 @@ def clientStatus(phoneIntern):
             cliente = session.get(Cliente, phoneIntern)
 
             if cliente:
-                respMan = cliente.respManual
+                respMan = cliente.respMan
 
             else:
                 respMan = 0
@@ -33,7 +33,7 @@ def clientStatus(phoneIntern):
                 if m.status is False:
                     msgsList.append(m)
                 else:
-                    break  # encontrou True → para
+                    break  
 
             # Se quiser na ordem cronológica (antiga → nova)
             msgsList.reverse()
