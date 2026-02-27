@@ -180,7 +180,9 @@ def worker_loop(number: str, q: queue.Queue, state: dict, user_name: str):
             current_app.logger.exception("Erro em clientStatus na inicialização do worker")
             state["respMan"], state["respOrder"], state["lastIn"] = 0, 0, ""'''
 
-
+    status = None
+    reply = None
+    respMan = None
 
     # PROCESSAMENTO CONTÍNUO
     while True:
@@ -199,6 +201,8 @@ def worker_loop(number: str, q: queue.Queue, state: dict, user_name: str):
 
         text = item.strip()
         workers[number]["last_active"] = time.time()
+
+        print(f"Numero: {number}")
 
         # fluxo normal: salvar entrada, atualizar status, chamar respClient, salvar resposta e enviar via API
         with app.app_context():
