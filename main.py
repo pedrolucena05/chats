@@ -212,7 +212,9 @@ def worker_loop(number: str, q: queue.Queue, state: dict, user_name: str):
 
             #log.info(f"Worker {number} Antes do respClient: Resp Order: Resp man: {state['respMan']}")
             respMan = state["respMan"]
+            print (f"respMan: {respMan}")
             if respMan == 0:
+                print("Estou dentro do processamento da mensagem")
                 try:
                     reply , status, state["respMan"] = respClient(text, msgs)
                 except Exception:
@@ -645,7 +647,7 @@ def webhook_handler():
                 if msg.get("type") == "text":
                     text = msg.get("text", {}).get("body")
                 else:
-                    send_whatsapp_with_retry(phone_number_id, phone, "Mande apenas texto por favor, estamos usando assistente virtual")
+                    send_whatsapp_with_retry(phone_number_id, phone, "Mande apenas texto por favor, estamos usando um assistente virtual")
 
             #log.info(f"ID: {phone_number_id}")
             #log.info(f"Mensagem: {msg}")
