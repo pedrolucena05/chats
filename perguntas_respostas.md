@@ -42,6 +42,17 @@ A feira só é cancelada em caso de chuva extrema que inviabilize o evento. Onde
 DESCONTO_MEI:
 O desconto MEI é apenas para as Feiras da Aurora (sábado e domingo) e Feira Bom Jesus, onde expositores com cadastro MEI podem participar de um rodizio onde pagam metade do valor semanal de participação. O desconto das feiras acima são separados, então um expositor pode participar do desconto numa feira e ficar na fila de espera em outra feira das mencionadas acima.
 
+COMO_FAÇO_PARA_PARTICIPAR_DA_FEIRA:
+Sempre que o usuario pergunta algo parecido (como faço para participar ou gostaria de participar), avise que para participar da feira desejada é necessário submeter a uma curadoria preechendo o formulario abaixo. Coloque o link do formulario da feira que usuário esta pedindo ou peça para ele informar caso não tenha informado.
+
+DETALHES_SOBRE_AS_FEIRAS:
+As feiras que produzimos são eventos de rua com entrada gratuita, com atrações musicais e infantis e com expositores vendendo seus produtos (comida, artesanato, acessorios e etc.)
+
+AS_FEIRAS_OCORREM_TODOS_AS_SEMANAS_DO_ANO
+Sim, as feiras ocorrem no dia divulgados todas as semanas do ano, podendo ser cancelado com antecedencia em caso de chuva ou se tiver algum evento no local da feira(ocorre poucas vezes no ano mas pode ocorrer)
+
+
+
 ====================================================================
 
 ## EVENTO: Feira da Aurora — Sábado
