@@ -39,6 +39,9 @@ As vagas mudam com frequência.
 CANCELAMENTO_POR_CHUVA:
 A feira só é cancelada em caso de chuva extrema que inviabilize o evento. Onde Geralmente cancelamos no dia do evento.
 
+DESCONTO_MEI:
+O desconto MEI é apenas para as Feiras da Aurora (sábado e domingo) e Feira Bom Jesus, onde expositores com cadastro MEI podem participar de um rodizio onde pagam metade do valor semanal de participação. O desconto das feiras acima são separados, então um expositor pode participar do desconto numa feira e ficar na fila de espera em outra feira das mencionadas acima.
+
 ====================================================================
 
 ## EVENTO: Feira da Aurora — Sábado
@@ -62,7 +65,7 @@ Expositores com MEI podem pagar metade através de parceria com o SEBRAE,
 participando de rodízio de 15 expositores por edição.
 
 CURADORIA_FORMULÁRIO:
-[(Aurora)](https://forms.gle/TPtusK2oLbWnxehD8)
+(https://forms.gle/TPtusK2oLbWnxehD8)
 
 SEGMENTOS:
 Gastronomia, acessórios, vestuário, decoração, serviços.
@@ -90,7 +93,7 @@ Expositores com MEI podem pagar metade através de parceria com o SEBRAE,
 participando de rodízio de 15 expositores por edição.
 
 CURADORIA_FORMULÁRIO:
-[(Viver Aurora)](https://forms.gle/egn1hMyDcfnPVoVh9)
+(https://forms.gle/egn1hMyDcfnPVoVh9)
 
 ====================================================================
 
@@ -109,7 +112,7 @@ EXPOSITORES_FIXOS:
 Contrato anual de R$130,00 por edição.
 
 CURADORIA_FORMULÁRIO:
-[(Bom Jesus)](https://docs.google.com/forms/d/e/1FAIpQLSdWUJJ14jH7k78t6tRx0_wqPHyGbwgAQ9_Hls7ziEmz3XBy3w/viewform?usp=pp_url)
+(https://docs.google.com/forms/d/e/1FAIpQLSdWUJJ14jH7k78t6tRx0_wqPHyGbwgAQ9_Hls7ziEmz3XBy3w/viewform?usp=pp_url)
 
 ====================================================================
 
@@ -129,7 +132,7 @@ A organização é responsável apenas pela feira de domingo.
 A feira de sábado é organizada por outra equipe.
 
 CURADORIA_FORMULÁRIO:
-[Lindu](https://docs.google.com/forms/d/e/1FAIpQLSehB1eDeL1hAObF-vS2woB3pWhl4UBqq098FEwfmQiKK8r2Rg/viewform)
+(https://docs.google.com/forms/d/e/1FAIpQLSehB1eDeL1hAObF-vS2woB3pWhl4UBqq098FEwfmQiKK8r2Rg/viewform)
 
 ====================================================================
 
@@ -145,7 +148,7 @@ VALOR:
 R$200,00 por edição
 
 CURADORIA_FORMULÁRIO:
-[Apipucos](forms.gle/HnnTJVw1rUVqbBDW7)
+(forms.gle/HnnTJVw1rUVqbBDW7)
 
 ====================================================================
 
@@ -167,4 +170,4 @@ VALOR:
 R$130,00 por edição
 
 CURADORIA_FORMULÁRIO:
-[(Igarassu)](https://forms.gle/tMZS8nQYA9dAcppt9)
+(https://forms.gle/tMZS8nQYA9dAcppt9)
