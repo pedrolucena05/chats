@@ -213,42 +213,44 @@ def worker_loop(number: str, q: queue.Queue, state: dict, user_name: str):
             #log.info(f"Worker {number} Antes do respClient: Resp Order: Resp man: {state['respMan']}")
             print(f"Mensagens: {msgs}")
             print (f"respMan: {respMan}")
-            if respMan == 0:
-                print("Estou dentro do processamento da mensagem")
-                try:
+            
+            try:
+                if respMan == 0:
+                    print("Estou dentro do processamento da mensagem")
                     reply , status, state["respMan"] = respClient(text, msgs)
-                except Exception:
-                    current_app.logger.exception("Erro em respClient (worker)")
-                    reply = "Desculpe, ocorreu um erro ao processar sua mensagem."
+            except Exception:
+                current_app.logger.exception("Erro em respClient (worker)")
+                reply = "Desculpe, ocorreu um erro ao processar sua mensagem."
 
-                current_app.logger.debug(f"Worker {number} Depois do respClient: lastIn: {state['lastIn']}")
+            current_app.logger.debug(f"Worker {number} Depois do respClient: lastIn: {state['lastIn']}")
 
+            try:
+                store_message(number, text, 'in', status, respMan, True, user_name)
+            except Exception:
+                current_app.logger.exception("Erro ao salvar resposta (worker)")
+
+            try:
+                store_message(number, reply, 'out', status, respMan, True, user_name)
+            except Exception:
+                current_app.logger.exception("Erro ao salvar resposta (worker)")
+
+            try:
+                store_message(number, reply, 'out', status, respMan, False, user_name)
+            except Exception:
+                current_app.logger.exception("Erro ao salvar resposta (worker)")
+
+            # envio via WhatsApp Cloud API com retry exponencial
+            phone_number_id = DEFAULT_PHONE_NUMBER_ID or None
+            if not phone_number_id:
+                current_app.logger.warning("PHONE_NUMBER_ID não definido; não será enviado via Cloud API")
+            else:
                 try:
-                    store_message(number, text, 'in', status, respMan, True, user_name)
-                except Exception:
-                    current_app.logger.exception("Erro ao salvar resposta (worker)")
-
-                try:
-                    store_message(number, reply, 'out', status, respMan, True, user_name)
-                except Exception:
-                    current_app.logger.exception("Erro ao salvar resposta (worker)")
-
-                try:
-                    store_message(number, reply, 'out', status, respMan, False, user_name)
-                except Exception:
-                    current_app.logger.exception("Erro ao salvar resposta (worker)")
-
-                # envio via WhatsApp Cloud API com retry exponencial
-                phone_number_id = DEFAULT_PHONE_NUMBER_ID or None
-                if not phone_number_id:
-                    current_app.logger.warning("PHONE_NUMBER_ID não definido; não será enviado via Cloud API")
-                else:
-                    try:
+                    if respMan == 0:
                         ok = send_whatsapp_with_retry(phone_number_id, number, reply)
                         if not ok:
                             current_app.logger.error(f"Não foi possível enviar resposta para {number} após tentativas.")
-                    except Exception:
-                        current_app.logger.exception("Exceção inesperada ao tentar enviar via WhatsApp Cloud API")
+                except Exception:
+                    current_app.logger.exception("Exceção inesperada ao tentar enviar via WhatsApp Cloud API")
 
     # remover worker do mapa (cleanup)
     with workers_lock:
