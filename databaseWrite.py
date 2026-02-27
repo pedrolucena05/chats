@@ -42,7 +42,6 @@ def store_message(phone: str, content: str, direction: str, status: bool, respMa
                             user_name= name,
                             qtsMensagens=0,
                             respMan=int(respMan or 0),
-                            status=bool(status or True),
                         )
                         .on_conflict_do_nothing(index_elements=[Cliente.phone])
                     )
