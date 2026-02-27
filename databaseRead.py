@@ -31,9 +31,9 @@ def clientStatus(phoneIntern):
 
             for m in msgs:
                 if m.status is False:
-                    msgsList.append(m)
+                    msgsList.append(m.content)  # <- aqui
                 else:
-                    break  
+                    break
 
             # Se quiser na ordem cronológica (antiga → nova)
             msgsList.reverse()
