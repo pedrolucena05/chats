@@ -8,8 +8,7 @@ class Cliente(db.Model):
     phone = db.Column(db.String(40), nullable=False, unique=True, index=True, primary_key=True)
     user_name = db.Column(db.String(40), nullable= True, default = None)
     qtsMensagens = db.Column(db.Integer, default=0, nullable=False)
-    respManual = db.Column(db.Integer, nullable=False, default=0)
-    resps_order = db.Column(db.Integer, default=0, nullable=False)
+    respMan = db.Column(db.Integer, default=0, nullable=False)
 
     messages = db.relationship(
         "Message",
@@ -28,6 +27,7 @@ class Message(db.Model):
     direction = db.Column(db.String(4), nullable=False)  # 'in' ou 'out'
     content = db.Column(db.Text, nullable=False)
     ts = db.Column(db.DateTime(timezone=True), server_default=db.func.now(), nullable=False, index=True)
+    status = db.Column(db.Boolean, nullable= True, default = None)
 
     cliente = db.relationship("Cliente", back_populates="messages")
 
