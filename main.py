@@ -205,13 +205,13 @@ def worker_loop(number: str, q: queue.Queue, state: dict, user_name: str):
             
 
             try:
-                state["lastIn"], msgs, state["respMan"] = clientStatus(number)
+                lastIn, msgs, respMan = clientStatus(number)
             except Exception:
-                state["lastIn"], msgs = "", None, None
+                lastIn, msgs, respMan = "", None, None
                 #log.info("Erro em clientStatus durante processamento (worker)")
 
             #log.info(f"Worker {number} Antes do respClient: Resp Order: Resp man: {state['respMan']}")
-            respMan = state["respMan"]
+            print(f"Mensagens: {msgs}")
             print (f"respMan: {respMan}")
             if respMan == 0:
                 print("Estou dentro do processamento da mensagem")
