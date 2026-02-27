@@ -10,20 +10,33 @@ def clientStatus(phoneIntern):
     with app.app_context():
         session = db.session 
         try:
-
-            respMan = None
-            respOrder = None
+            respMan = False
+            
             cliente = session.get(Cliente, phoneIntern)
 
             if cliente:
                 respMan = cliente.respManual
-                respOrder = cliente.resps_order
 
             else:
                 respMan = 0
-                respOrder = 0
 
+            msgs = (
+                session.query(Message)
+                .filter(Message.cliente_id == phoneIntern)
+                .order_by(Message.ts.desc(), Message.id.desc())  
+                .all()
+            )
 
+            msgsList = []
+
+            for m in msgs:
+                if m.status is False:
+                    msgsList.append(m)
+                else:
+                    break  # encontrou True → para
+
+            # Se quiser na ordem cronológica (antiga → nova)
+            msgsList.reverse()
 
             last = (session.query(Message).filter(Message.cliente_id == phoneIntern,Message.direction == 'in').order_by(Message.ts.desc(), Message.id.desc()).first())
             
@@ -33,20 +46,11 @@ def clientStatus(phoneIntern):
             else:
                 last = ""
 
-            if cliente:
-                respMan = cliente.respManual
-                respOrder = cliente.resps_order
 
-            else:
-                respMan = 0
-                respOrder = 0
-
-            print (f"Last in function: {last}")
             # resp pode ser True/False/None
-            return respMan, respOrder, last
+            return last, msgsList, respMan
         except Exception as e:
-            print(f"Erro ao buscar respManual para {phoneIntern}: {e}")
-            return 0, 0, 0
+            return None, None, None
         finally:
             try:
                 session.close()
