@@ -73,6 +73,7 @@ Responda APENAS com base nas informações encontradas no documento fornecido.
 Se não houver informação suficiente no documento, diga que não encontrou (e que um atendente irá analisar e responder a pergunta) ou peça um detalhe que faltou (ex.: qual feira/dia/segmento). 
 Não invente valores, horários, locais ou regras. Responda de forma simpática.
 Não mencione as feiras que trabalhamos na resposta (Só mencione a feira se o usuário já tiver citado a feira na mensagem).
+Não coloque na resposta "Não encontramos essa informação no documento de apoio" ou algo similar.
 """
 
 def precisa_info(texto: str) -> bool:
@@ -110,11 +111,7 @@ def respClient(pergunta, msgs):
         include=["file_search_call.results"],
     )
     
-    if "?" in resp.output_text:
-        status = False
-    
-    else:
-        status = not precisa_info(resp.output_text)
+    status = not precisa_info(resp.output_text)
 
     if precisa_humano(resp.output_text):
         respMan = 1
