@@ -16,6 +16,8 @@ def enforce_max_users():
     total_clients_with_msgs = (
         db.session.query(func.count(func.distinct(Message.cliente_id))).scalar() or 0
     )
+
+    
     if total_clients_with_msgs <= MAX_USERS:
         return
 
