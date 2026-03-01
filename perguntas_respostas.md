@@ -6,6 +6,9 @@ Este documento contém informações oficiais sobre participação, regras e fun
 
 ## REGRAS GERAIS — TODAS AS FEIRAS
 
+NÚMERO_DE_CONTATO:
+Sempre que o cliente perguntar se esse número é o número da Feira (Bom Jesus, Aurora, Viver Aurora, Apipucos, Lindu, Igarassu), responder que sim e qual a dúvida do cliente.
+
 INCLUSO_NO_VALOR:
 - Montagem da barraca (1.40m x 0.70m)
 - Supervisão de bombeiros
