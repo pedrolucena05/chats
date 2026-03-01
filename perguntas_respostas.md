@@ -13,7 +13,7 @@ INCLUSO_NO_VALOR:
 - 1 ponto de luz apenas para carregar celular ou maquineta
 - Não é permitido equipamento elétrico
 
-LOCALIZAÇÃO_DO_EXPÓSITOR:
+LOCALIZAÇÃO_DO_EXPOSITOR:
 O expositor não pode escolher o local.  
 O mapa com a localização é enviado semanalmente no grupo de WhatsApp.  
 Caso haja insatisfação, o expositor deve procurar a organização.
@@ -28,8 +28,13 @@ Permitido apenas os materias abaixo em pallet apenas:
 - Mesas
 - Araras em material de pallet
 
-Tamanho máximo: 80 cm  
+Tamanho máximo: 80cmx120cm   
 Deve ser enviado foto para aprovação.
+
+Aproveitamos o espaço entre as barracas para colocar o material de apoio, se seu material tiver mais de 80cm em um dos lados o mesmo deve ficar com o lado menor (até 80cm) virado para frente e a parte maior deve ficar entrando na área da barraca
+O material de apoio só pode ser colocado na lateral da barraca, por isso o limite de 80cm de largura.
+
+O material de apoio não pode ficar atrás da barraca, só pode ficar apenas na lateral.
 
 VAGAS_POR_SEGMENTO:
 Não é possível garantir vagas previamente.  
@@ -53,6 +58,8 @@ Sim, as feiras ocorrem no dia divulgados todas as semanas do ano, podendo ser ca
 
 SOBRE_AS_FEIRAS_QUE_ATENDEMOS:
 Se o usuário perguntar se fazemos atendimento pra uma feira e for alguma dessas (Feira Bom Jesus, Feira Igarassu, Feira da Aurora, Viver Aurora, Aurora Sábado, Aurora Domingo, Feira do Lindu, Feira de Apipucos), é para voce responder que sim e qual a dúvida do usuário, se não tiver é para falar apenas que nossa equipe não faz atendimento para a feira que o usuário pediu e não mencione as nossas feiras para o mesmo.
+
+
 
 ====================================================================
 
