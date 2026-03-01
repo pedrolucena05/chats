@@ -1,6 +1,7 @@
 import os
 from openai import OpenAI
 from dotenv import load_dotenv
+import time
 
 load_dotenv()
 
@@ -8,6 +9,7 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 vs = client.vector_stores.create(name="FAQ - Perguntas e Respostas")
 vector_store_id = vs.id
+
 print("vector_store_id:", vector_store_id)
 
 PALAVRAS_PEDIDO_INFO = [
@@ -46,17 +48,31 @@ file = client.files.create(
     purpose="assistants",
 )
 
-client.vector_stores.files.create(
+vs_file = client.vector_stores.files.create(
     vector_store_id=vector_store_id,
     file_id=file.id,
 )
+
+while True:
+    item = client.vector_stores.files.retrieve(
+        vector_store_id=vector_store_id,
+        file_id=vs_file.id,
+    )
+
+    if item.status == "completed":
+        break
+
+    if item.status in ("failed", "cancelled"):
+        raise RuntimeError(f"Indexação falhou: {item.status}")
+
+    time.sleep(0.5)
 
 SYSTEM_PROMPT = """
 Você é um atendente das feiras.
 Responda APENAS com base nas informações encontradas no documento fornecido.
 Se não houver informação suficiente no documento, diga que não encontrou (e que um atendente irá analisar e responder a pergunta) ou peça um detalhe que faltou (ex.: qual feira/dia/segmento). 
 Não invente valores, horários, locais ou regras. Responda de forma simpática.
-Não mencione as feiras que trabalhamos na resposta (espere o usuario responder).
+Não mencione as feiras que trabalhamos na resposta (Só mencione a feira se o usuário já tiver citado a feira na mensagem).
 """
 
 def precisa_info(texto: str) -> bool:
@@ -78,6 +94,7 @@ def respClient(pergunta, msgs):
             question += " " + m
 
     question += " " + pergunta
+
     resp = client.responses.create(
         model="gpt-4.1",
         input=[
@@ -86,9 +103,10 @@ def respClient(pergunta, msgs):
         ],
         tools=[{
             "type": "file_search",
-            "vector_store_ids": [vector_store_id],  # ✅ aqui é o correto
+            "vector_store_ids": [vector_store_id],
             "max_num_results": 6,
         }],
+        tool_choice="required",   
         include=["file_search_call.results"],
     )
     
