@@ -605,19 +605,106 @@ def api_store_message():
         "message": msg.to_dict() if msg else None
     })
 
-@app.post("/bot")
-def receive():
+@app.route("/bot", methods=["GET", "POST"])
+def webhook_handler():
+
+    # 1) GET: verificação do webhook (challenge)
+    if request.method == "GET":
+        mode = request.args.get("hub.mode")
+        token = request.args.get("hub.verify_token")
+        challenge = request.args.get("hub.challenge")
+
+        if mode == "subscribe" and token == VERIFY_TOKEN and challenge:
+            return challenge, 200
+        return "Forbidden", 403
+
+    # 2) POST: receber eventos
     raw = request.get_data(as_text=True)
-    print("HEADERS:", dict(request.headers))
-    print("RAW:", raw)
+    payload = request.get_json(silent=True)
 
-    data = request.get_json(silent=True)
-    print("JSON:", data)
+    if payload is None:
+        current_app.logger.warning(f"Webhook POST sem JSON válido. RAW={raw[:500]}")
+        return jsonify({"status": "bad_json"}), 200
 
-    return "OK", 200
+    if payload.get("object") and payload.get("object") != "whatsapp_business_account":
+        return jsonify({"status": "ignored_object"}), 200
 
+    phone = None
+    text = None
+    phone_number_id = None
+    userName = None
+
+    try:
+        entry = payload.get("entry") or payload.get("entries") or []
+        if entry:
+            change = entry[0].get("changes", [{}])[0]
+            value = change.get("value", {})
+
+            # Se não tiver messages, pode ser status update (ignora sem warning)
+            if "messages" not in value:
+                return jsonify({"status": "no_messages"}), 200
+
+            contacts = value.get("contacts") or []
+            if not contacts:
+                messages = value.get("messages", [])
+                if messages:
+                    contacts = messages[0].get("contacts") or []
+
+            if contacts:
+                userName = (contacts[0].get("profile", {}).get("name") or "").strip() or None
+
+            phone_number_id = value.get("metadata", {}).get("phone_number_id") or DEFAULT_PHONE_NUMBER_ID
+
+            messages = value.get("messages", [])
+            if messages:
+                msg = messages[0]
+                phone = msg.get("from") or msg.get("wa_id")
+                if msg.get("type") == "text":
+                    text = msg.get("text", {}).get("body")
+                else:
+                    send_whatsapp_with_retry(
+                        phone_number_id, phone,
+                        "Mande apenas texto por favor, estamos usando um assistente virtual"
+                    )
+
+            if not userName:
+                userName = phone
+
+    except Exception:
+        current_app.logger.exception("Erro ao parsear payload webhook")
+
+    # fallbacks (podem ficar)
+    if not phone and isinstance(payload, dict) and "from" in payload:
+        phone = payload.get("from")
+
+    if "text" in payload and text is None:
+        tx = payload.get("text")
+        text = tx.get("body") if isinstance(tx, dict) else str(tx)
+
+    if not phone or text is None:
+        current_app.logger.warning("Webhook sem número ou texto; ignorando")
+        return jsonify({"status": "ignored"}), 200
+
+    worker = start_worker_if_missing(phone, userName)
+    worker["queue"].put(text)
+    worker["last_active"] = time.time()
+
+    return jsonify({"status": "queued"}), 200
+    
 '''@app.route("/bot", methods=["GET", "POST"])
 def webhook_handler():
+
+    raw = request.get_data(as_text=True)
+    payload = request.get_json(silent=True)
+    
+    if payload is None:
+        current_app.logger.warning(f"Webhook POST sem JSON válido. RAW={raw[:500]}")
+        return jsonify({"status": "bad_json"}), 200
+    
+    # opcional mas recomendado: filtrar só WhatsApp
+    if payload.get("object") and payload.get("object") != "whatsapp_business_account":
+        return jsonify({"status": "ignored_object"}), 200
+    
     if request.method == "GET":
         mode = request.args.get("hub.mode")
         token = request.args.get("hub.verify_token")
@@ -822,6 +909,7 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
 
         print("Servidor finalizado.")
+
 
 
 
