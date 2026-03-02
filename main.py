@@ -605,13 +605,8 @@ def api_store_message():
         "message": msg.to_dict() if msg else None
     })
 
-#@app.route("/bot", methods=["GET", "POST"])
-@app.post("/bot")
-def receive():
-    data = request.get_json(silent=True) or {}
-    print("EVENTO RECEBIDO:", data)
-    return "OK", 200
-'''def webhook_handler():
+@app.route("/bot", methods=["GET", "POST"])
+def webhook_handler():
     if request.method == "GET":
         mode = request.args.get("hub.mode")
         token = request.args.get("hub.verify_token")
@@ -693,7 +688,7 @@ def receive():
     worker["queue"].put(text)
     worker["last_active"] = time.time()
 
-    return jsonify({"status": "queued"}), 200'''
+    return jsonify({"status": "queued"}), 200
 
 
 def terminal_loop():
@@ -816,3 +811,4 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
 
         print("Servidor finalizado.")
+
