@@ -607,8 +607,13 @@ def api_store_message():
 
 @app.post("/bot")
 def receive():
-    data = request.get_json(silent=True) or {}
-    print("EVENTO RECEBIDO:", data)
+    raw = request.get_data(as_text=True)
+    print("HEADERS:", dict(request.headers))
+    print("RAW:", raw)
+
+    data = request.get_json(silent=True)
+    print("JSON:", data)
+
     return "OK", 200
 
 '''@app.route("/bot", methods=["GET", "POST"])
@@ -817,5 +822,6 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
 
         print("Servidor finalizado.")
+
 
 
