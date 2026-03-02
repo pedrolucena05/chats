@@ -185,7 +185,7 @@ VALOR:
 R$200,00 por edição
 
 CURADORIA_FORMULÁRIO:
-(forms.gle/HnnTJVw1rUVqbBDW7)
+(https://forms.gle/HnnTJVw1rUVqbBDW7)
 
 ====================================================================
 
@@ -207,4 +207,5 @@ VALOR:
 R$130,00 por edição
 
 CURADORIA_FORMULÁRIO:
+
 (https://forms.gle/tMZS8nQYA9dAcppt9)
