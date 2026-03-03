@@ -221,7 +221,7 @@ def worker_loop(number: str, q: queue.Queue, state: dict, user_name: str):
             try:
                 if respMan == 0:
                     print("Estou dentro do processamento da mensagem")
-                    reply , status, state["respMan"] = respClient(text, msgs)
+                    reply , status, respMan = respClient(text, msgs)
             except Exception:
                 current_app.logger.exception("Erro em respClient (worker)")
                 reply = "Desculpe, ocorreu um erro ao processar sua mensagem."
