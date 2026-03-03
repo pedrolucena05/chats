@@ -41,6 +41,7 @@ PALAVRAS_ATENDENTE = [
     "vamos analisar",
     "sua dúvida será analisada",
     "encaminharemos sua dúvida",
+    "irá analisar",
 ]
 
 file = client.files.create(
@@ -345,4 +346,5 @@ Deseja continuar no menu de dúvidas? digite 'S' para continuar ou 'N' para volt
 
     print(f"\n\nRespman dentro do respClient: {respMan}")
     print(f"\n\nResp order dentro do respClient: {resps_order}\n\n")
+
     return message, respMan, resps_order"""
