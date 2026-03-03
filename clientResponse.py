@@ -42,6 +42,7 @@ PALAVRAS_ATENDENTE = [
     "sua dúvida será analisada",
     "encaminharemos sua dúvida",
     "irá analisar",
+    "um atendente",
 ]
 
 file = client.files.create(
