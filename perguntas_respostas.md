@@ -39,6 +39,11 @@ O material de apoio só pode ser colocado na lateral da barraca, por isso o limi
 
 O material de apoio não pode ficar atrás da barraca, só pode ficar apenas na lateral.
 
+Também oferecemos serviço de aluguel de material extra, custando R$30,00 adicionais a taxa semanal caso queira alugar.
+Materiais que alugamos: Mesa, Arara, Estante (feitos com pallet).
+
+Não aceitamos o aluguel de mais de um material extra, podendo alugar apenas um por edição.
+
 VAGAS_POR_SEGMENTO:
 Não é possível garantir vagas previamente.  
 As vagas mudam com frequência.  
@@ -211,4 +216,5 @@ R$130,00 por edição
 
 CURADORIA_FORMULÁRIO:
 (https://forms.gle/tMZS8nQYA9dAcppt9)
+
 
