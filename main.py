@@ -227,21 +227,22 @@ def worker_loop(number: str, q: queue.Queue, state: dict, user_name: str):
                 reply = "Desculpe, ocorreu um erro ao processar sua mensagem."
 
             current_app.logger.debug(f"Worker {number} Depois do respClient: lastIn: {state['lastIn']}")
-            if respMan == 0:
-                try:
-                    store_message(number, text, 'in', status, respMan, True, user_name)
-                except Exception:
-                    current_app.logger.exception("Erro ao salvar resposta (worker)")
+            
+            try:
+                store_message(number, text, 'in', status, respMan, True, user_name)
+            except Exception:
+                current_app.logger.exception("Erro ao salvar resposta (worker)")
 
+            if respMan == 0:
                 try:
                     store_message(number, reply, 'out', status, respMan, True, user_name)
                 except Exception:
                     current_app.logger.exception("Erro ao salvar resposta (worker)")
 
-                try:
-                    store_message(number, reply, 'out', status, respMan, False, user_name)
-                except Exception:
-                    current_app.logger.exception("Erro ao salvar resposta (worker)")
+            try:
+                store_message(number, reply, 'out', status, respMan, False, user_name)
+            except Exception:
+                current_app.logger.exception("Erro ao salvar resposta (worker)")
 
             # envio via WhatsApp Cloud API com retry exponencial
             phone_number_id = DEFAULT_PHONE_NUMBER_ID or None
