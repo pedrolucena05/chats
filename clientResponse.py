@@ -119,6 +119,8 @@ def respClient(pergunta, msgs):
     else:
         respMan = 0
 
+    print (f"Respman dentro das respostas do cliente: {respMan}")
+
     return resp.output_text, status, respMan
 
 """def respClient(original_msg, respMan, resps_order):
