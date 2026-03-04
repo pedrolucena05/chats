@@ -581,31 +581,43 @@ def get_respman(phone):
 @app.post("/store-message")
 @require_api_key
 def api_store_message():
-    data = request.get_json(force=True) or {}
+    try:
+        data = request.get_json(force=True) or {}
 
-    phone = (data.get("phone") or "").strip()
-    content = data.get("content")
-    direction = (data.get("direction") or "").strip()
-    respMan = data.get("respMan", 0)
-    resps_order = data.get("resps_order", 0)
-    notFlags = bool(data.get("notFlags", True))
-    name = (data.get("name") or "").strip()
+        phone = (data.get("phone") or "").strip()
+        content = data.get("content")
+        direction = (data.get("direction") or "").strip()
+        respMan = data.get("respMan", 0)
+        resps_order = data.get("resps_order", 0)
+        notFlags = bool(data.get("notFlags", True))
+        name = (data.get("name") or "").strip()
 
-    if not phone:
-        return jsonify({"error": "phone required"}), 400
-    if direction not in ("in", "out"):
-        return jsonify({"error": "direction must be 'in' or 'out'"}), 400
-    if content is None:
-        return jsonify({"ok": True, "message": None}), 200
+        if not phone:
+            return jsonify({"error": "phone required"}), 400
+        if direction not in ("in", "out"):
+            return jsonify({"error": "direction must be 'in' or 'out'"}), 400
+        if content is None:
+            return jsonify({"ok": True, "message": None}), 200
 
-    # store_message deve retornar dict (serializado), não objeto ORM
-    msg_data = store_message(
-        phone=phone, content=str(content), direction=direction,
-        status=True, respMan=int(respMan or 0),
-        notFlags=notFlags, name=name
-    )
+        msg_data = store_message(
+            phone=phone,
+            content=str(content),
+            direction=direction,
+            status=True,
+            respMan=int(respMan or 0),
+            notFlags=notFlags,
+            name=name
+        )
 
-    return jsonify({"ok": True, "message": msg_data}), 200
+        print("TIPO DE msg_data:", type(msg_data))
+        print("VALOR DE msg_data:", msg_data)
+
+        return jsonify({"ok": True, "message": msg_data}), 200
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({"ok": False, "error": str(e)}), 500
 
 @app.route("/bot", methods=["GET", "POST"])
 def webhook_handler():
