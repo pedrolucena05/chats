@@ -86,7 +86,7 @@ def store_message(phone: str, content: str, direction: str, status: bool, respMa
                 ) or 0
 
                 session.commit()
-                return msg
+                return msg.to_dict()
 
             except Exception:
                 raise
