@@ -184,29 +184,29 @@ def worker_loop(number: str, q: queue.Queue, state: dict, user_name: str):
     reply = None
     respMan = None
 
-    # PROCESSAMENTO CONTÍNUO
-    while True:
-        try:
-            item = q.get(timeout=1.0)
-        except queue.Empty:
-            # verifica inatividade para finalizar worker
-            if time.time() - workers[number]["last_active"] > WORKER_IDLE_TIMEOUT:
-                current_app.logger.info(f"Worker {number} inativo por {WORKER_IDLE_TIMEOUT}s — finalizando.")
-                break
-            continue
-
-        if item is None:
-            # sinal para despertar/stop (opcional)
-            continue
-
-        text = item.strip()
-        workers[number]["last_active"] = time.time()
-
-        print(f"Numero: {number}")
-
-        # fluxo normal: salvar entrada, atualizar status, chamar respClient, salvar resposta e enviar via API
-        with app.app_context():
+    with app.app_context():
+        # PROCESSAMENTO CONTÍNUO
+        while True:
             
+            try:
+                item = q.get(timeout=1.0)
+            except queue.Empty:
+                # verifica inatividade para finalizar worker
+                if time.time() - workers[number]["last_active"] > WORKER_IDLE_TIMEOUT:
+                    current_app.logger.info(f"Worker {number} inativo por {WORKER_IDLE_TIMEOUT}s — finalizando.")
+                    break
+                continue
+
+            if item is None:
+                # sinal para despertar/stop (opcional)
+                continue
+
+            text = item.strip()
+            workers[number]["last_active"] = time.time()
+
+            print(f"Numero: {number}")
+
+            # fluxo normal: salvar entrada, atualizar status, chamar respClient, salvar resposta e enviar via API
 
             try:
                 lastIn, msgs, respMan = clientStatus(number)
@@ -257,13 +257,13 @@ def worker_loop(number: str, q: queue.Queue, state: dict, user_name: str):
                 except Exception:
                     current_app.logger.exception("Exceção inesperada ao tentar enviar via WhatsApp Cloud API")
 
-    # remover worker do mapa (cleanup)
-    with workers_lock:
-        w = workers.get(number)
-        if w and w.get("thread") and w["thread"].ident == threading.get_ident():
-            # se for o mesmo objeto/thread, remova
-            del workers[number]
-    current_app.logger.info(f"Worker {number} finalizado.")
+        # remover worker do mapa (cleanup)
+        with workers_lock:
+            w = workers.get(number)
+            if w and w.get("thread") and w["thread"].ident == threading.get_ident():
+                # se for o mesmo objeto/thread, remova
+                del workers[number]
+        current_app.logger.info(f"Worker {number} finalizado.")
 
 
 
@@ -596,15 +596,16 @@ def api_store_message():
     if direction not in ("in", "out"):
         return jsonify({"error": "direction must be 'in' or 'out'"}), 400
     if content is None:
-        return jsonify({"ok": True, "message": None})
+        return jsonify({"ok": True, "message": None}), 200
 
-    # REUSA sua função do servidor (a que você já tem no backend)
-    msg = store_message(phone=phone, content=str(content), direction=direction, status = True, respMan=int(respMan or 0), notFlags=notFlags, name=name)
+    # store_message deve retornar dict (serializado), não objeto ORM
+    msg_data = store_message(
+        phone=phone, content=str(content), direction=direction,
+        status=True, respMan=int(respMan or 0),
+        notFlags=notFlags, name=name
+    )
 
-    return jsonify({
-        "ok": True,
-        "message": msg.to_dict() if msg else None
-    })
+    return jsonify({"ok": True, "message": msg_data}), 200
 
 @app.route("/bot", methods=["GET", "POST"])
 def webhook_handler():
