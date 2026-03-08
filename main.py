@@ -204,7 +204,7 @@ def worker_loop(number: str, q: queue.Queue, state: dict, user_name: str):
             text = item.strip()
             workers[number]["last_active"] = time.time()
 
-            print(f"Numero: {number}")
+            #print(f"Numero: {number}")
 
             # fluxo normal: salvar entrada, atualizar status, chamar respClient, salvar resposta e enviar via API
 
@@ -215,12 +215,12 @@ def worker_loop(number: str, q: queue.Queue, state: dict, user_name: str):
                 #log.info("Erro em clientStatus durante processamento (worker)")
 
             #log.info(f"Worker {number} Antes do respClient: Resp Order: Resp man: {state['respMan']}")
-            print(f"Mensagens: {msgs}")
-            print (f"respMan: {respMan}")
+            #print(f"Mensagens: {msgs}")
+            #print (f"respMan: {respMan}")
             
             try:
                 if respMan == 0:
-                    print("Estou dentro do processamento da mensagem")
+                    #print("Estou dentro do processamento da mensagem")
                     reply , status, respMan = respClient(text, msgs)
             except Exception:
                 current_app.logger.exception("Erro em respClient (worker)")
@@ -609,8 +609,8 @@ def api_store_message():
             name=name
         )
 
-        print("TIPO DE msg_data:", type(msg_data))
-        print("VALOR DE msg_data:", msg_data)
+        #print("TIPO DE msg_data:", type(msg_data))
+        #print("VALOR DE msg_data:", msg_data)
 
         return jsonify({"ok": True, "message": msg_data}), 200
 
