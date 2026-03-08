@@ -120,7 +120,7 @@ def respClient(pergunta, msgs):
     else:
         respMan = 0
 
-    print (f"Respman dentro das respostas do cliente: {respMan}")
+    #print (f"Respman dentro das respostas do cliente: {respMan}")
 
     return resp.output_text, status, respMan
 
