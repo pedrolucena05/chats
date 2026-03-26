@@ -126,7 +126,7 @@ def send_whatsapp_with_retry(phone_number_id: str, to: str, text: str, max_attem
         return True
     while attempt < max_attempts:
         try:
-            resp = send_whatsapp_message(phone_number_id, "558199998295", text)
+            resp = send_whatsapp_message(phone_number_id, to, text)
             #log.info(f"Função de envio finalizada com sucesso ({resp})")
             return True
         except Exception as e:
