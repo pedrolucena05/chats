@@ -7,7 +7,13 @@ Este documento contém informações oficiais sobre participação, regras e fun
 ## REGRAS GERAIS — TODAS AS FEIRAS
 
 NÚMERO_DE_CONTATO:
-Sempre que o cliente perguntar se esse número é o número da Feira (Bom Jesus, Aurora, Viver Aurora, Apipucos, Lindu, Igarassu), responder que sim e qual a dúvida do cliente.
+Sempre que o cliente perguntar se esse número é o número ou o atendimento da Feira (Bom Jesus, Aurora, Viver Aurora, Apipucos, Lindu, Igarassu), responder que sim e qual a dúvida do cliente. Caso pergunte se é da feira do lindu , falar que sim mas apenas do domingo e pergunta a duvida do cliente.
+
+SOBRE_AS_FEIRAS_QUE_ATENDEMOS:
+Se o usuário perguntar se é o atendimento ou número de uma Feira que não seja: Lindu, Bom Jesus, Aurora, Viver Aurora, Aurora Domingo, Aurora Sábado, Igarassu. Responder apenas que não faz parte das nossas Feiras.
+
+TEMPO_DE_RETORNO_DO_RESULTADO_DA_CURADORIA
+Se o usuário perguntar o tempo de retorno da curadoria, reponder que em 7 dias no máximo respondemos apenas para os que foram aprovados.
 
 INCLUSO_NO_VALOR:
 - Montagem da barraca (1.40m x 0.70m)
@@ -25,6 +31,8 @@ ALTERAÇÃO_DE_LOCAL:
 Normalmente mantemos o mesmo local em todas as edições.  
 Mudanças podem ocorrer por solicitação do expositor ou por necessidade da organização.
 
+TEMPO
+
 MATERIAL_EXTRA_DE_APOIO:
 Permitido apenas os materias abaixo em pallet apenas:
 - Estantes
@@ -39,7 +47,7 @@ O material de apoio só pode ser colocado na lateral da barraca, por isso o limi
 
 O material de apoio não pode ficar atrás da barraca, só pode ficar apenas na lateral.
 
-Também oferecemos serviço de aluguel de material extra, custando R$30,00 adicionais a taxa semanal caso queira alugar.
+Também oferecemos serviço de aluguel de material extra, custando R$35,00 adicionais a taxa semanal caso queira alugar.
 Materiais que alugamos: Mesa, Arara, Estante (feitos com pallet).
 
 Não aceitamos o aluguel de mais de um material extra, podendo alugar apenas um por edição.
@@ -52,9 +60,6 @@ As vagas mudam com frequência.
 CANCELAMENTO_POR_CHUVA:
 A feira só é cancelada em caso de chuva extrema que inviabilize o evento. Onde Geralmente cancelamos no dia do evento.
 
-DESCONTO_MEI:
-O desconto MEI é apenas para as Feiras da Aurora (sábado e domingo) e Feira Bom Jesus, onde expositores com cadastro MEI podem participar de um rodizio onde pagam metade do valor semanal de participação. O desconto das feiras acima são separados, então um expositor pode participar do desconto numa feira e ficar na fila de espera em outra feira das mencionadas acima.
-
 COMO_FAÇO_PARA_PARTICIPAR_DA_FEIRA:
 Sempre que o usuario pergunta algo parecido (como faço para participar ou gostaria de participar), avise que para participar da feira desejada é necessário submeter a uma curadoria preechendo o formulario abaixo. Coloque o link do formulario dacuradoria da feira que usuário esta pedindo ou peça para ele informar caso não tenha informado.
 
@@ -63,14 +68,6 @@ As feiras que produzimos são eventos de rua com entrada gratuita, com atraçõe
 
 AS_FEIRAS_OCORREM_TODOS_AS_SEMANAS_DO_ANO
 Sim, as feiras ocorrem no dia divulgados todas as semanas do ano, podendo ser cancelado com antecedencia em caso de chuva ou se tiver algum evento no local da feira(ocorre poucas vezes no ano mas pode ocorrer)
-
-SOBRE_AS_FEIRAS_QUE_ATENDEMOS:
-Se o usuário perguntar se fazemos atendimento pra uma feira e for alguma dessas (Feira Bom Jesus, Feira Igarassu, Feira da Aurora, Viver Aurora, Aurora Sábado, Aurora Domingo, Feira do Lindu, Feira de Apipucos), é para voce responder que sim e qual a dúvida do usuário, se não tiver é para falar apenas que nossa equipe não faz atendimento para a feira que o usuário pediu e não mencione as nossas feiras para o mesmo.
-
-FORMULÁRIO_FEIRA_DE_APIPUCOS:
-Sempre que o usuário perguntar que gostaria de participar da Feira de Apipucos, ou como faz para participar da feira, responda que é necessário se inscrever no formulário de curadoria: https://forms.gle/HnnTJVw1rUVqbBDW7
-
-
 
 ====================================================================
 
@@ -92,10 +89,6 @@ HORÁRIO:
 
 VALOR:
 R$150,00 por edição
-
-DESCONTO_MEI:
-Expositores com MEI podem pagar metade através de parceria com o SEBRAE,
-participando de rodízio de 15 expositores por edição.
 
 CURADORIA_FORMULÁRIO:
 (https://forms.gle/TPtusK2oLbWnxehD8)
@@ -123,10 +116,6 @@ HORÁRIO:
 
 VALOR:
 R$150,00 por edição
-
-DESCONTO_MEI:
-Expositores com MEI podem pagar metade através de parceria com o SEBRAE,
-participando de rodízio de 15 expositores por edição.
 
 CURADORIA_FORMULÁRIO:
 (https://forms.gle/egn1hMyDcfnPVoVh9)
@@ -164,7 +153,7 @@ Dia:
 Domingos
 
 HORÁRIO:
-15h às 20h
+15h às 21h
 
 VALOR:
 R$200,00 por edição
@@ -178,29 +167,10 @@ CURADORIA_FORMULÁRIO:
 
 ====================================================================
 
-## EVENTO: Feira de Apipucos
-
-NOMES_ALTERNATIVOS:
-- Apipucos
-
-Dia:
-Sábados
-
-HORÁRIO:
-15h às 21h
-
-VALOR:
-R$200,00 por edição
-
-CURADORIA_FORMULÁRIO:
-(https://forms.gle/HnnTJVw1rUVqbBDW7)
-
-====================================================================
-
 ## EVENTO: Feira de Igarassu
 
 NOMES_ALTERNATIVOS:
-- Igarassu
+- Igarassu, Viver Igarassu
 
 LOCAL:
 Sítio Histórico de Igarassu
@@ -209,7 +179,7 @@ DIA:
 Sábados
 
 HORÁRIO:
-14h às 22h
+16h às 22h
 
 VALOR:
 R$130,00 por edição

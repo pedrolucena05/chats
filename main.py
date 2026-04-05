@@ -72,8 +72,6 @@ RETRY_MAX_ATTEMPTS = int(os.getenv("RETRY_MAX_ATTEMPTS", 5))
 RETRY_BASE_DELAY = float(os.getenv("RETRY_BASE_DELAY", 0.5))  # segundos
 RETRY_MAX_DELAY = float(os.getenv("RETRY_MAX_DELAY", 20.0))  # cap do delay
 
-workers = {}  # number -> worker dict
-workers_lock = threading.Lock()
 
 
 def send_whatsapp_message(phone_number_id: str, to: str, text: str) -> dict:
@@ -126,7 +124,7 @@ def send_whatsapp_with_retry(phone_number_id: str, to: str, text: str, max_attem
         return True
     while attempt < max_attempts:
         try:
-            resp = send_whatsapp_message(phone_number_id, "558199998295", text)
+            resp = send_whatsapp_message(phone_number_id, to, text)
             #log.info(f"Função de envio finalizada com sucesso ({resp})")
             return True
         except Exception as e:
@@ -147,123 +145,71 @@ def send_whatsapp_with_retry(phone_number_id: str, to: str, text: str, max_attem
     return False
 
 
-def start_worker_if_missing(number: str, user_name: str):
-    """
-    Cria e inicia um worker (thread + queue + state) caso não exista ou esteja morto.
-    """
-    with workers_lock:
-        w = workers.get(number)
-        if w and w.get("thread") and w["thread"].is_alive():
-            return w
-        # criar novo worker
-        q = queue.Queue()
-        state = {"respMan": None, "lastIn": None}
-        t = threading.Thread(target=worker_loop, args=(number, q, state, user_name), name=f"worker-{number}", daemon=True)
-        worker = {"thread": t, "queue": q, "state": state, "last_active": time.time()}
-        workers[number] = worker
-        t.start()
-        return worker
 
-
-def worker_loop(number: str, q: queue.Queue, state: dict, user_name: str):
+def processAndSendMessage(number, user_name, text):
     """
     Loop que roda dentro da thread do worker.
     Reproduz o comportamento do terminal_loop: inicializa clientStatus, gera mensagem inicial,
     processa itens da fila sequencialmente, chama respClient, store_message e envia resposta via Cloud API com retry.
     """
-    global lock
-    '''with app.app_context():
-        
-        try:
-            state["respMan"], state["respOrder"], state["lastIn"] = clientStatus(number)
-        except Exception:
-            current_app.logger.exception("Erro em clientStatus na inicialização do worker")
-            state["respMan"], state["respOrder"], state["lastIn"] = 0, 0, ""'''
 
     status = None
     reply = None
     respMan = None
 
     with app.app_context():
-        # PROCESSAMENTO CONTÍNUO
-        while True:
-            
+
+        try:
+            lastIn, msgs, respMan = clientStatus(number)
+        except Exception:
+            lastIn, msgs, respMan = "", None, None
+        
+        try:
+            if respMan == 0:
+                #print("Estou dentro do processamento da mensagem")
+                reply , status, respMan = respClient(text, msgs)
+        except Exception:
+            current_app.logger.exception("Erro em respClient (worker)")
+            reply = "Desculpe, ocorreu um erro ao processar sua mensagem."
+
+        
+        # ARMAZENA MENSAGEM RECEBIDA NO BANCO DE DADOS
+        try:
+            store_message(number, text, 'in', status, respMan, True, user_name)
+        except Exception:
+            current_app.logger.exception("Erro ao salvar resposta (worker)")
+
+        # ARMAZENA MENSAGEM ENVIADA NO BANCO DE DADOS
+        if respMan == 0:
             try:
-                item = q.get(timeout=1.0)
-            except queue.Empty:
-                # verifica inatividade para finalizar worker
-                if time.time() - workers[number]["last_active"] > WORKER_IDLE_TIMEOUT:
-                    current_app.logger.info(f"Worker {number} inativo por {WORKER_IDLE_TIMEOUT}s — finalizando.")
-                    break
-                continue
-
-            if item is None:
-                # sinal para despertar/stop (opcional)
-                continue
-
-            text = item.strip()
-            workers[number]["last_active"] = time.time()
-
-            #print(f"Numero: {number}")
-
-            # fluxo normal: salvar entrada, atualizar status, chamar respClient, salvar resposta e enviar via API
-
-            try:
-                lastIn, msgs, respMan = clientStatus(number)
+                store_message(number, reply, 'out', status, respMan, True, user_name)
             except Exception:
-                lastIn, msgs, respMan = "", None, None
-                #log.info("Erro em clientStatus durante processamento (worker)")
+                #current_app.logger.exception("Erro ao salvar resposta (worker)")
+                return
 
-            #log.info(f"Worker {number} Antes do respClient: Resp Order: Resp man: {state['respMan']}")
-            #print(f"Mensagens: {msgs}")
-            #print (f"respMan: {respMan}")
-            
+        # ARMAZENA O STATUS DO CLIENTE (RESPMAN) NO BANCO DE DADOS
+        try:
+            store_message(number, reply, 'out', status, respMan, False, user_name)
+        except Exception:
+            return
+            #current_app.logger.exception("Erro ao salvar resposta (worker)")
+
+        # envio via WhatsApp Cloud API com retry exponencial
+        phone_number_id = DEFAULT_PHONE_NUMBER_ID or None
+        if not phone_number_id:
+            return
+            #current_app.logger.warning("PHONE_NUMBER_ID não definido; não será enviado via Cloud API")
+        else:
             try:
                 if respMan == 0:
-                    #print("Estou dentro do processamento da mensagem")
-                    reply , status, respMan = respClient(text, msgs)
+                    ok = send_whatsapp_with_retry(phone_number_id, number, reply)
+                    if not ok:
+                        current_app.logger.error(f"Não foi possível enviar resposta para {number} após tentativas.")
             except Exception:
-                current_app.logger.exception("Erro em respClient (worker)")
-                reply = "Desculpe, ocorreu um erro ao processar sua mensagem."
+                return
+                #current_app.logger.exception("Exceção inesperada ao tentar enviar via WhatsApp Cloud API")
 
-            current_app.logger.debug(f"Worker {number} Depois do respClient: lastIn: {state['lastIn']}")
-            
-            try:
-                store_message(number, text, 'in', status, respMan, True, user_name)
-            except Exception:
-                current_app.logger.exception("Erro ao salvar resposta (worker)")
 
-            if respMan == 0:
-                try:
-                    store_message(number, reply, 'out', status, respMan, True, user_name)
-                except Exception:
-                    current_app.logger.exception("Erro ao salvar resposta (worker)")
-
-            try:
-                store_message(number, reply, 'out', status, respMan, False, user_name)
-            except Exception:
-                current_app.logger.exception("Erro ao salvar resposta (worker)")
-
-            # envio via WhatsApp Cloud API com retry exponencial
-            phone_number_id = DEFAULT_PHONE_NUMBER_ID or None
-            if not phone_number_id:
-                current_app.logger.warning("PHONE_NUMBER_ID não definido; não será enviado via Cloud API")
-            else:
-                try:
-                    if respMan == 0:
-                        ok = send_whatsapp_with_retry(phone_number_id, number, reply)
-                        if not ok:
-                            current_app.logger.error(f"Não foi possível enviar resposta para {number} após tentativas.")
-                except Exception:
-                    current_app.logger.exception("Exceção inesperada ao tentar enviar via WhatsApp Cloud API")
-
-        # remover worker do mapa (cleanup)
-        with workers_lock:
-            w = workers.get(number)
-            if w and w.get("thread") and w["thread"].ident == threading.get_ident():
-                # se for o mesmo objeto/thread, remova
-                del workers[number]
-        current_app.logger.info(f"Worker {number} finalizado.")
 
 
 
@@ -699,166 +645,12 @@ def webhook_handler():
         current_app.logger.warning("Webhook sem número ou texto; ignorando")
         return jsonify({"status": "ignored"}), 200
 
-    worker = start_worker_if_missing(phone, userName)
-    worker["queue"].put(text)
-    worker["last_active"] = time.time()
-
-    return jsonify({"status": "queued"}), 200
     
-'''@app.route("/bot", methods=["GET", "POST"])
-def webhook_handler():
+    processAndSendMessage(phone, userName, text)
 
-    raw = request.get_data(as_text=True)
-    payload = request.get_json(silent=True)
-    
-    if payload is None:
-        current_app.logger.warning(f"Webhook POST sem JSON válido. RAW={raw[:500]}")
-        return jsonify({"status": "bad_json"}), 200
-    
-    # opcional mas recomendado: filtrar só WhatsApp
-    if payload.get("object") and payload.get("object") != "whatsapp_business_account":
-        return jsonify({"status": "ignored_object"}), 200
-    
-    if request.method == "GET":
-        mode = request.args.get("hub.mode")
-        token = request.args.get("hub.verify_token")
-        challenge = request.args.get("hub.challenge")
-        if mode == "subscribe" and token == VERIFY_TOKEN:
-            return challenge, 200
-        return "Forbidden", 403
-
-    # POST: parse payload
-    payload = request.get_json(silent=True) or {}
-    phone = None
-    text = None
-    phone_number_id = None
-    userName = None
-
-    #log.info("------------------ NOVA REQUISICAO -------------------")
-
-    try:
-        entry = payload.get("entry") or payload.get("entries") or []
-        if entry:
-            change = entry[0].get("changes", [{}])[0]
-            value = change.get("value", {})
-
-            contacts = value.get("contacts") or []
-            if not contacts:
-                # fallback: alguns payloads colocam contacts dentro da mensagem
-                messages = value.get("messages", [])
-                if messages:
-                    contacts = messages[0].get("contacts") or []
-                
-
-            if contacts:
-                userName = contacts[0].get("profile", {}).get("name")
-                if userName:
-                    userName = userName.strip()  # opcional: limpar espaços
-
-                #log.info(f"Nome do Remetente: {userName}")
-
-            phone_number_id = value.get("metadata", {}).get("phone_number_id") or DEFAULT_PHONE_NUMBER_ID
-            messages = value.get("messages", [])
-            if messages:
-                msg = messages[0]
-                phone = msg.get("from") or msg.get("wa_id")
-                if msg.get("type") == "text":
-                    text = msg.get("text", {}).get("body")
-                else:
-                    send_whatsapp_with_retry(phone_number_id, phone, "Mande apenas texto por favor, estamos usando um assistente virtual")
-
-            #log.info(f"ID: {phone_number_id}")
-            #log.info(f"Mensagem: {msg}")
-            #log.info(f"Phone Number: {phone}")
-            #log.info(f"TExto: {text}")
-
-            if userName:
-                pass
-                
-            else:
-                userName = phone
-
-    
-
-    except Exception:
-        current_app.logger.exception("Erro ao parsear payload webhook")
-
-    # fallbacks
-    if not phone:
-        if "from" in payload:
-            phone = payload.get("from")
-    if "text" in payload and text is None:
-        tx = payload.get("text")
-        text = tx.get("body") if isinstance(tx, dict) else str(tx)
-
-    if not phone or text is None:
-        current_app.logger.warning("Webhook sem número ou texto; ignorando")
-        return jsonify({"status": "ignored"}), 200
-
-    # garante criação do worker e enfileira
-    worker = start_worker_if_missing(phone, userName)
-    worker["queue"].put(text)
-    worker["last_active"] = time.time()
-
-    return jsonify({"status": "queued"}), 200'''
+    #return jsonify({"status": "queued"}), 200
 
 
-def terminal_loop():
-    print("=== Simulação em terminal iniciada ===")
-    print("Digite 'exit' para sair. Para reiniciar diálogo com outro número digite '!novo' (sem aspas).")
-    current_number = input("Número do cliente (ex: 5511999999999): ").strip()
-    if not current_number:
-        print("Número inválido. Saindo.")
-        return
-    print("Iniciando conversa com:", current_number)
-    lastIn, msgs, respMan = clientStatus(current_number)
-    # show initial prompt (call respClient with empty to generate menu)
-    reply , status, respMan = respClient("ola", msgs)
-    # armazena apenas a resposta inicial (não armazenamos mensagem 'vazia' recebida)
-    with app.app_context():
-        try:
-            store_message(current_number, reply, 'in', status, respMan, True, "Paulo")
-        except Exception:
-            app.logger.exception("erro ao salvar resposta inicial")
-
-    print (lastIn)
-    print("Bot:", reply)
-
-    while True:
-        try:
-            user = input("Você: ").strip()
-            print("\n\n")
-        except (KeyboardInterrupt, EOFError):
-            print("\nSaindo...")
-            break
-
-        if user.lower() in ('exit', 'sair', 'quit'):
-            print("Encerrando simulação.")
-            break
-
-        # salva mensagem do usuário e resposta do bot (dentro do app context)
-        with app.app_context():
-            try:
-                store_message(current_number, reply, 'in', status, respMan, True, "Paulo")
-            except Exception:
-                app.logger.exception("erro ao salvar mensagem recebida terminal")
-            lastIn, msgs, respMan = clientStatus(current_number)
-
-            print("Antes do respClient")
-            
-            print (f"Resp man: {respMan}")
-
-            reply , status, respMan = respClient(user, msgs)
-
-            print("\n\nDepois do resp client")
-            print (f"Resp man: {respMan}")
-            print("last in: ", lastIn)
-            print("Bot:", reply)
-
-            try:
-                store_message(current_number, reply, 'in', status, respMan, True, "Paulo")
-            except Exception:
-                app.logger.exception("erro ao salvar resposta terminal")
 
 
 def is_db_locked_sqlite(engine) -> bool:
@@ -878,24 +670,10 @@ def is_db_locked_sqlite(engine) -> bool:
         conn.close()
 
 
-
-    
-# -------------------------
-# util: roda Flask em thread
-# -------------------------
-def run_flask_in_thread(host='0.0.0.0', port=5000):
-    def _run():
-        # use_reloader=False para evitar execução dupla na thread
-        app.run(host=host, port=port, debug=False, use_reloader=False)
-    t = threading.Thread(target=_run, daemon=True)
-    t.start()
-    return t
-
-
 # -------------------------
 # main
 # -------------------------
-if __name__ == '__main__':
+'''if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--server-only', action='store_true', help='executa apenas o servidor Flask (sem terminal)')
@@ -910,19 +688,10 @@ if __name__ == '__main__':
         # garante que cada nova conexão defina PRAGMAs essenciais
 
 
-    run_flask_in_thread(host=args.host, port=args.port)
-    print(f"Flask rodando em http://{args.host}:{args.port} (em background)")
+    app.run(host="127.0.0.1", port=5000, debug=False, use_reloader=False)
 
-
-    #terminal_loop()
+    print(f"Flask rodando em http://{args.host}:{args.port} (em background)")'''
     
-
-    try:
-        while True:
-            pass
-    except KeyboardInterrupt:
-
-        print("Servidor finalizado.")
 
 
 
