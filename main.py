@@ -1,21 +1,15 @@
-import threading
-import argparse
-from datetime import datetime
 import os
-from os.path import join
-import logging
 import time
-import queue
 import random
 import requests
 from dotenv import load_dotenv
 from functools import wraps
 
-from flask import request, jsonify, current_app, Blueprint
-from sqlalchemy import event
-from sqlalchemy.exc import OperationalError, DatabaseError
+import logging
+from logging.handlers import RotatingFileHandler
 
-from filelock import FileLock
+from flask import request, jsonify, current_app
+from sqlalchemy.exc import OperationalError, DatabaseError
 
 from clientResponse import respClient
 from databaseWrite import store_message
@@ -60,6 +54,12 @@ WHATSAPP_ACCESS_TOKEN = os.getenv("WHATSAPP_ACCESS_TOKEN")
 DEFAULT_PHONE_NUMBER_ID = os.getenv("WHATSAPP_PHONE_NUMBER_ID")
 GRAPH_API_VERSION = os.getenv("GRAPH_API_VERSION", "v24.0")
 VERIFY_TOKEN = os.getenv("VERIFY_TOKEN")
+
+handler = RotatingFileHandler("app.log", maxBytes=100_000, backupCount=3)
+handler.setLevel(logging.INFO)
+
+app.logger.addHandler(handler)
+app.logger.setLevel(logging.ERROR)
 
     
 MAX_MESSAGES_PER_NUMBER = 20
@@ -648,7 +648,7 @@ def webhook_handler():
     
     processAndSendMessage(phone, userName, text)
 
-    #return jsonify({"status": "queued"}), 200
+    return jsonify({"status": "queued"}), 200
 
 
 
