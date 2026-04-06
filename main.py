@@ -156,16 +156,18 @@ def processAndSendMessage(number, user_name, text):
     status = None
     reply = None
     respMan = None
+    lastRespMan = None
 
     with app.app_context():
 
         try:
             lastIn, msgs, respMan = clientStatus(number)
+            lastRespMan = respMan
         except Exception:
             lastIn, msgs, respMan = "", None, None
         
         try:
-            if respMan == 0:
+            if lastRespMan == 0:
                 #print("Estou dentro do processamento da mensagem")
                 reply , status, respMan = respClient(text, msgs)
         except Exception:
@@ -180,7 +182,7 @@ def processAndSendMessage(number, user_name, text):
             current_app.logger.exception("Erro ao salvar resposta (worker)")
 
         # ARMAZENA MENSAGEM ENVIADA NO BANCO DE DADOS
-        if respMan == 0:
+        if lastRespMan == 0:
             try:
                 store_message(number, reply, 'out', status, respMan, True, user_name)
             except Exception:
@@ -201,7 +203,7 @@ def processAndSendMessage(number, user_name, text):
             #current_app.logger.warning("PHONE_NUMBER_ID não definido; não será enviado via Cloud API")
         else:
             try:
-                if respMan == 0:
+                if lastRespMan == 0:
                     ok = send_whatsapp_with_retry(phone_number_id, number, reply)
                     if not ok:
                         current_app.logger.error(f"Não foi possível enviar resposta para {number} após tentativas.")
