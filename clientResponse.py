@@ -128,20 +128,23 @@ def respClient(pergunta, msgs):
 
     link = ""
     isLink = False
-    
-    print(f"Antes do tratamento: {resp.output_text}")
+
+    print(f"Antes do tratamento: {resp.output_text}\n\n\n")
     # Remove os colchetes da string de resposta (desnecessários e poluem a resposta)
     cleanOutput = re.sub(r"\[.*?\]", "", resp.output_text)
 
-    print(f"Depois do tratamento de colchetes: {cleanOutput}")
+    print(f"Depois do tratamento de colchetes: {cleanOutput}\n\n\n")
     # Verifica se existe https coloca todo link numa variavel e remove da string caso exista link
     if "https" in cleanOutput:
-        match = re.search(r"https?://[^\s)\],.!\n]+", cleanOutput) # Guarda o link
-        link = match.group()
-        print(f"Valor de link: {link}")
-        isLink = True 
-        cleanOutput = re.sub(r"\(?https?://[^\s)\n]+\)?", "", cleanOutput) # Retira o link da string (será colocado a variavel na resposta final)
-        print(f"Apos retirar o link: {cleanOutput}")
+        match = re.search(r"https?://[^\s)\]\n]+", cleanOutput)
+        if match:
+            link = match.group().rstrip('.,!?;:')  # remove pontuação final solta
+            print(f"Valor de link: {link}\n\n\n")
+            isLink = True
+
+            cleanOutput = re.sub(re.escape(link), "", cleanOutput, count=1)
+            print(f"Apos retirar o link: {cleanOutput}\n\n\n")
+
     aux = cleanOutput.split('.')
     output = ""
     cont = 0
@@ -154,15 +157,19 @@ def respClient(pergunta, msgs):
             else:
                 output += aux[cont] + ".\n\n"
             cont += 1
-    
+
     elif len(aux) <= 1:
-        output = aux[0] + "."
+        output = aux[0]
 
     if isLink:
-        parts = resp.output_text.split(":", 1)
+        parts = cleanOutput.split(":", 1)
         output = parts[0] + ": " + link + parts[1] #adiciona o link na saida caso exista
 
     output = re.sub(r'\.(\s*)\.$', r'.\1', output)
+
+    output = output.replace("()", "")
+
+    print(f"Saidafinal: {output}")
 
 
     return output, status, respMan
