@@ -2,6 +2,7 @@ import os
 from openai import OpenAI
 from dotenv import load_dotenv
 import time
+import re
 
 load_dotenv()
 
@@ -125,10 +126,23 @@ def respClient(pergunta, msgs):
 
     #print (f"Respman dentro das respostas do cliente: {respMan}")
 
+    link = ""
+    isLink = False
+    
+    # Remove os colchetes da string de resposta (desnecessários e poluem a resposta)
+    resp.output_text = re.sub(r"\[.*?\]", "", resp.output_text)
+
+    # Verifica se existe https coloca todo link numa variavel e remove da string caso exista link
+    if "https" in resp.output_text:
+        match = re.search(r"https?://[^\s)\],.!\n]+", resp.output_text) # Guarda o link
+        link = match.group()
+        isLink = True 
+        resp.output_text = re.sub(r"\(?https?://[^\s)\n]+\)?", "", resp.output_text) # Retira o link da string (será colocado a variavel na resposta final)
+
     aux = resp.output_text.split('.')
     output = ""
     cont = 0
-    if len(aux) > 2:
+    if len(aux) >= 2:
 
         for item in aux:
 
@@ -140,6 +154,10 @@ def respClient(pergunta, msgs):
     
     elif len(aux) <= 1:
         output = aux[0] + "."
+
+    if isLink:
+        parts = resp.output_text.split(":", 1)
+        output = parts[0] + ": " + link + parts[1]
 
 
     return output, status, respMan
