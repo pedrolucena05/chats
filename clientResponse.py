@@ -129,21 +129,17 @@ def respClient(pergunta, msgs):
     link = ""
     isLink = False
 
-    print(f"Antes do tratamento: {resp.output_text}\n\n\n")
     # Remove os colchetes da string de resposta (desnecessários e poluem a resposta)
     cleanOutput = re.sub(r"\[.*?\]", "", resp.output_text)
 
-    print(f"Depois do tratamento de colchetes: {cleanOutput}\n\n\n")
     # Verifica se existe https coloca todo link numa variavel e remove da string caso exista link
     if "https" in cleanOutput:
         match = re.search(r"https?://[^\s)\]\n]+", cleanOutput)
         if match:
             link = match.group().rstrip('.,!?;:')  # remove pontuação final solta
-            print(f"Valor de link: {link}\n\n\n")
             isLink = True
 
             cleanOutput = re.sub(re.escape(link), "", cleanOutput, count=1)
-            print(f"Apos retirar o link: {cleanOutput}\n\n\n")
 
     aux = cleanOutput.split('.')
     output = ""
@@ -167,10 +163,10 @@ def respClient(pergunta, msgs):
 
     output = re.sub(r'\.(\s*)\.$', r'.\1', output)
 
+    if output[-1] == '.' and output[-2] == '.':
+        output = output[:-1]
+
     output = output.replace("()", "")
-
-    print(f"Saidafinal: {output}")
-
 
     return output, status, respMan
 
