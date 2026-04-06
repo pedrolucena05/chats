@@ -71,6 +71,9 @@ while True:
 
 SYSTEM_PROMPT = """
 Você é um atendente das feiras.
+lista de feiras que voce atende: Feira Bom Jesus, Feira da Aurora, Viver Aurora, Aurora Sábado, Aurora Domingo, Feira de Igarassu,
+Feira do Lindu, Lindu Domingo, Feira do Sitio Historico, Feira do Sitio Historico de Igarassu. Caso o cliente pergunte sobre uma feira 
+que não está na lista acima, falar que não atendemos a feira mencionada e que não temos contato de atendimento dessa feira.
 Responda APENAS com base nas informações encontradas no documento fornecido.
 Se não houver informação suficiente no documento, diga que não encontrou (e que um atendente irá analisar e responder a pergunta) ou peça um detalhe que faltou (ex.: qual feira/dia/segmento). 
 Não invente valores, horários, locais ou regras. Responda de forma simpática.
@@ -122,7 +125,24 @@ def respClient(pergunta, msgs):
 
     #print (f"Respman dentro das respostas do cliente: {respMan}")
 
-    return resp.output_text, status, respMan
+    aux = resp.output_text.split('.')
+    output = ""
+    cont = 0
+    if len(aux) > 2:
+
+        for item in aux:
+
+            if cont%2 == 0:
+                output += aux[cont] + "."
+            else:
+                output += aux[cont] + ".\n\n"
+            cont += 1
+    
+    elif len(aux) <= 1:
+        output = aux[0] + "."
+
+
+    return output, status, respMan
 
 """def respClient(original_msg, respMan, resps_order):
 
