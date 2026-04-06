@@ -130,16 +130,16 @@ def respClient(pergunta, msgs):
     isLink = False
     
     # Remove os colchetes da string de resposta (desnecessários e poluem a resposta)
-    resp.output_text = re.sub(r"\[.*?\]", "", resp.output_text)
+    cleanOutput = re.sub(r"\[.*?\]", "", resp.output_text)
 
     # Verifica se existe https coloca todo link numa variavel e remove da string caso exista link
-    if "https" in resp.output_text:
-        match = re.search(r"https?://[^\s)\],.!\n]+", resp.output_text) # Guarda o link
+    if "https" in cleanOutput:
+        match = re.search(r"https?://[^\s)\],.!\n]+", cleanOutput) # Guarda o link
         link = match.group()
         isLink = True 
-        resp.output_text = re.sub(r"\(?https?://[^\s)\n]+\)?", "", resp.output_text) # Retira o link da string (será colocado a variavel na resposta final)
+        cleanOutput = re.sub(r"\(?https?://[^\s)\n]+\)?", "", cleanOutput) # Retira o link da string (será colocado a variavel na resposta final)
 
-    aux = resp.output_text.split('.')
+    aux = cleanOutput.split('.')
     output = ""
     cont = 0
     if len(aux) >= 2:
@@ -157,7 +157,7 @@ def respClient(pergunta, msgs):
 
     if isLink:
         parts = resp.output_text.split(":", 1)
-        output = parts[0] + ": " + link + parts[1]
+        output = parts[0] + ": " + link + parts[1] #adiciona o link na saida caso exista
 
 
     return output, status, respMan
