@@ -9,7 +9,7 @@ from tableClasses import Message, Cliente
 from guaranteedMax import enforce_max_users
 from filelock import Timeout
 
-MAX_MSGS = 15
+MAX_MSGS = 10
 
 #LOG_FILE = "db_monitor.log"
 #logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(threadName)s - %(message)s", handlers=[logging.FileHandler(LOG_FILE, encoding="utf-8")])
@@ -60,8 +60,8 @@ def store_message(phone: str, content: str, direction: str, status: bool, respMa
                 session.add(msg)
                 session.flush()  # garante msg.id
 
-                # 4) mantém somente as 15 últimas mensagens (remove as mais antigas)
-                # pega o "id limite" da 15ª mais recente
+                # 4) mantém somente as 10 últimas mensagens (remove as mais antigas)
+                # pega o "id limite" da 10ª mais recente
                 cutoff_id = (
                     session.query(Message.id)
                     .filter(Message.cliente_id == cliente.phone)
@@ -78,12 +78,16 @@ def store_message(phone: str, content: str, direction: str, status: bool, respMa
                         Message.id < cutoff_id
                     ).delete(synchronize_session=False)
 
-                # 5) atualiza contador (agora já no máximo 15)
+                # 5) atualiza contador (agora já no máximo 10)
                 cliente.qtsMensagens = (
                     session.query(func.count(Message.id))
                     .filter(Message.cliente_id == cliente.phone)
                     .scalar()
                 ) or 0
+
+                
+                    
+
 
                 session.commit()
                 return msg.to_dict()
