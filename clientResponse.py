@@ -2,6 +2,7 @@ import os
 from openai import OpenAI
 from dotenv import load_dotenv
 import time
+import re
 
 load_dotenv()
 
@@ -71,6 +72,9 @@ while True:
 
 SYSTEM_PROMPT = """
 Você é um atendente das feiras.
+lista de feiras que voce atende: Feira Bom Jesus, Feira da Aurora, Viver Aurora, Aurora Sábado, Aurora Domingo, Feira de Igarassu,
+Feira do Lindu, Lindu Domingo, Feira do Sitio Historico, Feira do Sitio Historico de Igarassu. Caso o cliente pergunte sobre uma feira 
+que não está na lista acima, falar que não atendemos a feira mencionada e que não temos contato de atendimento dessa feira.
 Responda APENAS com base nas informações encontradas no documento fornecido.
 Se não houver informação suficiente no documento, diga que não encontrou (e que um atendente irá analisar e responder a pergunta) ou peça um detalhe que faltou (ex.: qual feira/dia/segmento). 
 Não invente valores, horários, locais ou regras. Responda de forma simpática.
@@ -122,7 +126,49 @@ def respClient(pergunta, msgs):
 
     #print (f"Respman dentro das respostas do cliente: {respMan}")
 
-    return resp.output_text, status, respMan
+    link = ""
+    isLink = False
+
+    # Remove os colchetes da string de resposta (desnecessários e poluem a resposta)
+    cleanOutput = re.sub(r"\[.*?\]", "", resp.output_text)
+
+    # Verifica se existe https coloca todo link numa variavel e remove da string caso exista link
+    if "https" in cleanOutput:
+        match = re.search(r"https?://[^\s)\]\n]+", cleanOutput)
+        if match:
+            link = match.group().rstrip('.,!?;:')  # remove pontuação final solta
+            isLink = True
+
+            cleanOutput = re.sub(re.escape(link), "", cleanOutput, count=1)
+
+    aux = cleanOutput.split('.')
+    output = ""
+    cont = 0
+    if len(aux) >= 2:
+
+        for item in aux:
+
+            if cont%2 == 0:
+                output += aux[cont] + "."
+            else:
+                output += aux[cont] + ".\n\n"
+            cont += 1
+
+    elif len(aux) <= 1:
+        output = aux[0]
+
+    if isLink:
+        parts = cleanOutput.split(":", 1)
+        output = parts[0] + ": " + link + parts[1] #adiciona o link na saida caso exista
+
+    output = re.sub(r'\.(\s*)\.$', r'.\1', output)
+
+    if output[-1] == '.' and output[-2] == '.':
+        output = output[:-1]
+
+    output = output.replace("()", "")
+
+    return output, status, respMan
 
 """def respClient(original_msg, respMan, resps_order):
 

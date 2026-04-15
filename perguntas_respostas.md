@@ -1,6 +1,23 @@
 # BASE DE CONHECIMENTO — FEIRAS
 
 Este documento contém informações oficiais sobre participação, regras e funcionamento das feiras organizadas pela equipe.
+Feiras organizadas por nossa equipe: Feira do Lindu (domingo), Feira da Aurora (sábado), Viver Aurora (Domingo), Feira Bom Jesus Feira de Igarassu.
+Nomes alternativos para as feiras organizadas por nossa equipe: 
+- Feirinha da Aurora
+- Feirinha do Bom Jesus 
+- Feirinha de Igarassu
+- Feirinha do Lindu
+- Feirinha do Lindu do Domingo
+- Aurora Sábado
+- Aurora Domingo
+- Feira do Chorinho da Aurora
+- Samba da Aurora
+- Sambinha da Aurora
+- Feira do Sitio Histórico
+- Feira do Sítio Histório de Igarassu
+- Feirinha da Rua Bom Jesus. 
+
+Se perguntar algo sobre uma Feira que não seja nenhuma das acima, responder que a feira não pertence a nossa equipe.
 
 ====================================================================
 
@@ -11,6 +28,21 @@ Sempre que o cliente perguntar se esse número é o número ou o atendimento da 
 
 SOBRE_AS_FEIRAS_QUE_ATENDEMOS:
 Se o usuário perguntar se é o atendimento ou número de uma Feira que não seja: Lindu, Bom Jesus, Aurora, Viver Aurora, Aurora Domingo, Aurora Sábado, Igarassu. Responder apenas que não faz parte das nossas Feiras.
+
+PARTICIPACAO_DE_FEIRAS_DE_TERCEIROS_1
+Se o usuário perguntar que gostaria de participar de uma feira que não seja: Lindu, Bom Jesus, Aurora, Viver Aurora, Aurora Domingo, Aurora Sábado, Igarassu. Falar que a feira mencionada não faz parte da nossa equipe.
+
+PARTICIPACAO_DE_FEIRAS_DE_TERCEIROS_2
+Se o usuario perguntar contatos de uma feira que não é nossa, falar que não temos informação de contato para a feira desejada.
+
+FEIRA_DO_LINDU_SABADO
+Se o usuário perguntar algo sobre a feira do sabado do lindu (ou sabadona). falar que a feira mencionada não faz parte do nosso grupo de feiras.
+
+NOSSAS_FEIRAS
+Se o usuario perguntar quais feiras fazem parte do nosso grupo (lista de feiras), falar que não fornecemos essa informação, e perguntar a duvida do usuario.
+
+FEEDBACK_DE_RETORNO
+(Só coloque na resposta se o usuário perguntar sobre feedback da curadoria ou motivo da reprovação, feedback de reprovação) Nossa equipe não da feedback sobre o motivo da marca ter sido reprovada.  
 
 TEMPO_DE_RETORNO_DO_RESULTADO_DA_CURADORIA
 Se o usuário perguntar o tempo de retorno da curadoria, reponder que em 7 dias no máximo respondemos apenas para os que foram aprovados.
@@ -77,6 +109,8 @@ NOMES_ALTERNATIVOS:
 - Aurora sábado
 - Feira da Aurora sábado
 - Aurora Sab
+- Feirinha da Aurora
+- Feirinha da Aurora do Sábado
 
 LOCAL:
 Rua da Aurora em frente à SEPLAG
@@ -104,6 +138,12 @@ Todos os segmentos são bem-vindos desde que aprovados na curadoria e haja vaga.
 NOMES_ALTERNATIVOS:
 - Aurora domingo
 - Viver Aurora
+- Feira do Chorinho da Aurora
+- Chorinho da Rua da Aurora
+- Feirinha da Aurora Domingo
+- Samba da Rua da Aurora
+- Sambinha da Rua da Aurora 
+- Chorinho da Aurora
 
 LOCAL:
 Praça da Aurora em frente à SEPLAG
@@ -125,7 +165,9 @@ CURADORIA_FORMULÁRIO:
 ## EVENTO: Feira Bom Jesus
 
 NOMES_ALTERNATIVOS:
-- Bom Jesus
+- Bom Jesus 
+- Feirinha do Bom Jesus 
+- Feirinha da Rua Bom Jesus
 
 Dia:
 Domingos
@@ -148,6 +190,8 @@ CURADORIA_FORMULÁRIO:
 
 NOMES_ALTERNATIVOS:
 - Lindu
+- Feirinha do Lindu
+- Lindu Domingo.
 
 Dia:
 Domingos
@@ -170,7 +214,10 @@ CURADORIA_FORMULÁRIO:
 ## EVENTO: Feira de Igarassu
 
 NOMES_ALTERNATIVOS:
-- Igarassu, Viver Igarassu
+- Igarassu
+- Viver Igarassu
+- Feira do Sítio Histório de Igarassu
+- Feira do Sítio Histório
 
 LOCAL:
 Sítio Histórico de Igarassu
@@ -187,4 +234,9 @@ R$130,00 por edição
 CURADORIA_FORMULÁRIO:
 (https://forms.gle/tMZS8nQYA9dAcppt9)
 
+====================================================================
+
+## Reposta Final
+
+Se não encontrar a resposta no documento, responder apenas que não encontrou a resposta e que um atendente irá responder em breve.
 
