@@ -1,8 +1,9 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError, OperationalError
-from sqlalchemy import func
+from sqlalchemy import func, text
 import logging
 from sqlalchemy.dialects.postgresql import insert
+import time
 
 from dbConfig import db
 from tableClasses import Message, Cliente
@@ -49,6 +50,13 @@ def store_message(phone: str, content: str, direction: str, status: bool, respMa
                 cliente = session.get(Cliente, phone_norm)
                 if cliente is None:
                     raise RuntimeError("Cliente não encontrado após upsert (inesperado)")
+                
+                if respMan == 1:
+                    session.execute(text("""
+                        UPDATE flagdash
+                        SET horario_segundos = :valor
+                    """),
+                    {"valor": int(time.time())})
 
                 # 3) insere mensagem
                 msg = Message(
