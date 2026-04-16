@@ -486,7 +486,6 @@ def get_clientes_respman():
     resultado = []
     for cliente in clientes:
         resultado.append({
-            "id": cliente.id,
             "phone": cliente.phone,
             "user_name": cliente.user_name,
             "qtsMensagens": cliente.qtsMensagens,
@@ -707,8 +706,6 @@ def is_db_locked_sqlite(engine) -> bool:
 
 
 
-
-app.logger.info("ROTAS REGISTRADAS: %s", app.url_map)
 
 # -------------------------
 # main
