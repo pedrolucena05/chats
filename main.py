@@ -701,6 +701,8 @@ def is_db_locked_sqlite(engine) -> bool:
         conn.close()
 
 
+print(app.url_map)
+
 # -------------------------
 # main
 # -------------------------
