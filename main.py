@@ -214,6 +214,7 @@ def processAndSendMessage(number, user_name, text):
 
 
 @app.route("/flagdash", methods=["GET"])
+@require_api_key
 def get_flagdash():
     result = db.session.execute(text("""
         SELECT horario_segundos
@@ -473,6 +474,7 @@ def get_latest_message_id(phone):
     return jsonify({"phone": phone, "latest_id": latest_id})
 
 @app.route("/clientes-respman", methods=["GET"])
+@require_api_key
 def get_clientes_respman():
     clientes = db.session.query(Cliente).filter(Cliente.respMan == 1).all()
 
