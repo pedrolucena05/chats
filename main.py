@@ -18,7 +18,7 @@ from appCreate import create_app
 from databaseRead import clientStatus
 
 from tableClasses import Message, Cliente
-from sqlalchemy import func, desc
+from sqlalchemy import func, desc, text
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -213,7 +213,18 @@ def processAndSendMessage(number, user_name, text):
 
 
 
+@app.route("/flagdash", methods=["GET"])
+def get_flagdash():
+    result = db.session.execute(text("""
+        SELECT horario_segundos
+        FROM flagdash
+        LIMIT 1
+    """)).fetchone()
 
+    if result is None:
+        return jsonify({"error": "Nenhum registro encontrado em flagdash"}), 404
+
+    return jsonify({"horario_segundos": result[0]}), 200
 
 
 @app.patch("/clients/<phone>/username")
@@ -460,6 +471,22 @@ def get_latest_message_id(phone):
 
     latest_id = int(last[0]) if last else 0
     return jsonify({"phone": phone, "latest_id": latest_id})
+
+@app.route("/clientes-respman", methods=["GET"])
+def get_clientes_respman():
+    clientes = db.session.query(Cliente).filter(Cliente.respMan == 1).all()
+
+    resultado = []
+    for cliente in clientes:
+        resultado.append({
+            "id": cliente.id,
+            "phone": cliente.phone,
+            "user_name": cliente.user_name,
+            "qtsMensagens": cliente.qtsMensagens,
+            "respMan": cliente.respMan
+        })
+
+    return jsonify(resultado), 200
 
 @app.get("/clients/with-last-ts")
 @require_api_key
