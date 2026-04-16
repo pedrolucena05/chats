@@ -58,8 +58,13 @@ VERIFY_TOKEN = os.getenv("VERIFY_TOKEN")
 handler = RotatingFileHandler("app.log", maxBytes=100_000, backupCount=3)
 handler.setLevel(logging.INFO)
 
+formatter = logging.Formatter(
+    "%(asctime)s - %(levelname)s - %(message)s"
+)
+handler.setFormatter(formatter)
+
+app.logger.setLevel(logging.INFO)
 app.logger.addHandler(handler)
-app.logger.setLevel(logging.ERROR)
 
     
 MAX_MESSAGES_PER_NUMBER = 20
@@ -701,7 +706,9 @@ def is_db_locked_sqlite(engine) -> bool:
         conn.close()
 
 
-print(app.url_map)
+
+
+app.logger.info("ROTAS REGISTRADAS: %s", app.url_map)
 
 # -------------------------
 # main
