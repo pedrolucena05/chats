@@ -111,6 +111,13 @@ def store_message(phone: str, content: str, direction: str, status: bool, respMa
                     synchronize_session=False
                 )
 
+                if respMan == 1:
+                    session.execute(text("""
+                        UPDATE flagdash
+                        SET horario_segundos = :valor
+                    """),
+                    {"valor": int(time.time())})
+
                 if updated:
                     session.commit()
                 else:
