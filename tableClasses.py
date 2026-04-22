@@ -40,3 +40,9 @@ class Message(db.Model):
             "ts": self.ts.isoformat(),
             "status": self.status
         }
+    
+class FlagDash(db.Model):
+    __tablename__ = "flagdash"
+
+    id = db.Column(db.Integer, primary_key=True)
+    horario_segundos = db.Column(db.Integer, nullable=True)

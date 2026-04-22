@@ -17,7 +17,7 @@ from dbConfig import db
 from appCreate import create_app
 from databaseRead import clientStatus
 
-from tableClasses import Message, Cliente
+from tableClasses import Message, Cliente, FlagDash
 from sqlalchemy import func, desc, text
 
 
@@ -455,6 +455,36 @@ def send_message_from_dashboard():
     ok = send_whatsapp_with_retry(phone_number_id, to, text)
 
     return jsonify({"ok": bool(ok)})
+
+from flask import jsonify
+
+@app.route("/update-horario-segundos/<int:valor>", methods=["GET"])
+@require_api_key
+def update_horario_segundos(valor):
+    try:
+        registro = FlagDash.query.first()
+
+        if not registro:
+            return jsonify({
+                "success": False,
+                "error": "Nenhum registro encontrado na tabela flagdash"
+            }), 404
+
+        registro.horario_segundos = valor
+        db.session.commit()
+
+        return jsonify({
+            "success": True,
+            "message": "horario_segundos atualizado com sucesso",
+            "horario_segundos": registro.horario_segundos
+        }), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        }), 500
 
 @app.get("/messages/<phone>/latest-id")
 @require_api_key
