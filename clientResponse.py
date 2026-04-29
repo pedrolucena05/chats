@@ -244,6 +244,8 @@ def processar_topico_cliente(mensagem, number):
 
         else:
             cliente = Cliente(phone=number)
+            db.session.add(cliente)
+            db.session.commit()
 
         if topico_atual:
             mensagem += " " + topico_atual
@@ -276,14 +278,14 @@ def respClient(pergunta, msgs, number):
     respMan = None
     topico = ""
 
-    msgs = processar_topico_cliente(msgs, number)
-
     question = ""
     if msgs:
         for m in msgs:
             question += " " + m
 
     question += " " + pergunta
+
+    question = processar_topico_cliente(msgs, number)
 
     resp = client.responses.create(
         model="gpt-4.1",
