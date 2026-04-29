@@ -168,6 +168,7 @@ NOMES_ALTERNATIVOS:
 - Bom Jesus 
 - Feirinha do Bom Jesus 
 - Feirinha da Rua Bom Jesus
+- Feirinha do Recife Antigo
 
 Dia:
 Domingos
