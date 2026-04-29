@@ -45,4 +45,4 @@ class FlagDash(db.Model):
     __tablename__ = "flagdash"
 
     id = db.Column(db.Integer, primary_key=True)
-    horario_segundos = db.Column(db.Integer, nullable=True, primary_key=True)
+    horario_segundos = db.Column(db.Integer, nullable=False, default=0)
