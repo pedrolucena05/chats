@@ -678,6 +678,7 @@ def webhook_handler():
             if contacts:
                 userName = (contacts[0].get("profile", {}).get("name") or "").strip() or None
 
+            
             phone_number_id = value.get("metadata", {}).get("phone_number_id") or DEFAULT_PHONE_NUMBER_ID
 
             messages = value.get("messages", [])
@@ -692,7 +693,7 @@ def webhook_handler():
                         "Mande apenas texto por favor, estamos usando um assistente virtual"
                     )
 
-            if not userName:
+            if userName is None:
                 userName = phone
 
     except Exception:
