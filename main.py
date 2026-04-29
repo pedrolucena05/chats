@@ -174,7 +174,7 @@ def processAndSendMessage(number, user_name, text):
         try:
             if lastRespMan == 0:
                 #print("Estou dentro do processamento da mensagem")
-                reply , status, respMan = respClient(text, msgs)
+                reply , status, respMan = respClient(text, msgs, number)
         except Exception:
             current_app.logger.exception("Erro em respClient (worker)")
             reply = "Desculpe, ocorreu um erro ao processar sua mensagem."

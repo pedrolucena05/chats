@@ -3,6 +3,10 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import time
 import re
+from tableClasses import Cliente
+import unicodedata
+import requests
+from dbConfig import db
 
 load_dotenv()
 
@@ -12,6 +16,62 @@ vs = client.vector_stores.create(name="FAQ - Perguntas e Respostas")
 vector_store_id = vs.id
 
 print("vector_store_id:", vector_store_id)
+
+LINDU = [
+    "feiradolindu",
+    "feiralindu",
+    "lindudomingo",
+    "lindudom",
+    "feirinhadolindu",
+    "feirinhalindu"
+]
+
+AURORA = [
+    "feiradaaurora",
+    "aurorasabado",
+    "aurorasab",
+    "feirinhadaaurora",
+    "feirinhadaruadaaurora",
+    "feirinhaemfrenteaseplag",
+    "feiraemfrenteaseplag"
+]
+
+VIVER_AURORA = [
+    "viveraurora",
+    "feiradaauroradomingo",
+    "feirinhadaauroradomingo",
+    "feiradaauroradodomingo",
+    "feirinhadaauroradodomingo",
+    "feiradodomingodaaurora",
+    "feirinhadodomingodaaurora",
+    "sambinhadaaurora",
+    "sambaaurora",
+    "aurorasamba"
+    "auroradomingo",
+    "auroradom",
+    "chorinhodaaurora",
+    "chorinhoaurora"
+]
+
+FEIRA_BOM_JESUS = [
+    "feirabomjesus",
+    "feiradobomjesus",
+    "feirinhadobomjesus",
+    "feirinhabomjesus"
+    "feiradaruabomjesus",
+    "feirinhadaruabomjesus",
+]
+
+FEIRA_IGARASSU = [
+    "feiradeigarassu",
+    "feirinhadeigarassu",
+    "feiraigarassu",
+    "feirinhaigarassu",
+    "feiradositiohistorico",
+    "feirinhadositiohistorico",
+    "viverigarassu",
+    "eventodositiohistorico"
+]
 
 PALAVRAS_PEDIDO_INFO = [
     "qual",
@@ -70,14 +130,134 @@ while True:
 
     time.sleep(0.5)
 
+def distancia_ate_2(a, b, limite=2):
+    if abs(len(a) - len(b)) > limite:
+        return False
+
+    dp = list(range(len(b) + 1))
+
+    for i, ca in enumerate(a, 1):
+        anterior = dp[0]
+        dp[0] = i
+
+        menor_linha = dp[0]
+
+        for j, cb in enumerate(b, 1):
+            temp = dp[j]
+
+            if ca == cb:
+                dp[j] = anterior
+            else:
+                dp[j] = 1 + min(
+                    anterior,   # substituição
+                    dp[j],      # remoção
+                    dp[j - 1]   # inserção
+                )
+
+            anterior = temp
+            menor_linha = min(menor_linha, dp[j])
+
+        if menor_linha > limite:
+            return False
+
+    return dp[-1] <= limite
+
+
+def contem_com_ate_2_erros(mensagem_normalizada, substring):
+    tamanho = len(substring)
+
+    for inicio in range(len(mensagem_normalizada)):
+        for variacao in range(-2, 3):
+            fim = inicio + tamanho + variacao
+
+            if fim <= inicio:
+                continue
+
+            trecho = mensagem_normalizada[inicio:fim]
+
+            if distancia_ate_2(trecho, substring, limite=2):
+                return True
+
+    return False
+
+
+def normalizar_texto(texto):
+    texto = texto.lower()
+    texto = texto.replace(" ", "")
+
+    texto = unicodedata.normalize("NFD", texto)
+    texto = "".join(
+        char for char in texto
+        if unicodedata.category(char) != "Mn"
+    )
+
+    return texto
+
+
+def identificar_topico(mensagem):
+    mensagem_normalizada = normalizar_texto(mensagem)
+
+    topicos = {
+        "LINDU": LINDU,
+        "FEIRA_DA_AURORA": AURORA,
+        "VIVER_AURORA": VIVER_AURORA,
+        "FEIRA_BOM_JESUS": FEIRA_BOM_JESUS,
+        "FEIRA_IGARASSU": FEIRA_IGARASSU,
+    }
+
+    for nome_topico, substrings in topicos.items():
+        for substring in substrings:
+            if substring in mensagem_normalizada:
+                return nome_topico.replace("_", " ")
+            
+            if contem_com_ate_2_erros(mensagem_normalizada, substring):
+                return nome_topico.replace("_", " ")
+
+    return None
+
+
+def processar_topico_cliente(mensagem, number):
+    topico = identificar_topico(mensagem)
+
+    if topico:
+        cliente = Cliente.query.filter_by(phone=number).first()
+
+        if not cliente:
+            cliente = Cliente(phone=number)
+            cliente.topico = topico
+            db.session.add(cliente)
+            db.session.commit()
+
+        if cliente:
+            cliente.topico = topico
+            db.session.commit()
+
+        return mensagem
+
+    else:
+        cliente = Cliente.query.filter_by(phone=number).first()
+
+        topico_atual = None
+
+        if cliente:
+            topico_atual = cliente.topico
+
+        else:
+            cliente = Cliente(phone=number)
+
+        if topico_atual:
+            mensagem += " " + topico_atual
+
+        return mensagem
+
 SYSTEM_PROMPT = """
 Você é um atendente das feiras.
-lista de feiras que voce atende: Feira Bom Jesus, Feira da Aurora, Viver Aurora, Aurora Sábado, Aurora Domingo, Feira de Igarassu,
+lista de feiras que voce atende: Feira Bom Jesus, Feirinha do Bom Jesus, Feira da Aurora, Viver Aurora, Aurora Sábado, Aurora Domingo, Feira de Igarassu,
 Feira do Lindu, Lindu Domingo, Feira do Sitio Historico, Feira do Sitio Historico de Igarassu. Caso o cliente pergunte sobre uma feira 
 que não está na lista acima, falar que não atendemos a feira mencionada e que não temos contato de atendimento dessa feira.
 Responda APENAS com base nas informações encontradas no documento fornecido.
 Se não houver informação suficiente no documento, diga que não encontrou (e que um atendente irá analisar e responder a pergunta) ou peça um detalhe que faltou (ex.: qual feira/dia/segmento). 
-Não invente valores, horários, locais ou regras. Responda de forma simpática.
+Não invente valores, horários, locais ou regras. Responda de forma suscinta.
 Não mencione as feiras que trabalhamos na resposta (Só mencione a feira se o usuário já tiver citado a feira na mensagem).
 Não coloque na resposta "Não encontramos essa informação no documento de apoio" ou algo similar.
 """
@@ -91,9 +271,12 @@ def precisa_humano(texto: str) -> bool:
 
     return any(p in texto_lower for p in PALAVRAS_ATENDENTE)
 
-def respClient(pergunta, msgs):
+def respClient(pergunta, msgs, number):
     status = None
     respMan = None
+    topico = ""
+
+    msgs = processar_topico_cliente(msgs, number)
 
     question = ""
     if msgs:
@@ -164,6 +347,9 @@ def respClient(pergunta, msgs):
     output = re.sub(r'\.(\s*)\.$', r'.\1', output)
 
     if output[-1] == '.' and output[-2] == '.':
+        output = output[:-1]
+
+    elif output[-1] == "." and output[-2] == "!":
         output = output[:-1]
 
     output = output.replace("()", "")
