@@ -4,11 +4,11 @@ from datetime import datetime
 class Cliente(db.Model):
     __tablename__ = "cliente"
 
-    #id = db.Column(db.Integer, primary_key=True)
     phone = db.Column(db.String(40), nullable=False, unique=True, index=True, primary_key=True)
     user_name = db.Column(db.String(40), nullable= True, default = None)
     qtsMensagens = db.Column(db.Integer, default=0, nullable=False)
     respMan = db.Column(db.Integer, default=0, nullable=False)
+    topico = db.Column(db.String(50), nullable=False, default="")
 
     messages = db.relationship(
         "Message",
