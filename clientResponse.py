@@ -285,7 +285,7 @@ def respClient(pergunta, msgs, number):
 
     question += " " + pergunta
 
-    question = processar_topico_cliente(msgs, number)
+    question = processar_topico_cliente(question, number)
 
     resp = client.responses.create(
         model="gpt-4.1",
