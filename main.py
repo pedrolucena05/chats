@@ -4,6 +4,7 @@ import random
 import requests
 from dotenv import load_dotenv
 from functools import wraps
+import json
 
 import logging
 from logging.handlers import RotatingFileHandler
@@ -24,23 +25,25 @@ from sqlalchemy import func, desc, text
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 #LOG_FILE = os.path.join(BASE_DIR, "app.log")
 
-'''logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s | %(levelname)s | %(message)s",
-    handlers=[
-        logging.FileHandler(LOG_FILE, encoding="utf-8"),
-        logging.StreamHandler()
-    ],
-    force=True
-)'''
-
-#log = logging.getLogger("bot")
-#log.setLevel(logging.INFO)
-#log.info("Logger OK. Escrevendo em: %s", LOG_FILE)
-
 # App initalizer
 app = create_app()
 
+handler = RotatingFileHandler(
+    "app.log",
+    maxBytes=100_000,
+    backupCount=3
+)
+
+handler.setLevel(logging.INFO)
+
+formatter = logging.Formatter(
+    "%(asctime)s %(levelname)s: %(message)s"
+)
+
+handler.setFormatter(formatter)
+
+app.logger.addHandler(handler)
+app.logger.setLevel(logging.INFO)
 
 # 
 # DATABASE CONFIG
@@ -695,6 +698,10 @@ def webhook_handler():
 
             if userName is None:
                 userName = phone
+
+            #print("VALUE:", json.dumps(value, indent=2, ensure_ascii=False))
+            #print("CONTACTS:", contacts)
+            app.logger.info(f"userName extraído: {userName}")
 
     except Exception:
         current_app.logger.exception("Erro ao parsear payload webhook")
