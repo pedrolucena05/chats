@@ -701,7 +701,7 @@ def webhook_handler():
 
             #print("VALUE:", json.dumps(value, indent=2, ensure_ascii=False))
             #print("CONTACTS:", contacts)
-            app.logger.info(f"userName extraído: {userName}")
+            #app.logger.info(f"userName extraído: {userName}")
 
     except Exception:
         current_app.logger.exception("Erro ao parsear payload webhook")
