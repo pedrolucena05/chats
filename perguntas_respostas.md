@@ -211,7 +211,7 @@ A organização é responsável apenas pela feira de domingo.
 A feira de sábado é organizada por outra equipe.
 
 CURADORIA_FORMULÁRIO:
-(www.vivafeiras.com.br)
+(https://www.vivafeiras.com.br)
 
 ====================================================================
 
