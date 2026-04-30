@@ -351,11 +351,10 @@ def respClient(pergunta, msgs, number, user_name):
 
     output = re.sub(r'\.(\s*)\.$', r'.\1', output)
 
-    if output[-1] == '.' and output[-2] == '.':
-        output = output[:-1]
-
-    elif output[-1] == "." and output[-2] == "!":
-        output = output[:-1]
+    output.replace = ('..', '.')
+    output.replace = ('?.', '?')
+    output.replace = ('!.', '!')
+    output.replace = (' .', '')
 
     output = output.replace("()", "")
 
