@@ -347,7 +347,9 @@ def respClient(pergunta, msgs, number, user_name):
 
     if isLink:
         parts = cleanOutput.split(":", 1)
-        output = parts[0] + ": " + link + parts[1] #adiciona o link na saida caso exista
+
+        if len(parts) >= 2:
+            output = parts[0] + ": " + link + parts[1] #adiciona o link na saida caso exista
 
     output = re.sub(r'\.(\s*)\.$', r'.\1', output)
 
