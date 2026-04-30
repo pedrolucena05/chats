@@ -30,8 +30,8 @@ app = create_app()
 
 handler = RotatingFileHandler(
     "app.log",
-    maxBytes=100_000,
-    backupCount=3
+    maxBytes=10_000,
+    backupCount=0
 )
 
 handler.setLevel(logging.INFO)
