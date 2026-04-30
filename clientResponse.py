@@ -216,7 +216,7 @@ def identificar_topico(mensagem):
     return None
 
 
-def processar_topico_cliente(mensagem, number):
+def processar_topico_cliente(mensagem, number, user_name):
     topico = identificar_topico(mensagem)
 
     if topico:
@@ -225,6 +225,7 @@ def processar_topico_cliente(mensagem, number):
         if not cliente:
             cliente = Cliente(phone=number)
             cliente.topico = topico
+            cliente.user_name = user_name
             db.session.add(cliente)
             db.session.commit()
 
@@ -244,6 +245,7 @@ def processar_topico_cliente(mensagem, number):
 
         else:
             cliente = Cliente(phone=number)
+            cliente.user_name = user_name
             db.session.add(cliente)
             db.session.commit()
 
@@ -254,9 +256,10 @@ def processar_topico_cliente(mensagem, number):
 
 SYSTEM_PROMPT = """
 Você é um atendente das feiras.
+Responda apenas o que o cliente pede, não coloque informações extras se o cliente não pede.
 lista de feiras que voce atende: Feira Bom Jesus, Feirinha do Bom Jesus, Feira da Aurora, Viver Aurora, Aurora Sábado, Aurora Domingo, Feira de Igarassu,
 Feira do Lindu, Lindu Domingo, Feira do Sitio Historico, Feira do Sitio Historico de Igarassu. Caso o cliente pergunte sobre uma feira 
-que não está na lista acima, falar que não atendemos a feira mencionada e que não temos contato de atendimento dessa feira.
+que não está na lista acima ou de seus sinônimos que estão no documento, falar que não atendemos a feira mencionada e que não temos contato de atendimento dessa feira.
 Responda APENAS com base nas informações encontradas no documento fornecido.
 Se não houver informação suficiente no documento, diga que não encontrou (e que um atendente irá analisar e responder a pergunta) ou peça um detalhe que faltou (ex.: qual feira/dia/segmento). 
 Não invente valores, horários, locais ou regras. Responda de forma suscinta.
@@ -273,7 +276,7 @@ def precisa_humano(texto: str) -> bool:
 
     return any(p in texto_lower for p in PALAVRAS_ATENDENTE)
 
-def respClient(pergunta, msgs, number):
+def respClient(pergunta, msgs, number, user_name):
     status = None
     respMan = None
     topico = ""
@@ -285,7 +288,7 @@ def respClient(pergunta, msgs, number):
 
     question += " " + pergunta
 
-    question = processar_topico_cliente(question, number)
+    question = processar_topico_cliente(question, number, user_name)
 
     resp = client.responses.create(
         model="gpt-4.1",
