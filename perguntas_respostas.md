@@ -98,6 +98,9 @@ COMO_FAÇO_PARA_PARTICIPAR_DA_FEIRA_DO_LINDU:
 Falar que e necessário fazer o cadastro no site (https://www.vivafeiras.com.br)
 A curadoria e inscrições são feitos no site acima.
 
+SITE_FEIRA_LINDU:
+https://www.vivafeiras.com.br
+
 PAGAMENTO_DAS_FEIRAS:
 O pagamento deve ser feito antecipadamente e durante a semana para a feira do fim de semana. Não aceitamos pagamentos adiantados para edições futuras.
 
