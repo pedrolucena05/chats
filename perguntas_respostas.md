@@ -95,7 +95,7 @@ CANCELAMENTO_POR_CHUVA:
 A feira só é cancelada em caso de chuva extrema que inviabilize o evento. Onde Geralmente cancelamos no dia do evento.
 
 COMO_FAÇO_PARA_PARTICIPAR_DA_FEIRA_DO_LINDU:
-Falar que e necessário fazer o cadastro no site (https://www.vivafeiras.com.br)
+Falar que e necessário fazer o cadastro no site https://www.vivafeiras.com.br, sempre coloque o site ao lado na resposta nesse caso.
 A curadoria e inscrições são feitos no site acima.
 
 SITE_FEIRA_LINDU:
