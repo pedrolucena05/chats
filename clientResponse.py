@@ -23,6 +23,7 @@ LINDU = [
     "lindudomingo",
     "lindudom",
     "feirinhadolindu",
+    "lindu",
     "feirinhalindu"
 ]
 
@@ -30,6 +31,7 @@ AURORA = [
     "feiradaaurora",
     "aurorasabado",
     "aurorasab",
+    "aurora",
     "feirinhadaaurora",
     "feirinhadaruadaaurora",
     "feirinhaemfrenteaseplag",
@@ -60,6 +62,7 @@ FEIRA_BOM_JESUS = [
     "feirinhabomjesus"
     "feiradaruabomjesus",
     "feirinhadaruabomjesus",
+    "bomjesus"
 ]
 
 FEIRA_IGARASSU = [
@@ -70,6 +73,7 @@ FEIRA_IGARASSU = [
     "feiradositiohistorico",
     "feirinhadositiohistorico",
     "viverigarassu",
+    "igarassu",
     "eventodositiohistorico"
 ]
 
@@ -104,6 +108,13 @@ PALAVRAS_ATENDENTE = [
     "encaminharemos sua dúvida",
     "irá analisar",
     "um atendente",
+]
+
+RESET_TOPICO = [
+    "qualquer feira",
+    "todas as feiras",
+    "todas feiras",
+    "outras feiras"
 ]
 
 file = client.files.create(
@@ -203,6 +214,7 @@ def identificar_topico(mensagem):
         "VIVER_AURORA": VIVER_AURORA,
         "FEIRA_BOM_JESUS": FEIRA_BOM_JESUS,
         "FEIRA_IGARASSU": FEIRA_IGARASSU,
+        "RESET": RESET_TOPICO
     }
 
     for nome_topico, substrings in topicos.items():
@@ -224,7 +236,12 @@ def processar_topico_cliente(mensagem, number, user_name):
 
         if not cliente:
             cliente = Cliente(phone=number)
-            cliente.topico = topico
+            if topico == "RESET":
+                cliente.topico = ""
+
+            else:
+                cliente.topico = topico
+            
             cliente.user_name = user_name
             db.session.add(cliente)
             db.session.commit()

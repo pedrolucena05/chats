@@ -42,7 +42,7 @@ NOSSAS_FEIRAS
 Se o usuario perguntar quais feiras fazem parte do nosso grupo (lista de feiras), falar que não fornecemos essa informação, e perguntar a duvida do usuario.
 
 FEEDBACK_DE_RETORNO
-(Só coloque na resposta se o usuário perguntar sobre feedback da curadoria ou motivo da reprovação, feedback de reprovação) Nossa equipe não da feedback sobre o motivo da marca ter sido reprovada.  
+(Só coloque na resposta se o usuário perguntar sobre feedback da curadoria ou motivo da reprovação, feedback de reprovação) Nossa equipe não fornece feedback sobre o motivo da marca ter sido reprovada.  
 
 TEMPO_DE_RETORNO_DO_RESULTADO_DA_CURADORIA
 Se o usuário perguntar o tempo de retorno da curadoria, reponder que em 7 dias no máximo respondemos apenas para os que foram aprovados.
@@ -66,12 +66,14 @@ Mudanças podem ocorrer por solicitação do expositor ou por necessidade da org
 TEMPO
 
 MATERIAL_EXTRA_DE_APOIO:
-Permitido apenas os materias abaixo em pallet apenas:
+Se o cliente perguntar sobre levar mesas ou outros móveis, falar que é permitido apenas os materias abaixo em pallet:
 - Estantes
 - Mesas
 - Araras em material de pallet
+- Tendas
 
-Tamanho máximo: 80cmx120cm   
+Tamanho máximo (tendas): 3 metros x 3 metros
+Tamanho máximo (demais móveis): 80cmx120cm   
 Deve ser enviado foto para aprovação.
 
 Aproveitamos o espaço entre as barracas para colocar o material de apoio, se seu material tiver mais de 80cm em um dos lados o mesmo deve ficar com o lado menor (até 80cm) virado para frente e a parte maior deve ficar entrando na área da barraca
@@ -94,6 +96,13 @@ A feira só é cancelada em caso de chuva extrema que inviabilize o evento. Onde
 
 COMO_FAÇO_PARA_PARTICIPAR_DA_FEIRA_DO_LINDU:
 Falar que e necessário fazer o cadastro no site (https://www.vivafeiras.com.br)
+A curadoria e inscrições são feitos no site acima.
+
+PAGAMENTO_DAS_FEIRAS:
+O pagamento deve ser feito antecipadamente e durante a semana para a feira do fim de semana. Não aceitamos pagamentos adiantados para edições futuras.
+
+FEIRA_BOM__JESUS_EXPOSITORES_FIXOS:
+A Feira Bom Jesus tem o metodo de contrato anual no qual o expositor paga 130,00 por edição.
 
 COMO_FAÇO_PARA_PARTICIPAR_DA_FEIRA:
 Sempre que o usuario pergunta algo parecido (como faço para participar ou gostaria de participar) que não seja a feira do lindu, avise que para participar da feira desejada é necessário submeter a uma curadoria preechendo o formulario abaixo. Coloque o link do formulario dacuradoria da feira que usuário esta pedindo ou peça para ele informar caso não tenha informado.
