@@ -308,7 +308,7 @@ def respClient(pergunta, msgs, number, user_name):
     question = processar_topico_cliente(question, number, user_name)
 
     resp = client.responses.create(
-        model="gpt-4.1",
+        model="gpt-5.1",
         input=[
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": question},
