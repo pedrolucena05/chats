@@ -282,6 +282,7 @@ Se não houver informação suficiente no documento, diga que não encontrou (e 
 Não invente valores, horários, locais ou regras. Responda de forma suscinta.
 Não mencione as feiras que trabalhamos na resposta (Só mencione a feira se o usuário já tiver citado a feira na mensagem).
 Não coloque na resposta "Não encontramos essa informação no documento de apoio" ou algo similar.
+Se o usuário perguntar sobre como participar da Feira do Lindu, falar que é necesário fazer o cadastro no site https://www.vivafeiras.com.br
 """
 
 def precisa_info(texto: str) -> bool:
