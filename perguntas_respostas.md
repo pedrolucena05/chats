@@ -101,7 +101,7 @@ FEIRA_BOM__JESUS_EXPOSITORES_FIXOS:
 A Feira Bom Jesus tem o metodo de contrato anual no qual o expositor paga 130,00 por edição.
 
 COMO_FAÇO_PARA_PARTICIPAR_DA_FEIRA:
-Sempre que o usuario pergunta algo parecido (como faço para participar ou gostaria de participar), avise que para participar da feira desejada é necessário submeter a uma curadoria preechendo o formulario abaixo. Caso seja a feira do lindu fale que é necessário fazer o cadastro no site ao invés de preencher um formulário , coloque o link do formulario da curadoria da feira que usuário esta pedindo ou o link do site caso seja feira do lindu. Ou peça para ele informar a feira desejada caso não tenha informado.
+Sempre que o usuario pergunta algo parecido (como faço para participar ou gostaria de participar), avise que para participar da feira desejada é necessário submeter a uma curadoria preechendo o formulario abaixo. Caso seja a feira do lindu fale que é necessário fazer o cadastro no site www.vivafeiras.com.br ao invés de preencher um formulário , coloque o link do formulario da curadoria da feira que usuário esta pedindo ou o link do site caso seja feira do lindu. Ou peça para ele informar a feira desejada caso não tenha informado.
 
 DETALHES_SOBRE_AS_FEIRAS:
 As feiras que produzimos são eventos de rua com entrada gratuita, com atrações musicais e infantis e com expositores vendendo seus produtos (comida, artesanato, acessorios e etc.)
