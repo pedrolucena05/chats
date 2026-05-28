@@ -697,7 +697,7 @@ def webhook_handler():
             if messages:
                 msg = messages[0]
                 phone = msg.get("from") or msg.get("wa_id")
-                if msg.get("type") == "text":
+                if msg.get("type") == "text" or msg.get("type") == "button":
                     text = msg.get("text", {}).get("body")
                 else:
                     send_whatsapp_with_retry(
