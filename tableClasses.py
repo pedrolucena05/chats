@@ -9,6 +9,7 @@ class Cliente(db.Model):
     qtsMensagens = db.Column(db.Integer, default=0, nullable=False)
     respMan = db.Column(db.Integer, default=0, nullable=False)
     topico = db.Column(db.String(50), nullable=False, default="")
+    templateNeeded = db.Column(db.Boolean, default=False)
 
     messages = db.relationship(
         "Message",

@@ -13,13 +13,14 @@ from flask import request, jsonify, current_app
 from sqlalchemy.exc import OperationalError, DatabaseError
 
 from clientResponse import respClient
-from databaseWrite import store_message
+from databaseWrite import store_message, store_templateNeeded
 from dbConfig import db
 from appCreate import create_app
 from databaseRead import clientStatus
 
 from tableClasses import Message, Cliente, FlagDash
 from sqlalchemy import func, desc, text
+from datetime import datetime
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -178,6 +179,14 @@ def processAndSendMessage(number, user_name, text):
             if lastRespMan == 0:
                 #print("Estou dentro do processamento da mensagem")
                 reply , status, respMan = respClient(text, msgs, number, user_name)
+                if respMan == 1:
+                    agora = datetime.now()
+                    diaSemana = agora.weekday()
+                    hora = agora.hour
+                    if diaSemana == 0 or diaSemana == 5 or diaSemana == 6 or (diaSemana == 4 and hora > 16):
+                        store_templateNeeded(number)
+                        reply += "\n\nOBS: Você entrou no modo manual, os nossos atendentes estão disponíveis apenas da terça à sexta feira em horário comercial. Na terça feira pela manhã enviaremos uma mensagem para prosseguirmos nosso atendimento."
+                    
         except Exception:
             current_app.logger.exception("Erro em respClient (worker)")
             reply = "Desculpe, ocorreu um erro ao processar sua mensagem."

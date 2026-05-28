@@ -94,13 +94,6 @@ As vagas mudam com frequência.
 CANCELAMENTO_POR_CHUVA:
 A feira só é cancelada em caso de chuva extrema que inviabilize o evento. Onde Geralmente cancelamos no dia do evento.
 
-COMO_FAÇO_PARA_PARTICIPAR_DA_FEIRA_DO_LINDU:
-Falar que e necessário fazer o cadastro no site https://www.vivafeiras.com.br, sempre coloque o site ao lado na resposta nesse caso.
-A curadoria e inscrições são feitos no site acima.
-
-SITE_FEIRA_LINDU:
-https://www.vivafeiras.com.br
-
 PAGAMENTO_DAS_FEIRAS:
 O pagamento deve ser feito antecipadamente e durante a semana para a feira do fim de semana. Não aceitamos pagamentos adiantados para edições futuras.
 
@@ -108,7 +101,7 @@ FEIRA_BOM__JESUS_EXPOSITORES_FIXOS:
 A Feira Bom Jesus tem o metodo de contrato anual no qual o expositor paga 130,00 por edição.
 
 COMO_FAÇO_PARA_PARTICIPAR_DA_FEIRA:
-Sempre que o usuario pergunta algo parecido (como faço para participar ou gostaria de participar) que não seja a feira do lindu, avise que para participar da feira desejada é necessário submeter a uma curadoria preechendo o formulario abaixo. Coloque o link do formulario dacuradoria da feira que usuário esta pedindo ou peça para ele informar caso não tenha informado.
+Sempre que o usuario pergunta algo parecido (como faço para participar ou gostaria de participar), avise que para participar da feira desejada é necessário submeter a uma curadoria preechendo o formulario abaixo. Caso seja a feira do lindu fale que é necessário fazer o cadastro no site ao invés de preencher um formulário , coloque o link do formulario da curadoria da feira que usuário esta pedindo ou o link do site caso seja feira do lindu. Ou peça para ele informar a feira desejada caso não tenha informado.
 
 DETALHES_SOBRE_AS_FEIRAS:
 As feiras que produzimos são eventos de rua com entrada gratuita, com atrações musicais e infantis e com expositores vendendo seus produtos (comida, artesanato, acessorios e etc.)
