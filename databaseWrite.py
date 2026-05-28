@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError, OperationalError
-from sqlalchemy import func, text
+from sqlalchemy import func, text, update
 import logging
 from sqlalchemy.dialects.postgresql import insert
 import time
@@ -15,6 +15,14 @@ MAX_MSGS = 10
 #LOG_FILE = "db_monitor.log"
 #logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(threadName)s - %(message)s", handlers=[logging.FileHandler(LOG_FILE, encoding="utf-8")])
 #logger = logging.getLogger(__name__)
+
+def store_templateNeeded(phone):
+    session = db.session
+
+    stmt = (update(Cliente).where(Cliente.phone == phone).values(templateNeeded=True))
+
+    session.execute(stmt)
+    session.commit()
 
 
 def store_message(phone: str, content: str, direction: str, status: bool, respMan: int, notFlags: bool, name: str) -> Message:
