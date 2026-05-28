@@ -2,14 +2,19 @@ import os
 import requests
 from sqlalchemy import update
 from tableClasses import Cliente
-from dbConfig import db
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 WHATSAPP_ACCESS_TOKEN = os.getenv("WHATSAPP_ACCESS_TOKEN")
 DEFAULT_PHONE_NUMBER_ID = os.getenv("WHATSAPP_PHONE_NUMBER_ID")
 GRAPH_API_VERSION = os.getenv("GRAPH_API_VERSION", "v24.0")
 VERIFY_TOKEN = os.getenv("VERIFY_TOKEN")
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-session = db.session
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(bind=engine)
+
+session = SessionLocal()
 
 phones = (session.query(Cliente.phone).filter(Cliente.templateNeeded == True).all())
 
