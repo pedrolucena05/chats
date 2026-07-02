@@ -632,8 +632,8 @@ def api_store_message():
             name=name
         )
 
-        app.logger.info("TIPO DE msg_data:", type(msg_data))
-        app.logger.info("VALOR DE msg_data:", msg_data)
+        app.logger.info(f"TIPO DE msg_data: {type(msg_data)}")
+        app.logger.info(f"VALOR DE msg_data: {msg_data}")
 
         return jsonify({"ok": True, "message": msg_data}), 200
 
@@ -708,8 +708,8 @@ def webhook_handler():
             if userName is None:
                 userName = phone
 
-            app.logger.info("VALUE:", json.dumps(value, indent=2, ensure_ascii=False))
-            app.logger.info("CONTACTS:", contacts)
+            app.logger.info(f"VALUE: {json.dumps(value, indent=2, ensure_ascii=False)}")
+            app.logger.info("CONTACTS: {contacts}")
             #app.logger.info(f"userName extraído: {userName}")
 
     except Exception:

@@ -44,7 +44,7 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 vs = client.vector_stores.create(name="FAQ - Perguntas e Respostas")
 vector_store_id = vs.id
-log_openai.info("vector_store_id:", vector_store_id)
+log_openai.info(f"vector_store_id: {vector_store_id}")
 
 LINDU = [
     "feiradolindu",
