@@ -175,11 +175,15 @@ def processAndSendMessage(number, user_name, text):
     with app.app_context():
         log.info("Estou na funcao process and send message [app context]\n")
         try:
+            log.info("estou antes do client status")
             lastIn, msgs, respMan = clientStatus(number)
+            log.info("estou depois do clientStatus")
             lastRespMan = respMan
         except Exception:
+            log.info("entrou em exception: inicializando cliente")
             lastIn, msgs, respMan = "", None, None
         
+        log.info("passei da sessão status")
         try:
             if lastRespMan == 0:
                 log.info("Estou dentro do processamento da mensagem")
