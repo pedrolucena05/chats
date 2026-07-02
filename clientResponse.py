@@ -14,6 +14,8 @@ from logging.handlers import RotatingFileHandler
 
 from logConfig import log
 
+log.warning("[IA] Arquivo de respostas IA foi carregado")
+
 BASE_DIR = Path(__file__).resolve().parents[1]
 
 
