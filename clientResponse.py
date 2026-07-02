@@ -7,6 +7,7 @@ from tableClasses import Cliente
 import unicodedata
 import requests
 from dbConfig import db
+from main import app
 
 load_dotenv()
 
@@ -14,7 +15,7 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 vs = client.vector_stores.create(name="FAQ - Perguntas e Respostas")
 vector_store_id = vs.id
-print("vector_store_id:", vector_store_id)
+app.logger.info("vector_store_id:", vector_store_id)
 
 LINDU = [
     "feiradolindu",
@@ -329,7 +330,7 @@ def respClient(pergunta, msgs, number, user_name):
     else:
         respMan = 0
 
-    print (f"Respman dentro das respostas do cliente: {respMan}")
+    app.logger.info(f"Respman dentro das respostas do cliente: {respMan}")
 
     link = ""
     isLink = False
@@ -602,7 +603,7 @@ Você tem interesse em participar? responda com 'S' para sim ou 'N' para não. '
             
 Deseja continuar no menu de dúvidas? digite 'S' para continuar ou 'N' para voltar para o menu principal'''
 
-print(f"\n\nRespman dentro do respClient: {respMan}")
-print(f"\n\nResp order dentro do respClient: {resps_order}\n\n")
+app.logger.info(f"\n\nRespman dentro do respClient: {respMan}")
+app.logger.info(f"\n\nResp order dentro do respClient: {resps_order}\n\n")
 
     return message, respMan, resps_order"""
