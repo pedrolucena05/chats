@@ -131,6 +131,7 @@ def send_whatsapp_with_retry(phone_number_id: str, to: str, text: str, max_attem
     """
     attempt = 0
 
+    log.info("\n\nEstou no send whatsapp")
     if text == "" or text == None:
         return True
     while attempt < max_attempts:
@@ -169,8 +170,10 @@ def processAndSendMessage(number, user_name, text):
     respMan = None
     lastRespMan = None
 
-    with app.app_context():
+    log.info("\n\nEstou na funcao process and send message")
 
+    with app.app_context():
+        log.info("Estou na funcao process and send message [app context]\n")
         try:
             lastIn, msgs, respMan = clientStatus(number)
             lastRespMan = respMan
