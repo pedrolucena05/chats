@@ -312,10 +312,13 @@ def respClient(pergunta, msgs, number, user_name):
         for m in msgs:
             question += " " + m
 
+    log.info("\n\nEstou no respCLient")
+
     question += " " + pergunta
 
     question = processar_topico_cliente(question, number, user_name)
 
+    log.info(f"Passei a primeira funcaoo: {question}")
     resp = client.responses.create(
         model="gpt-4.1",
         input=[
@@ -332,7 +335,7 @@ def respClient(pergunta, msgs, number, user_name):
     )
     
     status = not precisa_info(resp.output_text)
-
+    log.info(f"Processei a mensagem: {resp}")
     if precisa_humano(resp.output_text):
         respMan = 1
     else:
