@@ -133,7 +133,7 @@ VALOR:
 R$150,00 por edição
 
 CURADORIA_FORMULÁRIO:
-(https://forms.gle/TPtusK2oLbWnxehD8)
+(https://wa.me/5581996925200)
 
 SEGMENTOS:
 Gastronomia, acessórios, vestuário, decoração, serviços.
@@ -166,7 +166,7 @@ VALOR:
 R$150,00 por edição
 
 CURADORIA_FORMULÁRIO:
-(https://forms.gle/egn1hMyDcfnPVoVh9)
+(https://wa.me/5581996925200)
 
 ====================================================================
 
@@ -191,7 +191,7 @@ EXPOSITORES_FIXOS:
 Contrato anual de R$130,00 por edição.
 
 CURADORIA_FORMULÁRIO:
-(https://docs.google.com/forms/d/e/1FAIpQLSdWUJJ14jH7k78t6tRx0_wqPHyGbwgAQ9_Hls7ziEmz3XBy3w/viewform?usp=pp_url)
+(https://wa.me/5581995865900)
 
 ====================================================================
 
@@ -216,7 +216,7 @@ A organização é responsável apenas pela feira de domingo.
 A feira de sábado é organizada por outra equipe.
 
 CURADORIA_FORMULÁRIO:
-(https://www.vivafeiras.com.br)
+(https://wa.me/5581999739283)
 
 ====================================================================
 
@@ -241,7 +241,7 @@ VALOR:
 R$130,00 por edição
 
 CURADORIA_FORMULÁRIO:
-(https://forms.gle/tMZS8nQYA9dAcppt9)
+(https://wa.me/5581995865900)
 
 ====================================================================
 
