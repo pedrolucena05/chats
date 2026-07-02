@@ -191,7 +191,10 @@ def processAndSendMessage(number, user_name, text):
                     if diaSemana == 0 or diaSemana == 5 or diaSemana == 6 or (diaSemana == 4 and hora > 16):
                         store_templateNeeded(number)
                         reply += "\n\nOBS: Você entrou no modo manual, os nossos atendentes estão disponíveis apenas da terça à sexta feira em horário comercial. Na terça feira pela manhã enviaremos uma mensagem para prosseguirmos nosso atendimento."
-                    
+
+                log.info(f"\n\nReply: {reply}")
+                log.info(f"Status: {status}") 
+                log.info(f"respMan: {respMan}") 
         except Exception:
             log.exception("Erro em respClient (worker)")
             reply = "Desculpe, ocorreu um erro ao processar sua mensagem."
