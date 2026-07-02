@@ -12,39 +12,18 @@ from pathlib import Path
 import logging
 from logging.handlers import RotatingFileHandler
 
+from logConfig import log
+
 BASE_DIR = Path(__file__).resolve().parents[1]
 
-LOG_DIR = BASE_DIR / "logs"
-LOG_DIR.mkdir(exist_ok=True)
 
-LOG_FILE = LOG_DIR / "openai.log"
-
-log_openai = logging.getLogger("openai_log")
-log_openai.setLevel(logging.INFO)
-log_openai.propagate = False
-
-if not log_openai.handlers:
-    handler = RotatingFileHandler(
-        LOG_FILE,
-        maxBytes=5 * 1024 * 1024,
-        backupCount=3,
-        encoding="utf-8"
-    )
-
-    handler.setFormatter(
-        logging.Formatter(
-            "%(asctime)s | %(levelname)s | %(message)s"
-        )
-    )
-
-    log_openai.addHandler(handler)
 load_dotenv()
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 vs = client.vector_stores.create(name="FAQ - Perguntas e Respostas")
 vector_store_id = vs.id
-log_openai.info(f"vector_store_id: {vector_store_id}")
+log.info(f"vector_store_id: {vector_store_id}")
 
 LINDU = [
     "feiradolindu",
@@ -359,7 +338,7 @@ def respClient(pergunta, msgs, number, user_name):
     else:
         respMan = 0
 
-    log_openai.info(f"Respman dentro das respostas do cliente: {respMan}")
+    log.info(f"Respman dentro das respostas do cliente: {respMan}")
 
     link = ""
     isLink = False

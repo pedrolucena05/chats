@@ -22,6 +22,8 @@ from tableClasses import Message, Cliente, FlagDash
 from sqlalchemy import func, desc, text
 from datetime import datetime
 
+from logConfig import log
+
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 #LOG_FILE = os.path.join(BASE_DIR, "app.log")
@@ -148,9 +150,9 @@ def send_whatsapp_with_retry(phone_number_id: str, to: str, text: str, max_attem
             #log.info(f"Envio falhou (attempt {attempt}/{max_attempts}) para {to}: {e}. Retry em {sleep_time:.2f}s")
             app.logger.info(f"Envio falhou (attempt {attempt}/{max_attempts}) para {to}: {e}. Retry em {sleep_time:.2f}s")
             time.sleep(sleep_time)
-    current_app.logger.error(f"Falha ao enviar mensagem para {to} após {max_attempts} tentativas.")
+    log.error(f"Falha ao enviar mensagem para {to} após {max_attempts} tentativas.")
     #log.info(f"Envio falhou (attempt {attempt}/{max_attempts}) para {to}: {e}. Retry em {sleep_time:.2f}s")
-    app.logger.info(f"Envio falhou (attempt {attempt}/{max_attempts}) para {to}: {e}. Retry em {sleep_time:.2f}s")
+    log.info(f"Envio falhou (attempt {attempt}/{max_attempts}) para {to}: {e}. Retry em {sleep_time:.2f}s")
     return False
 
 
@@ -177,7 +179,7 @@ def processAndSendMessage(number, user_name, text):
         
         try:
             if lastRespMan == 0:
-                app.logger.info("Estou dentro do processamento da mensagem")
+                log.info("Estou dentro do processamento da mensagem")
                 reply , status, respMan = respClient(text, msgs, number, user_name)
                 if respMan == 1:
                     agora = datetime.now()
@@ -188,7 +190,7 @@ def processAndSendMessage(number, user_name, text):
                         reply += "\n\nOBS: Você entrou no modo manual, os nossos atendentes estão disponíveis apenas da terça à sexta feira em horário comercial. Na terça feira pela manhã enviaremos uma mensagem para prosseguirmos nosso atendimento."
                     
         except Exception:
-            current_app.logger.exception("Erro em respClient (worker)")
+            log.exception("Erro em respClient (worker)")
             reply = "Desculpe, ocorreu um erro ao processar sua mensagem."
 
         
@@ -196,7 +198,7 @@ def processAndSendMessage(number, user_name, text):
         try:
             store_message(number, text, 'in', status, respMan, True, user_name)
         except Exception:
-            current_app.logger.exception("Erro ao salvar resposta (worker)")
+            log.exception("Erro ao salvar resposta (worker)")
 
         # ARMAZENA MENSAGEM ENVIADA NO BANCO DE DADOS
         if lastRespMan == 0:
@@ -632,8 +634,8 @@ def api_store_message():
             name=name
         )
 
-        app.logger.info(f"TIPO DE msg_data: {type(msg_data)}")
-        app.logger.info(f"VALOR DE msg_data: {msg_data}")
+        log.info(f"TIPO DE msg_data: {type(msg_data)}")
+        log.info(f"VALOR DE msg_data: {msg_data}")
 
         return jsonify({"ok": True, "message": msg_data}), 200
 
@@ -708,8 +710,8 @@ def webhook_handler():
             if userName is None:
                 userName = phone
 
-            app.logger.info(f"VALUE: {json.dumps(value, indent=2, ensure_ascii=False)}")
-            app.logger.info("CONTACTS: {contacts}")
+            log.info(f"VALUE: {json.dumps(value, indent=2, ensure_ascii=False)}")
+            log.info("CONTACTS: {contacts}")
             #app.logger.info(f"userName extraído: {userName}")
 
     except Exception:
