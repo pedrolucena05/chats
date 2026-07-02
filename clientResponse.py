@@ -309,6 +309,8 @@ def respClient(pergunta, msgs, number, user_name):
     respMan = None
     topico = ""
 
+    log.info("\n\nEstou no respCLient")
+    log.info(f"MSGS: {msgs}")
     question = ""
     if msgs:
         for m in msgs:
