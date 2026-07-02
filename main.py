@@ -146,11 +146,11 @@ def send_whatsapp_with_retry(phone_number_id: str, to: str, text: str, max_attem
             sleep_time = max(0.0, delay + jitter)
             #urrent_app.logger.warning(f"Envio falhou (attempt {attempt}/{max_attempts}) para {to}: {e}. Retry em {sleep_time:.2f}s")
             #log.info(f"Envio falhou (attempt {attempt}/{max_attempts}) para {to}: {e}. Retry em {sleep_time:.2f}s")
-            print(f"Envio falhou (attempt {attempt}/{max_attempts}) para {to}: {e}. Retry em {sleep_time:.2f}s")
+            app.logger.info(f"Envio falhou (attempt {attempt}/{max_attempts}) para {to}: {e}. Retry em {sleep_time:.2f}s")
             time.sleep(sleep_time)
     current_app.logger.error(f"Falha ao enviar mensagem para {to} após {max_attempts} tentativas.")
     #log.info(f"Envio falhou (attempt {attempt}/{max_attempts}) para {to}: {e}. Retry em {sleep_time:.2f}s")
-    print(f"Envio falhou (attempt {attempt}/{max_attempts}) para {to}: {e}. Retry em {sleep_time:.2f}s")
+    app.logger.info(f"Envio falhou (attempt {attempt}/{max_attempts}) para {to}: {e}. Retry em {sleep_time:.2f}s")
     return False
 
 
@@ -177,7 +177,7 @@ def processAndSendMessage(number, user_name, text):
         
         try:
             if lastRespMan == 0:
-                print("Estou dentro do processamento da mensagem")
+                app.logger.info("Estou dentro do processamento da mensagem")
                 reply , status, respMan = respClient(text, msgs, number, user_name)
                 if respMan == 1:
                     agora = datetime.now()
@@ -632,8 +632,8 @@ def api_store_message():
             name=name
         )
 
-        print("TIPO DE msg_data:", type(msg_data))
-        print("VALOR DE msg_data:", msg_data)
+        app.logger.info("TIPO DE msg_data:", type(msg_data))
+        app.logger.info("VALOR DE msg_data:", msg_data)
 
         return jsonify({"ok": True, "message": msg_data}), 200
 
@@ -708,8 +708,8 @@ def webhook_handler():
             if userName is None:
                 userName = phone
 
-            print("VALUE:", json.dumps(value, indent=2, ensure_ascii=False))
-            print("CONTACTS:", contacts)
+            app.logger.info("VALUE:", json.dumps(value, indent=2, ensure_ascii=False))
+            app.logger.info("CONTACTS:", contacts)
             #app.logger.info(f"userName extraído: {userName}")
 
     except Exception:
@@ -774,7 +774,7 @@ def is_db_locked_sqlite(engine) -> bool:
 
     app.run(host="127.0.0.1", port=5000, debug=False, use_reloader=False)
 
-print(f"Flask rodando em http://{args.host}:{args.port} (em background)")'''
+app.logger.info(f"Flask rodando em http://{args.host}:{args.port} (em background)")'''
     
 
 
