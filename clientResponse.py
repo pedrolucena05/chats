@@ -25,7 +25,7 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 vs = client.vector_stores.create(name="FAQ - Perguntas e Respostas")
 vector_store_id = vs.id
-log.info(f"vector_store_id: {vector_store_id}")
+log.warning(f"vector_store_id: {vector_store_id}")
 
 LINDU = [
     "feiradolindu",
@@ -309,20 +309,20 @@ def respClient(pergunta, msgs, number, user_name):
     respMan = None
     topico = ""
 
-    log.info("\n\nEstou no respCLient")
-    log.info(f"MSGS: {msgs}")
+    log.warning("\n\nEstou no respCLient")
+    log.warning(f"MSGS: {msgs}")
     question = ""
     if msgs:
         for m in msgs:
             question += " " + m
 
-    log.info("\n\nEstou no respCLient")
+    log.warning("\n\nEstou no respCLient")
 
     question += " " + pergunta
 
     question = processar_topico_cliente(question, number, user_name)
 
-    log.info(f"Passei a primeira funcaoo: {question}")
+    log.warning(f"Passei a primeira funcaoo: {question}")
     resp = client.responses.create(
         model="gpt-4.1",
         input=[
@@ -339,13 +339,13 @@ def respClient(pergunta, msgs, number, user_name):
     )
     
     status = not precisa_info(resp.output_text)
-    log.info(f"Processei a mensagem: {resp}")
+    log.warning(f"Processei a mensagem: {resp}")
     if precisa_humano(resp.output_text):
         respMan = 1
     else:
         respMan = 0
 
-    log.info(f"Respman dentro das respostas do cliente: {respMan}")
+    log.warning(f"Respman dentro das respostas do cliente: {respMan}")
 
     link = ""
     isLink = False
@@ -618,7 +618,7 @@ Você tem interesse em participar? responda com 'S' para sim ou 'N' para não. '
             
 Deseja continuar no menu de dúvidas? digite 'S' para continuar ou 'N' para voltar para o menu principal'''
 
-log_openai.info(f"\n\nRespman dentro do respClient: {respMan}")
-log_openai.info(f"\n\nResp order dentro do respClient: {resps_order}\n\n")
+log_openai.warning(f"\n\nRespman dentro do respClient: {respMan}")
+log_openai.warning(f"\n\nResp order dentro do respClient: {resps_order}\n\n")
 
     return message, respMan, resps_order"""
