@@ -81,11 +81,6 @@ O material de apoio só pode ser colocado na lateral da barraca, por isso o limi
 
 O material de apoio não pode ficar atrás da barraca, só pode ficar apenas na lateral.
 
-Também oferecemos serviço de aluguel de material extra, custando R$35,00 adicionais a taxa semanal caso queira alugar.
-Materiais que alugamos: Mesa, Arara, Estante (feitos com pallet).
-
-Não aceitamos o aluguel de mais de um material extra, podendo alugar apenas um por edição.
-
 VAGAS_POR_SEGMENTO:
 Não é possível garantir vagas previamente.  
 As vagas mudam com frequência.  
@@ -130,7 +125,7 @@ HORÁRIO:
 15h às 20h
 
 VALOR:
-R$150,00 por edição
+R$150,00 por edição ou R$200,00 se for comida feita na hora 
 
 CONTATO_REPRESENTANTE:
 (https://wa.me/5581996925200)
@@ -163,7 +158,7 @@ HORÁRIO:
 12h às 19h
 
 VALOR:
-R$150,00 por edição
+R$150,00 por edição ou R$200,00 se for comida feita na hora 
 
 CONTATO_REPRESENTANTE:
 (https://wa.me/5581996925200)
