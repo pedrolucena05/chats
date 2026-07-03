@@ -23,9 +23,8 @@ load_dotenv()
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-vs = client.vector_stores.create(name="FAQ - Perguntas e Respostas")
-vector_store_id = vs.id
-log.warning(f"vector_store_id: {vector_store_id}")
+vector_store_id = "vs_6a4619a48bcc81919f1017b18e8d56a2"
+log.warning(f"Usando Vector Store fixo: {vector_store_id}")
 
 LINDU = [
     "feiradolindu",
@@ -127,29 +126,7 @@ RESET_TOPICO = [
     "outras feiras"
 ]
 
-file = client.files.create(
-    file=open("perguntas_respostas.md", "rb"),
-    purpose="assistants",
-)
 
-vs_file = client.vector_stores.files.create(
-    vector_store_id=vector_store_id,
-    file_id=file.id,
-)
-
-while True:
-    item = client.vector_stores.files.retrieve(
-        vector_store_id=vector_store_id,
-        file_id=vs_file.id,
-    )
-
-    if item.status == "completed":
-        break
-
-    if item.status in ("failed", "cancelled"):
-        raise RuntimeError(f"Indexação falhou: {item.status}")
-
-    time.sleep(0.5)
 
 def distancia_ate_2(a, b, limite=2):
     if abs(len(a) - len(b)) > limite:

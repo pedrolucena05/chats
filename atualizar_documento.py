@@ -1,95 +1,81 @@
 import os
+import time
 from pathlib import Path
 
 from dotenv import load_dotenv
 from openai import OpenAI
-import time
 
 
-# Pasta onde está este script:
 BASE_DIR = Path(__file__).resolve().parent
-
-# Caminho absoluto para o .env
-ENV_PATH = BASE_DIR / ".env"
-
-# Carrega as variáveis do arquivo .env
-load_dotenv(ENV_PATH)
+load_dotenv(BASE_DIR / ".env")
 
 api_key = os.getenv("OPENAI_API_KEY")
+vector_store_id = os.getenv("OPENAI_VECTOR_STORE_ID")
 
 if not api_key:
-    raise RuntimeError(
-        f"OPENAI_API_KEY não foi encontrada. "
-        f"Verifique o arquivo: {ENV_PATH}"
-    )
+    raise RuntimeError("OPENAI_API_KEY não encontrada no .env")
+
+if not vector_store_id:
+    raise RuntimeError("OPENAI_VECTOR_STORE_ID não encontrada no .env")
 
 client = OpenAI(api_key=api_key)
 
-VECTOR_STORE_ID = "vs_6a4619a48bcc81919f1017b18e8d56a2"
-ARQUIVO_ATUALIZADO = "perguntas_respostas.md"
+arquivo_base = BASE_DIR / "perguntas_respostas.md"
 
-
-def remover_arquivos_antigos():
-    arquivos = client.vector_stores.files.list(
-        vector_store_id=VECTOR_STORE_ID
+if not arquivo_base.exists():
+    raise FileNotFoundError(
+        f"Documento não encontrado: {arquivo_base}"
     )
+
+print(f"Arquivo que será enviado: {arquivo_base}")
+
+
+# Repete até não sobrar nenhum arquivo anexado ao Vector Store.
+while True:
+    arquivos = client.vector_stores.files.list(
+        vector_store_id=vector_store_id
+    )
+
+    if not arquivos.data:
+        break
 
     for arquivo in arquivos.data:
-        print(f"Removendo do Vector Store: {arquivo.id}")
+        print(f"Removendo arquivo antigo: {arquivo.id}")
 
         client.vector_stores.files.delete(
-            vector_store_id=VECTOR_STORE_ID,
-            file_id=arquivo.id
+            vector_store_id=vector_store_id,
+            file_id=arquivo.id,
         )
 
 
-def enviar_novo_arquivo():
-    with open(ARQUIVO_ATUALIZADO, "rb") as arquivo:
-        arquivo_openai = client.files.create(
-            file=arquivo,
-            purpose="assistants"
-        )
-
-    print(f"Novo arquivo enviado: {arquivo_openai.id}")
-
-    client.vector_stores.files.create(
-        vector_store_id=VECTOR_STORE_ID,
-        file_id=arquivo_openai.id
+with open(arquivo_base, "rb") as arquivo:
+    novo_arquivo = client.files.create(
+        file=arquivo,
+        purpose="assistants",
     )
 
-    return arquivo_openai.id
+print(f"Arquivo enviado para OpenAI: {novo_arquivo.id}")
 
+arquivo_vector_store = client.vector_stores.files.create(
+    vector_store_id=vector_store_id,
+    file_id=novo_arquivo.id,
+)
 
-def aguardar_indexacao(file_id):
-    while True:
-        arquivos = client.vector_stores.files.list(
-            vector_store_id=VECTOR_STORE_ID
+while True:
+    status = client.vector_stores.files.retrieve(
+        vector_store_id=vector_store_id,
+        file_id=arquivo_vector_store.id,
+    )
+
+    print(f"Status da indexação: {status.status}")
+
+    if status.status == "completed":
+        print("Base atualizada com sucesso.")
+        break
+
+    if status.status in ("failed", "cancelled"):
+        raise RuntimeError(
+            f"Indexação falhou: {status.status}"
         )
 
-        arquivo_atual = next(
-            (item for item in arquivos.data if item.id == file_id),
-            None
-        )
-
-        if not arquivo_atual:
-            print("Arquivo ainda não apareceu no Vector Store.")
-            time.sleep(2)
-            continue
-
-        print(f"Status da indexação: {arquivo_atual.status}")
-
-        if arquivo_atual.status == "completed":
-            print("Base atualizada e pronta para uso.")
-            break
-
-        if arquivo_atual.status in ["failed", "cancelled"]:
-            raise RuntimeError(
-                f"Erro ao indexar arquivo: {arquivo_atual.last_error}"
-            )
-
-        time.sleep(2)
-
-
-remover_arquivos_antigos()
-novo_file_id = enviar_novo_arquivo()
-aguardar_indexacao(novo_file_id)
+    time.sleep(1)
