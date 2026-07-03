@@ -1,8 +1,29 @@
-from openai import OpenAI
 import os
+from pathlib import Path
+
+from dotenv import load_dotenv
+from openai import OpenAI
 import time
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+# Pasta onde está este script:
+BASE_DIR = Path(__file__).resolve().parent
+
+# Caminho absoluto para o .env
+ENV_PATH = BASE_DIR / ".env"
+
+# Carrega as variáveis do arquivo .env
+load_dotenv(ENV_PATH)
+
+api_key = os.getenv("OPENAI_API_KEY")
+
+if not api_key:
+    raise RuntimeError(
+        f"OPENAI_API_KEY não foi encontrada. "
+        f"Verifique o arquivo: {ENV_PATH}"
+    )
+
+client = OpenAI(api_key=api_key)
 
 VECTOR_STORE_ID = "vs_6a4619a48bcc81919f1017b18e8d56a2"
 ARQUIVO_ATUALIZADO = "perguntas_respostas.md"
