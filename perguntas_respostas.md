@@ -38,9 +38,6 @@ Se o usuario perguntar contatos de uma feira que não é nossa, falar que não t
 FEIRA_DO_LINDU_SABADO
 Se o usuário perguntar algo sobre a feira do sabado do lindu (ou sabadona). falar que a feira mencionada não faz parte do nosso grupo de feiras.
 
-NOSSAS_FEIRAS
-Se o usuario perguntar quais feiras fazem parte do nosso grupo (lista de feiras), falar que não fornecemos essa informação, e perguntar a duvida do usuario.
-
 FEEDBACK_DE_RETORNO
 (Só coloque na resposta se o usuário perguntar sobre feedback da curadoria ou motivo da reprovação, feedback de reprovação) Nossa equipe não fornece feedback sobre o motivo da marca ter sido reprovada.  
 
