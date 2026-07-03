@@ -185,6 +185,7 @@ def processAndSendMessage(number, user_name, text):
         
         log.info("passei da sessão status")
         try:
+            log.info(f"Last respman: {lastRespMan}")
             if lastRespMan == 0:
                 log.info("Estou dentro do processamento da mensagem")
                 reply , status, respMan = respClient(text, msgs, number, user_name)
