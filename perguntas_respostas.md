@@ -97,17 +97,17 @@ A feira só é cancelada em caso de chuva extrema que inviabilize o evento. Onde
 PAGAMENTO_DAS_FEIRAS:
 O pagamento deve ser feito antecipadamente e durante a semana para a feira do fim de semana. Não aceitamos pagamentos adiantados para edições futuras.
 
-FEIRA_BOM__JESUS_EXPOSITORES_FIXOS:
+FEIRA_BOM_JESUS_EXPOSITORES_FIXOS:
 A Feira Bom Jesus tem o metodo de contrato anual no qual o expositor paga 130,00 por edição.
 
 COMO_FAÇO_PARA_PARTICIPAR_DA_FEIRA:
-Sempre que o usuario pergunta algo parecido (como faço para participar ou gostaria de participar), avise que para participar da feira desejada é necessário submeter a uma curadoria preechendo o formulario abaixo. Caso seja a feira do lindu fale que é necessário fazer o cadastro no site www.vivafeiras.com.br ao invés de preencher um formulário , coloque o link do formulario da curadoria da feira que usuário esta pedindo ou o link do site caso seja feira do lindu. Ou peça para ele informar a feira desejada caso não tenha informado.
+Sempre que o usuario pergunta algo parecido (como faço para participar ou gostaria de participar), avise que para participar da feira desejada é necessário submeter a uma curadoria, onde é verificado se tem vaga para o segmento do cliente. Coloque o link do contato da representante da feira que usuário esta pedindo. Ou peça para ele informar a feira desejada caso não tenha informado.
 
 DETALHES_SOBRE_AS_FEIRAS:
 As feiras que produzimos são eventos de rua com entrada gratuita, com atrações musicais e infantis e com expositores vendendo seus produtos (comida, artesanato, acessorios e etc.)
 
 AS_FEIRAS_OCORREM_TODOS_AS_SEMANAS_DO_ANO
-Sim, as feiras ocorrem no dia divulgados todas as semanas do ano, podendo ser cancelado com antecedencia em caso de chuva ou se tiver algum evento no local da feira(ocorre poucas vezes no ano mas pode ocorrer)
+Sim, as feiras ocorrem no dia divulgados todas as semanas do ano (inclusive feriados), podendo ser cancelado com antecedencia em caso de chuva ou se tiver algum evento no local da feira (ocorre poucas vezes no ano mas pode ocorrer)
 
 ====================================================================
 
