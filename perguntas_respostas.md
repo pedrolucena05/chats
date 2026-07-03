@@ -132,7 +132,7 @@ HORÁRIO:
 VALOR:
 R$150,00 por edição
 
-CURADORIA_FORMULÁRIO:
+CONTATO_REPRESENTANTE:
 (https://wa.me/5581996925200)
 
 SEGMENTOS:
@@ -165,7 +165,7 @@ HORÁRIO:
 VALOR:
 R$150,00 por edição
 
-CURADORIA_FORMULÁRIO:
+CONTATO_REPRESENTANTE:
 (https://wa.me/5581996925200)
 
 ====================================================================
@@ -190,7 +190,7 @@ R$150,00 por edição
 EXPOSITORES_FIXOS:
 Contrato anual de R$130,00 por edição.
 
-CURADORIA_FORMULÁRIO:
+CONTATO_REPRESENTANTE:
 (https://wa.me/5581995865900)
 
 ====================================================================
@@ -215,7 +215,7 @@ OBSERVAÇÃO:
 A organização é responsável apenas pela feira de domingo.
 A feira de sábado é organizada por outra equipe.
 
-CURADORIA_FORMULÁRIO:
+CONTATO_REPRESENTANTE:
 (https://wa.me/5581999739283)
 
 ====================================================================
@@ -240,7 +240,7 @@ HORÁRIO:
 VALOR:
 R$130,00 por edição
 
-CURADORIA_FORMULÁRIO:
+CONTATO_REPRESENTANTE:
 (https://wa.me/5581995865900)
 
 ====================================================================
