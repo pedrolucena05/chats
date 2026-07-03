@@ -10,7 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent
 load_dotenv(BASE_DIR / ".env")
 
 api_key = os.getenv("OPENAI_API_KEY")
-vector_store_id = os.getenv("OPENAI_VECTOR_STORE_ID")
+vector_store_id = "vs_6a4619a48bcc81919f1017b18e8d56a2"
 
 if not api_key:
     raise RuntimeError("OPENAI_API_KEY não encontrada no .env")
