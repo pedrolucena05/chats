@@ -614,6 +614,42 @@ def get_respman(phone):
 
     return jsonify({"phone": phone, "respMan": int(respMan or 0)})
 
+@app.route("/updateTemplateNeeded/<string:phone>", methods=["GET"])
+@require_api_key
+def update_template_needed(phone):
+    phone = (phone or "").strip()
+
+    if not phone:
+        return jsonify({"error": "phone required"}), 400
+
+    cliente = (
+        db.session.query(Cliente)
+        .filter(Cliente.phone == phone)
+        .first()
+    )
+
+    if cliente is None:
+        return jsonify({"error": "cliente_not_found"}), 404
+
+    try:
+        cliente.templateNeeded = False
+        db.session.commit()
+
+        return jsonify({
+            "ok": True,
+            "phone": phone,
+            "templateNeeded": False
+        }), 200
+
+    except Exception as e:
+        db.session.rollback()
+
+        return jsonify({
+            "ok": False,
+            "error": "template_needed_update_failed",
+            "details": str(e)
+        }), 500
+
 @app.post("/store-message")
 @require_api_key
 def api_store_message():
