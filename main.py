@@ -741,18 +741,22 @@ def webhook_handler():
 
             
             phone_number_id = value.get("metadata", {}).get("phone_number_id") or DEFAULT_PHONE_NUMBER_ID
-
             messages = value.get("messages", [])
+            
+            
             if messages:
                 msg = messages[0]
                 phone = msg.get("from") or msg.get("wa_id")
-                if msg.get("type") == "text" or msg.get("type") == "button":
+                
+                if msg.get("type") == "text":
                     text = msg.get("text", {}).get("body")
+
+                elif msg.get("type") == "button":
+                    button = msg.get("button", {})
+                    text = button.get("text")
+
                 else:
-                    send_whatsapp_with_retry(
-                        phone_number_id, phone,
-                        "Mande apenas texto por favor, estamos usando um assistente virtual"
-                    )
+                    send_whatsapp_with_retry(phone_number_id, phone, "Mande apenas texto por favor, estamos usando um assistente virtual")
 
             if userName is None:
                 userName = phone
