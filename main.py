@@ -630,7 +630,39 @@ def update_template_needed(phone):
 
     if cliente is None:
         return jsonify({"error": "cliente_not_found"}), 404
+    msg = Message(
+        cliente_id=cliente.phone,
+        direction="out",
+        content="Olá, essa mensagem é para retornarmos nosso atendimento. Pressione o botão abaixo para podermos prosseguir um atendente irá te responder em breve, mas para isso é necessário que responda essa mensagem pressionando o botão abaixo",
+        status=False
+    )
+    db.session.add(msg)
+    db.session.flush()  # garante msg.id
 
+    # 4) mantém somente as 10 últimas mensagens (remove as mais antigas)
+    # pega o "id limite" da 10ª mais recente
+    cutoff_id = (
+        db.session.query(Message.id)
+        .filter(Message.cliente_id == cliente.phone)
+        .order_by(Message.id.desc())
+        .offset(9)
+        .limit(1)
+        .scalar()
+    )
+
+    # se existe cutoff_id, apaga tudo com id menor (mais antigo)
+    if cutoff_id is not None:
+        db.session.query(Message).filter(
+            Message.cliente_id == cliente.phone,
+            Message.id < cutoff_id
+        ).delete(synchronize_session=False)
+
+    # 5) atualiza contador (agora já no máximo 10)
+    cliente.qtsMensagens = (
+        db.session.query(func.count(Message.id))
+        .filter(Message.cliente_id == cliente.phone)
+        .scalar()
+    ) or 0
     try:
         cliente.templateNeeded = False
         db.session.commit()
