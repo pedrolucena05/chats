@@ -2,20 +2,15 @@
 
 Este documento contém informações oficiais sobre participação, regras e funcionamento das feiras organizadas pela equipe.
 Feiras organizadas por nossa equipe: Feira do Lindu (domingo), Feira da Aurora (sábado), Viver Aurora (Domingo), Feira Bom Jesus Feira de Igarassu.
+
+Caso o usuário pergunte quais feiras organizamos, falar as feiras acima.
+
 Nomes alternativos para as feiras organizadas por nossa equipe: 
-- Feirinha da Aurora
-- Feirinha do Bom Jesus 
-- Feirinha de Igarassu
-- Feirinha do Lindu
-- Feirinha do Lindu do Domingo
-- Aurora Sábado
-- Aurora Domingo
-- Feira do Chorinho da Aurora
-- Samba da Aurora
-- Sambinha da Aurora
-- Feira do Sitio Histórico
-- Feira do Sítio Histório de Igarassu
-- Feirinha da Rua Bom Jesus. 
+- Feira da Aurora (sábado): Feirinha da Aurora, Aurora Sábado;
+- Feira Bom Jesus: Feirinha do Bom Jesus, Feirinha da Rua Bom Jesus;
+- Feira de Igarassu: Feirinha de Igarassu, Feira do Sitio Histórico, Feira do Sítio Histório de Igarassu
+- Feira do Lindu (domingo): Feirinha do Lindu, Feirinha do Lindu do Domingo
+- Viver Aurora (Domingo): Aurora Domingo, Feira do Chorinho da Aurora, Samba da Aurora, Sambinha da Aurora
 
 Se perguntar algo sobre uma Feira que não seja nenhuma das acima, responder que a feira não pertence a nossa equipe.
 
@@ -26,7 +21,7 @@ Se perguntar algo sobre uma Feira que não seja nenhuma das acima, responder que
 NÚMERO_DE_CONTATO:
 Sempre que o cliente perguntar se esse número é o número ou o atendimento da Feira (Bom Jesus, Aurora, Viver Aurora, Apipucos, Lindu, Igarassu), responder que sim e qual a dúvida do cliente. Caso pergunte se é da feira do lindu , falar que sim mas apenas do domingo e pergunta a duvida do cliente.
 
-SOBRE_AS_FEIRAS_QUE_ATENDEMOS:
+SOBRE_AS_FEIRAS_QUE_ATENDEMOS_2:
 Se o usuário perguntar se é o atendimento ou número de uma Feira que não seja: Lindu, Bom Jesus, Aurora, Viver Aurora, Aurora Domingo, Aurora Sábado, Igarassu. Responder apenas que não faz parte das nossas Feiras.
 
 PARTICIPACAO_DE_FEIRAS_DE_TERCEIROS_1
