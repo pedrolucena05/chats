@@ -342,10 +342,11 @@ def respClient(pergunta, msgs, number, user_name):
 
         for item in aux:
 
-            if cont%2 == 0:
+            if cont < 2 :
                 output += aux[cont] + "."
             else:
                 output += aux[cont] + ".\n\n"
+                cont = 0
             cont += 1
 
     elif len(aux) <= 1:
