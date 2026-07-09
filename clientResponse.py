@@ -242,10 +242,12 @@ def processar_topico_cliente(mensagem, number, user_name):
     else:
         cliente = Cliente.query.filter_by(phone=number).first()
 
-        topico_atual = None
+        topico_atual = ""
 
         if cliente:
             topico_atual = cliente.topico
+            if topico_atual == 'RESET':
+                topico_atual = ""
 
         else:
             cliente = Cliente(phone=number)
