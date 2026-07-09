@@ -61,7 +61,7 @@ while True:
                 print(f"Erro: {arquivo_vs.last_error}")
 
             print("-" * 60)
-
+        
     if not pagina.has_more:
         break
 
