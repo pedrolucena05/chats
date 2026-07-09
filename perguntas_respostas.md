@@ -56,8 +56,6 @@ ALTERAÇÃO_DE_LOCAL:
 Normalmente mantemos o mesmo local em todas as edições.  
 Mudanças podem ocorrer por solicitação do expositor ou por necessidade da organização.
 
-TEMPO
-
 MATERIAL_EXTRA_DE_APOIO:
 Se o cliente perguntar sobre levar mesas ou outros móveis, falar que é permitido apenas os materias abaixo em pallet:
 - Estantes
@@ -97,7 +95,7 @@ Contato dos representantes:
  - Viver Aurora: https://wa.me/5581996925200
  - Feira do Lindu: https://wa.me/5581999739283 
 
-COMO_FAÇO_PARA_PARTICIPAR_DA_FEIRA_OU_QUER_FAZER_ALGUMA_ACAO_NA_FEIRA:
+COMO_FAÇO_PARA_PARTICIPAR_DA_FEIRA:
 Sempre que o usuario pergunta algo parecido (como faço para participar ou gostaria de participar), avise que para participar da feira desejada é necessário submeter a uma curadoria, onde é verificado se tem vaga para o segmento do cliente. Coloque o link do contato da representante da feira que usuário esta pedindo. Ou peça para ele informar a feira desejada caso não tenha informado.
 Contato dos representantes:
  - Feira Bom Jesus: https://wa.me/5581995865900
@@ -106,12 +104,11 @@ Contato dos representantes:
  - Viver Aurora: https://wa.me/5581996925200
  - Feira do Lindu: https://wa.me/5581999739283 
 
-DETALHES_SOBRE_AS_FEIRAS:
-As feiras que produzimos são eventos de rua com entrada gratuita, com atrações musicais e infantis e com expositores vendendo seus produtos (comida, artesanato, acessorios e etc.)
-
 AS_FEIRAS_OCORREM_TODOS_AS_SEMANAS_DO_ANO
 Sim, as feiras ocorrem no dia divulgados todas as semanas do ano (inclusive feriados), podendo ser cancelado com antecedencia em caso de chuva ou se tiver algum evento no local da feira (ocorre poucas vezes no ano mas pode ocorrer)
 
+Sobre_A_FEIRA:
+Sempre que o usuário perguntar que gostaria de saber mais sobre a feira, passar as informções específicas da feira mencionada que estão abaixo, fale que é um evento de rua com entrada gratuita, com atrações musicais e infantis e com expositores vendendo seus produtos (comida, artesanato, acessorios e etc.), informe também o local, dia e horário de funcionamento.
 ====================================================================
 
 ## EVENTO: Feira da Aurora — Sábado
