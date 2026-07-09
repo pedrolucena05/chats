@@ -1,16 +1,16 @@
 # BASE DE CONHECIMENTO — FEIRAS
 
 Este documento contém informações oficiais sobre participação, regras e funcionamento das feiras organizadas pela equipe.
-Feiras organizadas por nossa equipe: Feira do Lindu (domingo), Feira da Aurora (sábado), Viver Aurora (Domingo), Feira Bom Jesus Feira de Igarassu.
+Feiras organizadas por nossa equipe: Feira do Lindu, Feira da Aurora, Viver Aurora, Feira Bom Jesus, Feira de Igarassu.
 
 Caso o usuário pergunte quais feiras organizamos, falar as feiras acima.
 
 Nomes alternativos para as feiras organizadas por nossa equipe: 
-- Feira da Aurora (sábado): Feirinha da Aurora, Aurora Sábado;
+- Feira da Aurora: Feirinha da Aurora, Aurora Sábado;
 - Feira Bom Jesus: Feirinha do Bom Jesus, Feirinha da Rua Bom Jesus;
 - Feira de Igarassu: Feirinha de Igarassu, Feira do Sitio Histórico, Feira do Sítio Histório de Igarassu
-- Feira do Lindu (domingo): Feirinha do Lindu, Feirinha do Lindu do Domingo
-- Viver Aurora (Domingo): Aurora Domingo, Feira do Chorinho da Aurora, Samba da Aurora, Sambinha da Aurora
+- Feira do Lindu: Feirinha do Lindu, Feirinha do Lindu do Domingo
+- Viver Aurora: Aurora Domingo, Feira do Chorinho da Aurora, Samba da Aurora, Sambinha da Aurora
 
 Se perguntar algo sobre uma Feira que não seja nenhuma das acima, responder que a feira não pertence a nossa equipe.
 Identifique se a pergunta está incompleta e peça mais informações.
@@ -18,9 +18,9 @@ Identifique se a pergunta está incompleta e peça mais informações.
 Contato dos representantes:
  - Feira Bom Jesus: https://wa.me/5581995865900
  - Feira de Igarassu: https://wa.me/5581995865900
- - Feira da Aurora (sábado): https://wa.me/5581996925200
- - Viver Aurora (domingo): https://wa.me/5581996925200
- - Feira do Lindu (domingo): https://wa.me/5581999739283  
+ - Feira da Aurora: https://wa.me/5581996925200
+ - Viver Aurora: https://wa.me/5581996925200
+ - Feira do Lindu: https://wa.me/5581999739283  
 ====================================================================
 
 ## REGRAS GERAIS — TODAS AS FEIRAS
@@ -93,18 +93,18 @@ Se o cliente quiser fazer uma ação na feira ou algo diferente de vender produt
 Contato dos representantes:
  - Feira Bom Jesus: https://wa.me/5581995865900
  - Feira de Igarassu: https://wa.me/5581995865900
- - Feira da Aurora (sábado): https://wa.me/5581996925200
- - Viver Aurora (domingo): https://wa.me/5581996925200
- - Feira do Lindu (domingo): https://wa.me/5581999739283 
+ - Feira da Aurora: https://wa.me/5581996925200
+ - Viver Aurora: https://wa.me/5581996925200
+ - Feira do Lindu: https://wa.me/5581999739283 
 
 COMO_FAÇO_PARA_PARTICIPAR_DA_FEIRA_OU_QUER_FAZER_ALGUMA_ACAO_NA_FEIRA:
 Sempre que o usuario pergunta algo parecido (como faço para participar ou gostaria de participar), avise que para participar da feira desejada é necessário submeter a uma curadoria, onde é verificado se tem vaga para o segmento do cliente. Coloque o link do contato da representante da feira que usuário esta pedindo. Ou peça para ele informar a feira desejada caso não tenha informado.
 Contato dos representantes:
  - Feira Bom Jesus: https://wa.me/5581995865900
  - Feira de Igarassu: https://wa.me/5581995865900
- - Feira da Aurora (sábado): https://wa.me/5581996925200
- - Viver Aurora (domingo): https://wa.me/5581996925200
- - Feira do Lindu (domingo): https://wa.me/5581999739283 
+ - Feira da Aurora: https://wa.me/5581996925200
+ - Viver Aurora: https://wa.me/5581996925200
+ - Feira do Lindu: https://wa.me/5581999739283 
 
 DETALHES_SOBRE_AS_FEIRAS:
 As feiras que produzimos são eventos de rua com entrada gratuita, com atrações musicais e infantis e com expositores vendendo seus produtos (comida, artesanato, acessorios e etc.)
