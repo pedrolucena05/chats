@@ -372,6 +372,12 @@ def respClient(pergunta, msgs, number, user_name):
     sub1 = 'Se quiser, posso te passar também o contato do representante da feira.'
     output = output.replace(sub1, '')
 
+    sub1 = 'Se quiser, também posso passar o contato da feira.'
+    output = output.replace(sub1, '')
+
+    sub1 = 'Se quiser, posso passar também o contato da feira.'
+    output = output.replace(sub1, '')
+
     sub1 = 'Se quiser, também posso te passar o contato do representante.'
     output = output.replace(sub1, '')
 
