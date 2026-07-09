@@ -131,7 +131,7 @@ def send_whatsapp_with_retry(phone_number_id: str, to: str, text: str, max_attem
     """
     attempt = 0
 
-    log.info("\n\nEstou no send whatsapp")
+    #log.info("\n\nEstou no send whatsapp")
     if text == "" or text == None:
         return True
     while attempt < max_attempts:
@@ -170,24 +170,24 @@ def processAndSendMessage(number, user_name, text):
     respMan = None
     lastRespMan = None
 
-    log.info("\n\nEstou na funcao process and send message")
+    #log.info("\n\nEstou na funcao process and send message")
 
     with app.app_context():
-        log.info("Estou na funcao process and send message [app context]\n")
+        #log.info("Estou na funcao process and send message [app context]\n")
         try:
-            log.info("estou antes do client status")
+            #log.info("estou antes do client status")
             lastIn, msgs, respMan = clientStatus(number)
-            log.info("estou depois do clientStatus")
+            #log.info("estou depois do clientStatus")
             lastRespMan = respMan
         except Exception:
             log.info("entrou em exception: inicializando cliente")
             lastIn, msgs, respMan = "", None, None
         
-        log.info("passei da sessão status")
+        #log.info("passei da sessão status")
         try:
-            log.info(f"Last respman: {lastRespMan}")
+            #log.info(f"Last respman: {lastRespMan}")
             if lastRespMan == 0:
-                log.info("Estou dentro do processamento da mensagem")
+                #log.info("Estou dentro do processamento da mensagem")
                 reply , status, respMan = respClient(text, msgs, number, user_name)
                 if respMan == 1:
                     agora = datetime.now()
@@ -197,9 +197,9 @@ def processAndSendMessage(number, user_name, text):
                         store_templateNeeded(number)
                         reply += "\n\nOBS: Você entrou no modo manual, os nossos atendentes estão disponíveis apenas da terça à sexta feira em horário comercial. Na terça feira pela manhã enviaremos uma mensagem para prosseguirmos nosso atendimento."
 
-                log.info(f"\n\nReply: {reply}")
-                log.info(f"Status: {status}") 
-                log.info(f"respMan: {respMan}") 
+                #log.info(f"\n\nReply: {reply}")
+                #log.info(f"Status: {status}") 
+                #log.info(f"respMan: {respMan}") 
         except Exception:
             log.exception("Erro em respClient (worker)")
             reply = "Desculpe, ocorreu um erro ao processar sua mensagem."
@@ -713,8 +713,8 @@ def api_store_message():
             name=name
         )
 
-        log.info(f"TIPO DE msg_data: {type(msg_data)}")
-        log.info(f"VALOR DE msg_data: {msg_data}")
+        #log.info(f"TIPO DE msg_data: {type(msg_data)}")
+        #log.info(f"VALOR DE msg_data: {msg_data}")
 
         return jsonify({"ok": True, "message": msg_data}), 200
 
@@ -793,8 +793,8 @@ def webhook_handler():
             if userName is None:
                 userName = phone
 
-            log.info(f"VALUE: {json.dumps(value, indent=2, ensure_ascii=False)}")
-            log.info("CONTACTS: {contacts}")
+            #log.info(f"VALUE: {json.dumps(value, indent=2, ensure_ascii=False)}")
+            #log.info("CONTACTS: {contacts}")
             #app.logger.info(f"userName extraído: {userName}")
 
     except Exception:

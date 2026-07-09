@@ -259,16 +259,16 @@ def processar_topico_cliente(mensagem, number, user_name):
         return mensagem
 
 SYSTEM_PROMPT = """
-Você é um atendente das feiras.
-Responda apenas o que o cliente pede, não coloque informações extras se o cliente não pede.
-lista de feiras que voce atende: Feira Bom Jesus, Feirinha do Bom Jesus, Feira da Aurora, Viver Aurora, Aurora Sábado, Aurora Domingo, Feira de Igarassu,
-Feira do Lindu, Lindu Domingo, Feira do Sitio Historico, Feira do Sitio Historico de Igarassu. Caso o cliente pergunte sobre uma feira 
-que não está na lista acima ou de seus sinônimos que estão no documento, falar que não atendemos a feira mencionada e que não temos contato de atendimento dessa feira.
-Responda APENAS com base nas informações encontradas no documento fornecido.
-Se não houver informação suficiente no documento, diga que não encontrou (e que um atendente irá analisar e responder a pergunta) ou peça um detalhe que faltou (ex.: qual feira/dia/segmento). 
-Não invente valores, horários, locais ou regras. Responda de forma suscinta.
-Não mencione as feiras que trabalhamos na resposta (Só mencione a feira se o usuário já tiver citado a feira na mensagem).
-Não coloque na resposta "Não encontramos essa informação no documento de apoio" ou algo similar.
+Você é um atendente de feiras.
+Regras:
+- Se não houver informação suficiente no documento, diga que não encontrou (e que um atendente irá analisar e responder a pergunta) ou peça um detalhe que faltou (ex.: qual feira/dia/segmento). 
+- Não invente informações.
+- Não use conhecimento externo.
+- Responda de forma curta, objetiva e educada.
+- Identifique se o cliente esta concluindo a conversa (ex: ta certo, ok, obrigado, muito obrigado, e etc.), responda de forma educada compativel com o input, ex1: cliente: ok ; resposta: Agradecemos seu interesse, qualquer duvida estamos a disposição! ex2: cliente: Muito Obrigado! resposta: De nada! qualquer coisa estamos a disposição. ex3: Não tenho dúvida; resposta: Tranquilo! estamos a disposição caso tenha.
+- Se houver várias informações parecidas, escolha apenas a que estiver mais diretamente relacionada à pergunta 
+- Responda apenas o que o cliente pede, não coloque informações extras se o cliente não pede.
+- Não coloque na resposta "Não encontramos essa informação no documento de apoio" ou algo similar.
 """
 
 def precisa_info(texto: str) -> bool:
@@ -285,22 +285,18 @@ def respClient(pergunta, msgs, number, user_name):
     respMan = None
     topico = ""
 
-    log.warning("\n\nEstou no respCLient")
-    log.warning(f"MSGS: {msgs}")
     question = ""
     if msgs:
         for m in msgs:
             question += " " + m
 
-    log.warning("\n\nEstou no respCLient")
 
     question += " " + pergunta
 
     question = processar_topico_cliente(question, number, user_name)
 
-    log.warning(f"Passei a primeira funcaoo: {question}")
     resp = client.responses.create(
-        model="gpt-4.1",
+        model="gpt-5.4-mini",
         input=[
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": question},
@@ -315,13 +311,11 @@ def respClient(pergunta, msgs, number, user_name):
     )
     
     status = not precisa_info(resp.output_text)
-    log.warning(f"Processei a mensagem: {resp}")
     if precisa_humano(resp.output_text):
         respMan = 1
     else:
         respMan = 0
 
-    log.warning(f"Respman dentro das respostas do cliente: {respMan}")
 
     link = ""
     isLink = False
