@@ -272,6 +272,7 @@ Regras:
 - Responda apenas o que o cliente pede, não coloque informações extras se o cliente não pede.
 - Se você colocar na resposta que é preciso passar por uma curadoria ou que precisa falar com um representante, nunca esqueça de colocar o link de whatsapp correspondente ao representante da feira que o cliente está com dúvidas. 
 - Não coloque na resposta "Não encontramos essa informação no documento de apoio" ou algo similar.
+- verifique se tem informações duplicadas e remova caso tenha antes de retornar a resposta.
 """
 
 def precisa_info(texto: str) -> bool:
