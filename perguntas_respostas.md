@@ -108,7 +108,7 @@ AS_FEIRAS_OCORREM_TODOS_AS_SEMANAS_DO_ANO
 Sim, as feiras ocorrem no dia divulgados todas as semanas do ano (inclusive feriados), podendo ser cancelado com antecedencia em caso de chuva ou se tiver algum evento no local da feira (ocorre poucas vezes no ano mas pode ocorrer)
 
 Sobre_A_FEIRA:
-Sempre que o usuário perguntar que gostaria de saber mais sobre a feira, passar as informções específicas da feira mencionada que estão abaixo, fale que é um evento de rua com entrada gratuita, com atrações musicais e infantis e com expositores vendendo seus produtos (comida, artesanato, acessorios e etc.), informe também o local, dia e horário de funcionamento.
+Sempre que o usuário perguntar que gostaria de saber mais sobre a feira, passar as informções específicas da feira mencionada que estão abaixo, fale que é um evento de rua com entrada gratuita, com atrações musicais e infantis e com expositores vendendo seus produtos (comida, artesanato, acessorios e etc.), informe também o local, dia e horário de funcionamento. Não inclua na resposta sobre curadoria ou como participar ou contato de representante.
 ====================================================================
 
 ## EVENTO: Feira da Aurora — Sábado
