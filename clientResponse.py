@@ -126,8 +126,13 @@ RESET_TOPICO = [
     "outras feiras"
 ]
 
-
-
+links = {
+    "LINDU": "https://wa.me/5581999739283",
+    "FEIRA DA AURORA": "https://wa.me/5581996925200",
+    "VIVER AURORA": "https://wa.me/5581996925200",
+    "FEIRA BOM JESUS": "https://wa.me/5581995865900",
+    "FEIRA IGARASSU": "https://wa.me/5581995865900"
+}
 def distancia_ate_2(a, b, limite=2):
     if abs(len(a) - len(b)) > limite:
         return False
@@ -237,7 +242,7 @@ def processar_topico_cliente(mensagem, number, user_name):
             cliente.topico = topico
             db.session.commit()
 
-        return mensagem
+        return mensagem, topico
 
     else:
         cliente = Cliente.query.filter_by(phone=number).first()
@@ -258,7 +263,7 @@ def processar_topico_cliente(mensagem, number, user_name):
         if topico_atual:
             mensagem += " " + topico_atual
 
-        return mensagem
+        return mensagem, topico
 
 SYSTEM_PROMPT = """
 Você é um atendente de feiras.
@@ -297,7 +302,7 @@ def respClient(pergunta, msgs, number, user_name):
 
     question += " " + pergunta
 
-    question = processar_topico_cliente(question, number, user_name)
+    question, topico = processar_topico_cliente(question, number, user_name)
 
     resp = client.responses.create(
         model="gpt-5.4-mini",
@@ -323,6 +328,10 @@ def respClient(pergunta, msgs, number, user_name):
 
     link = ""
     isLink = False
+
+    if resp.endswith("é") or resp.endswith(" em"):
+        if topico:
+            resp = resp + ": " + links[topico]
 
     # Remove os colchetes da string de resposta (desnecessários e poluem a resposta)
     cleanOutput = re.sub(r"\[.*?\]", "", resp.output_text)
