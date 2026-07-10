@@ -372,12 +372,6 @@ def respClient(pergunta, msgs, number, user_name):
     elif len(aux) <= 1:
         output = aux[0]
 
-    if isLink:
-        parts = response.split(":", 1)
-
-        if len(parts) >= 2:
-            output = parts[0] + ": " + link + parts[1] #adiciona o link na saida caso exista
-
     output = re.sub(r'\.(\s*)\.$', r'.\1', output)
 
     sub1 = 'Se quiser, posso te passar também o contato da representante.'
