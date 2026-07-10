@@ -329,7 +329,9 @@ def respClient(pergunta, msgs, number, user_name):
     link = ""
     isLink = False
 
-    if resp.endswith("é") or resp.endswith(" em"):
+    response = (resp.output_text or "").rstrip()
+
+    if response.endswith("é") or response.endswith(" em"):
         if topico:
             resp = resp + ": " + links[topico]
 
