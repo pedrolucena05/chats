@@ -347,14 +347,14 @@ def respClient(pergunta, msgs, number, user_name):
     response = re.sub(r"\[.*?\]", "", response)
 
     # Verifica se existe https coloca todo link numa variavel e remove da string caso exista link
-    if "https" in response:
+    '''if "https" in response:
         match = re.search(r"https?://[^\s)\]\n]+", response)
         if match:
             link = match.group().rstrip('.,!?;:')  # remove pontuação final solta
             isLink = True
 
             response = re.sub(re.escape(link), "", response, count=1)
-
+    '''
     aux = response.split('.')
     output = ""
     cont = 0
@@ -372,6 +372,12 @@ def respClient(pergunta, msgs, number, user_name):
     elif len(aux) <= 1:
         output = aux[0]
 
+    '''if isLink:
+        parts = response.split(":", 1)
+
+        if len(parts) >= 2:
+            output = parts[0] + ": " + link + parts[1] #adiciona o link na saida caso exista
+    '''
     output = re.sub(r'\.(\s*)\.$', r'.\1', output)
 
     sub1 = 'Se quiser, posso te passar também o contato da representante.'
