@@ -328,6 +328,7 @@ def respClient(pergunta, msgs, number, user_name):
 
     link = ""
     isLink = False
+    print(f"Topico: {topico}", flush=True)
 
     response = (resp.output_text or "").rstrip()
 
