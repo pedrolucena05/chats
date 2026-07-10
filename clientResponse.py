@@ -334,7 +334,7 @@ def respClient(pergunta, msgs, number, user_name):
 
     if response.endswith("é") or response.endswith(" em"):
         if topico:
-            print("Dentro da area de adici")
+            print("Dentro da area de adicionar o link", flush=True)
             response = response + ": " + links[topico]
 
     # Remove os colchetes da string de resposta (desnecessários e poluem a resposta)
