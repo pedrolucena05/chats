@@ -334,21 +334,22 @@ def respClient(pergunta, msgs, number, user_name):
 
     if response.endswith("é") or response.endswith(" em"):
         if topico:
-            resp = resp + ": " + links[topico]
+            print("Dentro da area de adici")
+            response = response + ": " + links[topico]
 
     # Remove os colchetes da string de resposta (desnecessários e poluem a resposta)
-    cleanOutput = re.sub(r"\[.*?\]", "", resp.output_text)
+    response = re.sub(r"\[.*?\]", "", response)
 
     # Verifica se existe https coloca todo link numa variavel e remove da string caso exista link
-    if "https" in cleanOutput:
-        match = re.search(r"https?://[^\s)\]\n]+", cleanOutput)
+    if "https" in response:
+        match = re.search(r"https?://[^\s)\]\n]+", response)
         if match:
             link = match.group().rstrip('.,!?;:')  # remove pontuação final solta
             isLink = True
 
-            cleanOutput = re.sub(re.escape(link), "", cleanOutput, count=1)
+            response = re.sub(re.escape(link), "", response, count=1)
 
-    aux = cleanOutput.split('.')
+    aux = response.split('.')
     output = ""
     cont = 0
     if len(aux) >= 2:
@@ -366,7 +367,7 @@ def respClient(pergunta, msgs, number, user_name):
         output = aux[0]
 
     if isLink:
-        parts = cleanOutput.split(":", 1)
+        parts = response.split(":", 1)
 
         if len(parts) >= 2:
             output = parts[0] + ": " + link + parts[1] #adiciona o link na saida caso exista
