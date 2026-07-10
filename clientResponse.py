@@ -332,9 +332,15 @@ def respClient(pergunta, msgs, number, user_name):
 
     response = (resp.output_text or "").rstrip()
 
+    print(f"Response: {repr(response)}", flush=True)
+    print(f"Últimos caracteres: {repr(response[-10:])}", flush=True)
+    print(f"Termina com é: {response.endswith('é')}", flush=True)
+    print(f"Tópico: {repr(topico)}", flush=True)
+
     if response.endswith("é") or response.endswith(" em"):
+        print("Dentro da area de adicionar o link 1", flush=True)
         if topico:
-            print("Dentro da area de adicionar o link", flush=True)
+            print("Dentro da area de adicionar o link 2", flush=True)
             response = response + ": " + links[topico]
 
     # Remove os colchetes da string de resposta (desnecessários e poluem a resposta)
