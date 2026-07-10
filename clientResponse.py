@@ -338,7 +338,7 @@ def respClient(pergunta, msgs, number, user_name):
             response = response + ": " + links[topico]
     '''
     # Remove os colchetes da string de resposta (desnecessários e poluem a resposta)
-    response = re.sub(r"\[.*?\]", "", response)
+    # response = re.sub(r"\[.*?\]", "", response)
 
     # Verifica se existe https coloca todo link numa variavel e remove da string caso exista link
     '''if "https" in response:
@@ -349,75 +349,77 @@ def respClient(pergunta, msgs, number, user_name):
 
             response = re.sub(re.escape(link), "", response, count=1)
     '''
-    aux = response.split('.')
-    output = ""
+    '''aux = response.split('.')
+    response = ""
     cont = 0
     if len(aux) >= 2:
 
         for item in aux:
 
             if cont < 2 :
-                output += aux[cont] + "."
+                response += aux[cont] + "."
             else:
-                output += aux[cont] + ".\n\n"
+                response += aux[cont] + ".\n\n"
                 cont = -1
             cont += 1
 
     elif len(aux) <= 1:
-        output = aux[0]
+        response = aux[0]'''
 
     '''if isLink:
         parts = response.split(":", 1)
 
         if len(parts) >= 2:
-            output = parts[0] + ": " + link + parts[1] #adiciona o link na saida caso exista
+            response = parts[0] + ": " + link + parts[1] #adiciona o link na saida caso exista
     '''
-    output = re.sub(r'\.(\s*)\.$', r'.\1', output)
+
+
+    response = re.sub(r'\.(\s*)\.$', r'.\1', response)
 
     sub1 = 'Se quiser, posso te passar também o contato da representante.'
-    output = output.replace(sub1, '')
+    response = response.replace(sub1, '')
 
     sub1 = 'Se quiser, posso te passar também o contato.'
-    output = output.replace(sub1, '')
+    response = response.replace(sub1, '')
 
     sub1 = 'Se quiser, também posso te passar o contato.'
-    output = output.replace(sub1, '')
+    response = response.replace(sub1, '')
 
     sub1 = 'Se quiser, posso te passar também o contato da representante da feira.'
-    output = output.replace(sub1, '')
+    response = response.replace(sub1, '')
 
     sub1 = 'Se quiser, posso te passar também o contato do representante.'
-    output = output.replace(sub1, '')
+    response = response.replace(sub1, '')
 
     sub1 = 'Se quiser, posso te passar também o contato do representante da feira.'
-    output = output.replace(sub1, '')
+    response = response.replace(sub1, '')
 
     sub1 = 'Se quiser, também posso passar o contato da feira.'
-    output = output.replace(sub1, '')
+    response = response.replace(sub1, '')
 
     sub1 = 'Se quiser, posso passar também o contato da feira.'
-    output = output.replace(sub1, '')
+    response = response.replace(sub1, '')
 
     sub1 = 'Se quiser, também posso te passar o contato do representante.'
-    output = output.replace(sub1, '')
+    response = response.replace(sub1, '')
 
     sub1 = 'Se quiser, também posso te passar o contato do representante da feira.'
-    output = output.replace(sub1, '')
+    response = response.replace(sub1, '')
 
     sub1 = 'Se quiser, também posso te passar o contato da representante.'
-    output = output.replace(sub1, '')
+    response = response.replace(sub1, '')
 
     sub1 = 'Se quiser, também posso te passar o contato da representante da feira.'
-    output = output.replace(sub1, '')   
+    response = response.replace(sub1, '')   
 
-    output = output.replace('..', '.')
-    output = output.replace('?.', '?')
-    output = output.replace('!.', '!')
-    output = output.replace(' .', '')
+    response = response.replace('..', '.')
+    response = response.replace('?.', '?')
+    response = response.replace('!.', '!')
+    response = response.replace(' .', '')
 
-    output = output.replace("()", "")
+    response = response.replace("()", "")
 
-    return output, status, respMan
+    return response, status, respMan
 
 """def respClient(original_msg, respMan, resps_order):
 
