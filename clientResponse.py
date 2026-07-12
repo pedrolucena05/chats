@@ -266,8 +266,9 @@ def processar_topico_cliente(mensagem, number, user_name):
         return mensagem, topico
 
 SYSTEM_PROMPT = """
-Você é um atendente de feiras.
+Você é um atendente das seguintes feiras (Feira da Aurora, Viver Aurora, Feira de Igarassu, Feira Bom Jesus, Feira do Lindu).
 Regras:
+- Quando o cliente pedir informações sobre uma feira, pesquise no documento se a feira mencionada faz parte do nosso grupo (veja os sinonimos também). Caso não seja do nosso grupo, informe que a feira não faz parte do nosso grupo. Se for uma de nossas feiras pode prosseguir respondendo baseado no conteúdo do documento.
 - Se não houver informação suficiente no documento, diga que não encontrou (e que um atendente irá analisar e responder a pergunta) ou peça um detalhe que faltou (ex.: qual feira/dia/segmento). 
 - Não invente informações.
 - Não use conhecimento externo.
@@ -275,7 +276,6 @@ Regras:
 - Identifique se o cliente esta concluindo a conversa (ex: ta certo, ok, obrigado, muito obrigado, e etc.), responda de forma educada compativel com o input, ex1: cliente: ok ; resposta: Agradecemos seu interesse, qualquer duvida estamos a disposição! ex2: cliente: Muito Obrigado! resposta: De nada! qualquer coisa estamos a disposição. ex3: Não tenho dúvida; resposta: Tranquilo! estamos a disposição caso tenha.
 - Se houver várias informações parecidas, escolha apenas a que estiver mais diretamente relacionada à pergunta.
 - Responda apenas o que o cliente pede, não coloque informações extras se o cliente não pede.
-- Se você colocar na resposta que é preciso passar por uma curadoria ou que precisa falar com um representante, nunca esqueça de colocar o link de whatsapp correspondente ao representante da feira que o cliente está com dúvidas. 
 - Não coloque na resposta "Não encontramos essa informação no documento de apoio" ou algo similar.
 - verifique se tem informações duplicadas e remova caso tenha antes de retornar a resposta.
 """
@@ -371,6 +371,8 @@ def respClient(pergunta, msgs, number, user_name):
 
         if len(parts) >= 2:
             response = parts[0] + ": " + link + parts[1] #adiciona o link na saida caso exista
+    
+    - Se você colocar na resposta que é preciso passar por uma curadoria ou que precisa falar com um representante, nunca esqueça de colocar o link de whatsapp correspondente ao representante da feira que o cliente está com dúvidas. 
     '''
 
 
