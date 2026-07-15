@@ -32,22 +32,6 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # App initalizer
 app = create_app()
 
-handler = RotatingFileHandler(
-    "app.log",
-    maxBytes=10_000,
-    backupCount=0
-)
-
-handler.setLevel(logging.INFO)
-
-formatter = logging.Formatter(
-    "%(asctime)s %(levelname)s: %(message)s"
-)
-
-handler.setFormatter(formatter)
-
-app.logger.addHandler(handler)
-app.logger.setLevel(logging.INFO)
 
 # 
 # DATABASE CONFIG
@@ -62,13 +46,8 @@ DEFAULT_PHONE_NUMBER_ID = os.getenv("WHATSAPP_PHONE_NUMBER_ID")
 GRAPH_API_VERSION = os.getenv("GRAPH_API_VERSION", "v24.0")
 VERIFY_TOKEN = os.getenv("VERIFY_TOKEN")
 
-formatter = logging.Formatter(
-    "%(asctime)s - %(levelname)s - %(message)s"
-)
-handler.setFormatter(formatter)
 
-app.logger.setLevel(logging.INFO)
-app.logger.addHandler(handler)
+
 
     
 MAX_MESSAGES_PER_NUMBER = 20
@@ -118,13 +97,13 @@ def require_api_key(fn):
     def wrapper(*args, **kwargs):
         key = request.headers.get("X-API-Key", "")
 
-        app.logger.info("Acesso à rota: %s", request.path)
-        app.logger.info("Chave recebida: %s", bool(key))
-        app.logger.info(
+        log.warning("Acesso à rota: %s", request.path)
+        log.warning("Chave recebida: %s", bool(key))
+        log.warning(
             "Chave do servidor carregada: %s",
             bool(DASHBOARD_API_KEY)
         )
-        app.logger.info(
+        log.warning(
             "Tamanhos: recebida=%d, configurada=%d",
             len(key),
             len(DASHBOARD_API_KEY)
