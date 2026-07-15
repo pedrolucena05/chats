@@ -242,7 +242,7 @@ def processAndSendMessage(number, user_name, text):
                 return
                 #current_app.logger.exception("Exceção inesperada ao tentar enviar via WhatsApp Cloud API")
 
-
+log.warning("log teste")
 
 @app.route("/flagdash", methods=["GET"])
 @require_api_key
