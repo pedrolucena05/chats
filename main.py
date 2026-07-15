@@ -5,6 +5,7 @@ import requests
 from dotenv import load_dotenv
 from functools import wraps
 import json
+import hmac
 
 import logging
 from logging.handlers import RotatingFileHandler
@@ -120,18 +121,32 @@ def require_api_key(fn):
     def wrapper(*args, **kwargs):
         key = request.headers.get("X-API-Key", "")
 
-        print("Acesso à rota:", request.path, flush=True)
-        print("Chave recebida:", bool(key), flush=True)
-        print("Chave do servidor carregada:", bool(DASHBOARD_API_KEY), flush=True)
-        print(
-            "Tamanhos:",
-            len(key),
-            len(DASHBOARD_API_KEY),
-            flush=True
+        log.info("Acesso à rota: %s", request.path)
+        log.info("Chave recebida: %s", bool(key))
+        log.info(
+            "Chave do servidor carregada: %s",
+            bool(DASHBOARD_API_KEY)
         )
-        if not DASHBOARD_API_KEY or key != DASHBOARD_API_KEY:
+        log.info(
+            "Tamanhos: recebida=%d, configurada=%d",
+            len(key),
+            len(DASHBOARD_API_KEY)
+        )
+
+        chave_valida = (
+            bool(DASHBOARD_API_KEY)
+            and hmac.compare_digest(key, DASHBOARD_API_KEY)
+        )
+
+        if not chave_valida:
+            log.warning(
+                "Acesso não autorizado à rota %s",
+                request.path
+            )
             return jsonify({"error": "unauthorized"}), 401
+
         return fn(*args, **kwargs)
+
     return wrapper
 
 def send_whatsapp_with_retry(phone_number_id: str, to: str, text: str, max_attempts: int = RETRY_MAX_ATTEMPTS, base_delay: float = RETRY_BASE_DELAY, max_delay: float = RETRY_MAX_DELAY) -> bool:
