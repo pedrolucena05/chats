@@ -62,9 +62,6 @@ DEFAULT_PHONE_NUMBER_ID = os.getenv("WHATSAPP_PHONE_NUMBER_ID")
 GRAPH_API_VERSION = os.getenv("GRAPH_API_VERSION", "v24.0")
 VERIFY_TOKEN = os.getenv("VERIFY_TOKEN")
 
-handler = RotatingFileHandler("app.log", maxBytes=100_000, backupCount=3)
-handler.setLevel(logging.INFO)
-
 formatter = logging.Formatter(
     "%(asctime)s - %(levelname)s - %(message)s"
 )
@@ -121,13 +118,13 @@ def require_api_key(fn):
     def wrapper(*args, **kwargs):
         key = request.headers.get("X-API-Key", "")
 
-        log.info("Acesso à rota: %s", request.path)
-        log.info("Chave recebida: %s", bool(key))
-        log.info(
+        app.logger.info("Acesso à rota: %s", request.path)
+        app.logger.info("Chave recebida: %s", bool(key))
+        app.logger.info(
             "Chave do servidor carregada: %s",
             bool(DASHBOARD_API_KEY)
         )
-        log.info(
+        app.logger.info(
             "Tamanhos: recebida=%d, configurada=%d",
             len(key),
             len(DASHBOARD_API_KEY)
