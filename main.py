@@ -119,6 +119,16 @@ def require_api_key(fn):
     @wraps(fn)
     def wrapper(*args, **kwargs):
         key = request.headers.get("X-API-Key", "")
+
+        print("Acesso à rota:", request.path, flush=True)
+        print("Chave recebida:", bool(key), flush=True)
+        print("Chave do servidor carregada:", bool(DASHBOARD_API_KEY), flush=True)
+        print(
+            "Tamanhos:",
+            len(key),
+            len(DASHBOARD_API_KEY),
+            flush=True
+        )
         if not DASHBOARD_API_KEY or key != DASHBOARD_API_KEY:
             return jsonify({"error": "unauthorized"}), 401
         return fn(*args, **kwargs)
