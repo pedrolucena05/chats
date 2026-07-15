@@ -11,7 +11,7 @@ with app.app_context():
     result = session.execute(text("""
         SELECT cliente_id, content
         FROM messages
-        WHERE ts::date = CURRENT_DATE
+        WHERE ts::date = CURRENT_DATE - 1
         ORDER BY cliente_id DESC, ts ASC
     """))
 
