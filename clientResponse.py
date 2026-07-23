@@ -277,7 +277,6 @@ Regras:
 - Não use conhecimento externo.
 - Responda de forma curta e objetiva.
 - Identifique se o cliente esta concluindo a conversa (ex: ta certo, ok, obrigado, muito obrigado, e etc.), responda de forma educada compativel com o input, ex1: cliente: ok ; resposta: Agradecemos seu interesse, qualquer duvida estamos a disposição! ex2: cliente: Muito Obrigado! resposta: De nada! qualquer coisa estamos a disposição. ex3: Não tenho dúvida; resposta: Tranquilo! estamos a disposição caso tenha.
-- Se houver várias informações parecidas, escolha apenas a que estiver mais diretamente relacionada à pergunta.
 - Responda apenas o que o cliente pede, não coloque informações extras se o cliente não pede.
 - Não coloque na resposta "Não encontramos essa informação no documento de apoio" ou algo similar.
 """
