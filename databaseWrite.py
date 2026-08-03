@@ -10,7 +10,7 @@ from tableClasses import Message, Cliente
 from guaranteedMax import enforce_max_users
 from filelock import Timeout
 
-MAX_MSGS = 10
+MAX_MSGS = 15
 
 #LOG_FILE = "db_monitor.log"
 #logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(threadName)s - %(message)s", handlers=[logging.FileHandler(LOG_FILE, encoding="utf-8")])
