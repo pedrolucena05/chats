@@ -41,7 +41,6 @@ AURORA = [
     "feiradaaurora",
     "aurorasabado",
     "aurorasab",
-    "aurora",
     "feirinhadaaurora",
     "feirinhadaruadaaurora",
     "feirinhaemfrenteaseplag",
