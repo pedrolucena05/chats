@@ -34,7 +34,7 @@ LINDU = [
     "feirinhadolindu",
     "lindu",
     "feirinhalindu",
-    "Feira do Lindu"
+    "Feira do Lindu",
 ]
 
 AURORA = [
@@ -46,7 +46,7 @@ AURORA = [
     "feirinhadaruadaaurora",
     "feirinhaemfrenteaseplag",
     "feiraemfrenteaseplag",
-    "Feira da Aurora"
+    "Feira da Aurora",
 ]
 
 VIVER_AURORA = [
@@ -64,7 +64,7 @@ VIVER_AURORA = [
     "auroradom",
     "chorinhodaaurora",
     "chorinhoaurora",
-    "Viver Aurora"
+    "Viver Aurora",
 ]
 
 FEIRA_BOM_JESUS = [
@@ -77,7 +77,7 @@ FEIRA_BOM_JESUS = [
     "bomjesus",
     "recifeantigo", 
     "marcozero",
-    "Feira Bom Jesus"
+    "Feira Bom Jesus",
 ]
 
 FEIRA_IGARASSU = [
@@ -90,7 +90,7 @@ FEIRA_IGARASSU = [
     "viverigarassu",
     "igarassu",
     "eventodositiohistorico",
-    "Feira de Igarassu"
+    "Feira de Igarassu",
 ]
 
 
@@ -132,7 +132,7 @@ RESET_TOPICO = [
     "todas as feiras",
     "todas feiras",
     "outras feiras",
-    "RESET"
+    "RESET",
 ]
 
 links = {
@@ -140,7 +140,7 @@ links = {
     "FEIRA DA AURORA": "https://wa.me/5581996925200",
     "VIVER AURORA": "https://wa.me/5581996925200",
     "FEIRA BOM JESUS": "https://wa.me/5581995865900",
-    "FEIRA IGARASSU": "https://wa.me/5581995865900"
+    "FEIRA IGARASSU": "https://wa.me/5581995865900",
 }
 
 
@@ -189,10 +189,16 @@ def identificar_topico(mensagem):
 
     for topico in topicosALL:
         for substring in topico:
+            if topico[-1] == "RESET":
+                print (substring)
             if substring in mensagem_normalizada:
+                if topico[-1] == "RESET":
+                    print ("Entrei na do reset sem erros") 
                 return topico[-1]
             
             if contem_com_ate_2_erros(mensagem_normalizada, substring):
+                if topico[-1] == "RESET":
+                    print ("Entrei na do reset com erros") 
                 return topico[-1]
 
     return None
