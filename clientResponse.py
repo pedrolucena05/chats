@@ -128,10 +128,10 @@ PALAVRAS_ATENDENTE = [
 ]
 
 RESET_TOPICO = [
-    "qualquer feira",
-    "todas as feiras",
-    "todas feiras",
-    "outras feiras",
+    "qualquerfeira",
+    "todasasfeiras",
+    "todasfeiras",
+    "outrasfeiras",
     "RESET",
 ]
 
