@@ -142,53 +142,29 @@ links = {
     "FEIRA BOM JESUS": "https://wa.me/5581995865900",
     "FEIRA IGARASSU": "https://wa.me/5581995865900"
 }
-def distancia_ate_2(a, b, limite=2):
-    if abs(len(a) - len(b)) > limite:
-        return False
 
-    dp = list(range(len(b) + 1))
-
-    for i, ca in enumerate(a, 1):
-        anterior = dp[0]
-        dp[0] = i
-
-        menor_linha = dp[0]
-
-        for j, cb in enumerate(b, 1):
-            temp = dp[j]
-
-            if ca == cb:
-                dp[j] = anterior
-            else:
-                dp[j] = 1 + min(
-                    anterior,   # substituição
-                    dp[j],      # remoção
-                    dp[j - 1]   # inserção
-                )
-
-            anterior = temp
-            menor_linha = min(menor_linha, dp[j])
-
-        if menor_linha > limite:
-            return False
-
-    return dp[-1] <= limite
 
 
 def contem_com_ate_2_erros(mensagem_normalizada, substring):
     tamanho = len(substring)
 
-    for inicio in range(len(mensagem_normalizada)):
-        for variacao in range(-2, 3):
-            fim = inicio + tamanho + variacao
+    for ind in range(len(substring)):
 
-            if fim <= inicio:
-                continue
+        newSubStrLeft = substring[:ind]
+        newSubStrRight = substring[ind+1:]
 
-            trecho = mensagem_normalizada[inicio:fim]
+        if ind != 0 and newSubStrLeft in mensagem_normalizada and newSubStrRight in mensagem_normalizada:
+            finalLeft = mensagem_normalizada.find(newSubStrLeft) + len(newSubStrLeft) - 1
+            initialRight = mensagem_normalizada.find(newSubStrRight)
 
-            if distancia_ate_2(trecho, substring, limite=2):
+            if initialRight - finalLeft == 2:
                 return True
+            
+        elif ind == 0:
+
+            if substring in mensagem_normalizada:
+                return True
+
 
     return False
 
