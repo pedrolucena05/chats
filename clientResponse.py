@@ -33,7 +33,8 @@ LINDU = [
     "lindudom",
     "feirinhadolindu",
     "lindu",
-    "feirinhalindu"
+    "feirinhalindu",
+    "Feira do Lindu"
 ]
 
 AURORA = [
@@ -44,7 +45,8 @@ AURORA = [
     "feirinhadaaurora",
     "feirinhadaruadaaurora",
     "feirinhaemfrenteaseplag",
-    "feiraemfrenteaseplag"
+    "feiraemfrenteaseplag",
+    "Feira da Aurora"
 ]
 
 VIVER_AURORA = [
@@ -61,7 +63,8 @@ VIVER_AURORA = [
     "auroradomingo",
     "auroradom",
     "chorinhodaaurora",
-    "chorinhoaurora"
+    "chorinhoaurora",
+    "Viver Aurora"
 ]
 
 FEIRA_BOM_JESUS = [
@@ -71,7 +74,10 @@ FEIRA_BOM_JESUS = [
     "feirinhabomjesus"
     "feiradaruabomjesus",
     "feirinhadaruabomjesus",
-    "bomjesus"
+    "bomjesus",
+    "recifeantigo", 
+    "marcozero",
+    "Feira Bom Jesus"
 ]
 
 FEIRA_IGARASSU = [
@@ -83,8 +89,10 @@ FEIRA_IGARASSU = [
     "feirinhadositiohistorico",
     "viverigarassu",
     "igarassu",
-    "eventodositiohistorico"
+    "eventodositiohistorico",
+    "Feira de Igarassu"
 ]
+
 
 PALAVRAS_PEDIDO_INFO = [
     "qual",
@@ -123,7 +131,8 @@ RESET_TOPICO = [
     "qualquer feira",
     "todas as feiras",
     "todas feiras",
-    "outras feiras"
+    "outras feiras",
+    "RESET"
 ]
 
 links = {
@@ -200,22 +209,15 @@ def normalizar_texto(texto):
 def identificar_topico(mensagem):
     mensagem_normalizada = normalizar_texto(mensagem)
 
-    topicos = {
-        "LINDU": LINDU,
-        "FEIRA_DA_AURORA": AURORA,
-        "VIVER_AURORA": VIVER_AURORA,
-        "FEIRA_BOM_JESUS": FEIRA_BOM_JESUS,
-        "FEIRA_IGARASSU": FEIRA_IGARASSU,
-        "RESET": RESET_TOPICO
-    }
+    topicosALL = [LINDU, AURORA, VIVER_AURORA, FEIRA_BOM_JESUS, FEIRA_IGARASSU, RESET_TOPICO]
 
-    for nome_topico, substrings in topicos.items():
-        for substring in substrings:
+    for topico in topicosALL:
+        for substring in topico:
             if substring in mensagem_normalizada:
-                return nome_topico.replace("_", " ")
+                return topico[-1]
             
             if contem_com_ate_2_erros(mensagem_normalizada, substring):
-                return nome_topico.replace("_", " ")
+                return topico[-1]
 
     return None
 
@@ -239,7 +241,12 @@ def processar_topico_cliente(mensagem, number, user_name):
             db.session.commit()
 
         if cliente:
-            cliente.topico = topico
+
+            if topico == "RESET":
+                cliente.topico = ""
+            else:
+                cliente.topico = topico
+
             db.session.commit()
 
         return mensagem, topico
