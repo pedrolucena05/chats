@@ -77,7 +77,7 @@ FEIRA_BOM_JESUS = [
     "bomjesus",
     "recifeantigo", 
     "marcozero",
-    "recifeantigo"
+    "recifeantigo",
     "Feira Bom Jesus",
 ]
 
