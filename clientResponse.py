@@ -154,7 +154,7 @@ def contem_com_ate_2_erros(mensagem_normalizada, substring):
         newSubStrLeft = substring[:ind]
         newSubStrRight = substring[ind+1:]
 
-        if ind != 0 and newSubStrLeft in mensagem_normalizada and newSubStrRight in mensagem_normalizada:
+        if ind != 0 and ind != (len(substring) - 1) and ind != (len(substring) - 2) and newSubStrLeft in mensagem_normalizada and newSubStrRight in mensagem_normalizada:
             finalLeft = mensagem_normalizada.find(newSubStrLeft) + len(newSubStrLeft) - 1
             initialRight = mensagem_normalizada.find(newSubStrRight)
 
@@ -166,6 +166,15 @@ def contem_com_ate_2_erros(mensagem_normalizada, substring):
             if substring in mensagem_normalizada:
                 return True
 
+        elif ind == (len(substring) - 1):
+
+            if substring[:-1] in mensagem_normalizada:
+                return True
+
+        elif ind == (len(substring) - 2):
+
+            if substring[:-2] in mensagem_normalizada:
+                return True
 
     return False
 
