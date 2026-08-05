@@ -190,15 +190,15 @@ def identificar_topico(mensagem):
     for topico in topicosALL:
         for substring in topico:
             if topico[-1] == "RESET":
-                print (substring)
+                print (f"{substring}", flush=True)
             if substring in mensagem_normalizada:
                 if topico[-1] == "RESET":
-                    print ("Entrei na do reset sem erros") 
+                    print ("Entrei na do reset sem erros", flush=True) 
                 return topico[-1]
             
             if contem_com_ate_2_erros(mensagem_normalizada, substring):
                 if topico[-1] == "RESET":
-                    print ("Entrei na do reset com erros") 
+                    print ("Entrei na do reset com erros", flush=True) 
                 return topico[-1]
 
     return None
