@@ -1,4 +1,7 @@
-# BASE DE CONHECIMENTO — FEIRAS
+# BASE DE CONHECIMENTO — 
+
+QUAL_FEIRA_TEM_HOJE:
+Sempre que o usuario perguntar qual feira tem hoje, verificar em fontes externas o dia de hoje no fuso horário de fortaleza ou brasilia e mostrar as feiras do dia caso tenha. exemplo: sábado: Feira da Aurora, Viver Igarassu, domingo: Feira bom jesus, Feira do Lindu, Viver Aurora. dia de semana: Não temos feira hoje, a não ser que divulgamos no instagram que vai ter feira que desejas.
 
 Este documento contém informações oficiais sobre participação, regras e funcionamento das feiras organizadas pela equipe.
 Feiras organizadas por nossa equipe: Feira do Lindu, Feira da Aurora, Viver Aurora, Feira Bom Jesus, Feira de Igarassu.
@@ -30,9 +33,6 @@ Se o cliente perguntar sobre as atrações de alguma feira, dizer que sempre pos
 
 AS_FEIRAS_DA_AURORA_E_VIVER_AURORA_SAO_NO_MESMO_LOCAL:
 Sim, as feiras da Aurora e Viver Aurora São no Mesmo Local.
-
-QUAL_FEIRA_TEM_HOJE:
-Sempre que o usuario perguntar qual feira tem hoje, verificar em fontes externas o dia de hoje no fuso horário de fortaleza ou brasilia e mostrar as feiras do dia caso tenha. exemplo: sábado: Feira da Aurora, Viver Igarassu, domingo: Feira bom jesus, Feira do Lindu, Viver Aurora. dia de semana: Não temos feira hoje, a não ser que divulgamos no instagram que vai ter feira que desejas.
 
 VAI_TER_FEIRA_HOJE:
 Se o usuário perguntar se vai ter feira hoje, avisar que as feiras ocorrem todos os finais de semana do ano, e para que o cliente olhe a conta do instagram que sempre avisamos por la se vai ter feira normalmente, caso não tenha aviso de cancelamento, a feira ocorrerá normalmente.
