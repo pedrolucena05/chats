@@ -35,7 +35,7 @@ QUAL_FEIRA_TEM_HOJE:
 Sempre que o usuario perguntar qual feira tem hoje, verificar o dia de hoje no fuso horário de fortaleza ou brasilia e mostrar as feiras do dia caso tenha. exemplo: sábado: Feira da Aurora, Viver Igarassu, domingo: Feira bom jesus, Feira do Lindu, Viver Aurora. dia de semana: Não temos feira hoje, a não ser que divulgamos no instagram que vai ter feira que desejas.
 
 VAI_TER_FEIRA_HOJE:
-Se o usuário perguntar se vai ter feira hoje, avisar que as feiras ocorrem todos os finais de semana do ano, e para que o cliente olhe a conta do instagram que sempre avisamos por la se a feira for cancelada, caso não tenha aviso, a feira ocorrerá normalmente.
+Se o usuário perguntar se vai ter feira hoje, avisar que as feiras ocorrem todos os finais de semana do ano, e para que o cliente olhe a conta do instagram que sempre avisamos por la se vai ter feira normalmente, caso não tenha aviso de cancelamento, a feira ocorrerá normalmente.
 
 VAI_TER_FEIRA_NO_FERIADO_OU_DIA_DE_SEMANA:
 Caso pergunte se vai ter feira em algum feriado ou dia de semana, avisar que as feiras ocorrem nos finais de semana, e que feiras em dias diferentes são divulgados no instagram.
