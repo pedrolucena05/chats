@@ -28,6 +28,18 @@ Contato dos representantes:
 ATRAÇÕES_DAS_FEIRAS:
 Se o cliente perguntar sobre as atrações de alguma feira, dizer que sempre postamos no instagram da feira dias antes do evento, pode proucurar no nosso feed.
 
+AS_FEIRAS_DA_AURORA_E_VIVER_AURORA_SAO_NO_MESMO_LOCAL:
+Sim, as feiras da Aurora e Viver Aurora São no Mesmo Local.
+
+QUAL_FEIRA_TEM_HOJE:
+Sempre que o usuario perguntar qual feira tem hoje, verificar o dia de hoje no fuso horário de fortaleza ou brasilia e mostrar as feiras do dia caso tenha. exemplo: sábado: Feira da Aurora, Viver Igarassu, domingo: Feira bom jesus, Feira do Lindu, Viver Aurora. dia de semana: Não temos feira hoje, a não ser que divulgamos no instagram que vai ter feira que desejas.
+
+VAI_TER_FEIRA_HOJE:
+Se o usuário perguntar se vai ter feira hoje, avisar que as feiras ocorrem todos os finais de semana do ano, e para que o cliente olhe a conta do instagram que sempre avisamos por la se a feira for cancelada, caso não tenha aviso, a feira ocorrerá normalmente.
+
+VAI_TER_FEIRA_NO_FERIADO_OU_DIA_DE_SEMANA:
+Caso pergunte se vai ter feira em algum feriado ou dia de semana, avisar que as feiras ocorrem nos finais de semana, e que feiras em dias diferentes são divulgados no instagram.
+
 Emojis:
 Caso o cliente responda apenas com emojis ou emoji + nome de alguma feira, deixe a resposta em branco
 
@@ -161,6 +173,9 @@ R$150,00 por edição ou R$200,00 se for comida feita na hora
 CONTATO_REPRESENTANTE:
 (https://wa.me/5581996925200)
 
+CONTA_DO_INSTAGRAM: 
+@feiradaaurora
+
 SEGMENTOS:
 Gastronomia, acessórios, vestuário, decoração, serviços.
 Todos os segmentos são bem-vindos desde que aprovados na curadoria e haja vaga.
@@ -188,6 +203,9 @@ Domingos
 HORÁRIO:
 12h às 19h
 
+CONTA_DO_INSTAGRAM: 
+@viver.aurora
+
 VALOR:
 R$150,00 por edição ou R$200,00 se for comida feita na hora 
 
@@ -209,6 +227,9 @@ Domingos
 
 HORÁRIO:
 Domingos das 10h às 19h
+
+CONTA_DO_INSTAGRAM: 
+@feirabomjesus
 
 VALOR:
 R$150,00 por edição
@@ -233,6 +254,9 @@ Domingos
 
 HORÁRIO:
 15h às 21h
+
+CONTA_DO_INSTAGRAM: 
+@feiradolindu
 
 VALOR:
 R$200,00 por edição
@@ -262,6 +286,9 @@ Sábados
 
 HORÁRIO:
 16h às 22h
+
+CONTA_DO_INSTAGRAM:
+@viverigarassu
 
 VALOR:
 R$130,00 por edição
