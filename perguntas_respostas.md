@@ -1,10 +1,13 @@
 # BASE DE CONHECIMENTO — 
 
-QUAL_FEIRA_TEM_HOJE:
-Sempre que o usuario perguntar qual feira tem hoje, verificar em fontes externas o dia de hoje no fuso horário de fortaleza ou brasilia e mostrar as feiras do dia caso tenha. exemplo: sábado: Feira da Aurora, Viver Igarassu, domingo: Feira bom jesus, Feira do Lindu, Viver Aurora. dia de semana: Não temos feira hoje, a não ser que divulgamos no instagram que vai ter feira que desejas.
-
 Este documento contém informações oficiais sobre participação, regras e funcionamento das feiras organizadas pela equipe.
 Feiras organizadas por nossa equipe: Feira do Lindu, Feira da Aurora, Viver Aurora, Feira Bom Jesus, Feira de Igarassu.
+
+QUAL_FEIRA_TEM_HOJE:
+Sempre que o usuario perguntar qual feira tem hoje ou amanhã ou num dia de semana específico (sábado, domingo, segunda...), avisar que as feiras ocorrem nos finais de semana. No sábado temos Feira da Aurora, Viver Igarassu e domingo temos Feira bom jesus, Feira do Lindu, Viver Aurora.
+
+VAI_TER_FEIRA_NO_FERIADO_OU_DIA_DE_SEMANA:
+Caso pergunte se vai ter feira em algum feriado ou dia de semana, avisar que as feiras ocorrem nos finais de semana, e que feiras em dias diferentes são divulgados no instagram.
 
 Caso o usuário pergunte quais feiras organizamos, falar as feiras acima.
 
@@ -33,12 +36,6 @@ Se o cliente perguntar sobre as atrações de alguma feira, dizer que sempre pos
 
 AS_FEIRAS_DA_AURORA_E_VIVER_AURORA_SAO_NO_MESMO_LOCAL:
 Sim, as feiras da Aurora e Viver Aurora São no Mesmo Local.
-
-VAI_TER_FEIRA_HOJE:
-Se o usuário perguntar se vai ter feira hoje, avisar que as feiras ocorrem todos os finais de semana do ano, e para que o cliente olhe a conta do instagram que sempre avisamos por la se vai ter feira normalmente, caso não tenha aviso de cancelamento, a feira ocorrerá normalmente.
-
-VAI_TER_FEIRA_NO_FERIADO_OU_DIA_DE_SEMANA:
-Caso pergunte se vai ter feira em algum feriado ou dia de semana, avisar que as feiras ocorrem nos finais de semana, e que feiras em dias diferentes são divulgados no instagram.
 
 Emojis:
 Caso o cliente responda apenas com emojis ou emoji + nome de alguma feira, deixe a resposta em branco
