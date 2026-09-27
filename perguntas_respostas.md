@@ -1,7 +1,23 @@
 # BASE DE CONHECIMENTO — 
 
 Este documento contém informações oficiais sobre participação, regras e funcionamento das feiras organizadas pela equipe.
-Feiras organizadas por nossa equipe: Feira do Lindu, Feira da Aurora, Viver Aurora, Feira Bom Jesus, Feira de Igarassu.
+Feiras organizadas por nossa equipe: Feira do Lindu, Feira da Aurora, Viver Aurora, Feira Bom Jesus, Feira de Igarassu, Sextou no Lindu, Movimento Jaqueira.
+
+Caso o usuário pergunte quais feiras organizamos, falar as feiras acima.
+
+Nomes alternativos para as feiras organizadas por nossa equipe: 
+- Feira da Aurora: Feirinha da Aurora, Aurora Sábado;
+- Feira Bom Jesus: Feirinha do Bom Jesus, Feirinha da Rua Bom Jesus;
+- Feira de Igarassu: Feirinha de Igarassu, Feira do Sitio Histórico, Feira do Sítio Histório de Igarassu;
+- Feira do Lindu: Feirinha do Lindu, Feirinha do Lindu do Domingo;
+- Viver Aurora: Aurora Domingo, Feira do Chorinho da Aurora, Samba da Aurora, Sambinha da Aurora;
+- Sextou no Lindu: Sexta no Lindu, Feira de Sexta do Lindu, Sextou, Feira Sextou, Feirinha Sextou;
+- Movimento Jaqueira: Feira do Sábado de Manhã na Jaqueira, Feira Fitness da Jaqueira, Feira do Sábado da Jaqueira, Feira da Jaqueira;
+
+Pode ser Feira ou Feirinha.
+
+Se perguntar algo sobre uma Feira que não seja nenhuma das acima, responder que a feira não pertence a nossa equipe.
+Identifique se a pergunta está incompleta e peça mais informações.
 
 QUAL_FEIRA_TEM_HOJE:
 Sempre que o usuario perguntar qual feira tem hoje ou amanhã ou num dia de semana específico (sábado, domingo, segunda...), avisar que as feiras ocorrem nos finais de semana. No sábado temos Feira da Aurora, Viver Igarassu e domingo temos Feira bom jesus, Feira do Lindu, Viver Aurora.
@@ -9,25 +25,14 @@ Sempre que o usuario perguntar qual feira tem hoje ou amanhã ou num dia de sema
 VAI_TER_FEIRA_NO_FERIADO_OU_DIA_DE_SEMANA:
 Caso pergunte se vai ter feira em algum feriado ou dia de semana, avisar que as feiras ocorrem nos finais de semana, e que feiras em dias diferentes são divulgados no instagram.
 
-Caso o usuário pergunte quais feiras organizamos, falar as feiras acima.
-
-Nomes alternativos para as feiras organizadas por nossa equipe: 
-- Feira da Aurora: Feirinha da Aurora, Aurora Sábado;
-- Feira Bom Jesus: Feirinha do Bom Jesus, Feirinha da Rua Bom Jesus;
-- Feira de Igarassu: Feirinha de Igarassu, Feira do Sitio Histórico, Feira do Sítio Histório de Igarassu
-- Feira do Lindu: Feirinha do Lindu, Feirinha do Lindu do Domingo
-- Viver Aurora: Aurora Domingo, Feira do Chorinho da Aurora, Samba da Aurora, Sambinha da Aurora
-
-Se perguntar algo sobre uma Feira que não seja nenhuma das acima, responder que a feira não pertence a nossa equipe.
-Identifique se a pergunta está incompleta e peça mais informações.
-
 Contato dos representantes:
  - Feira Bom Jesus: https://wa.me/5581995865900
  - Feira de Igarassu: https://wa.me/5581995865900
  - Feira da Aurora: https://wa.me/5581996925200
  - Viver Aurora: https://wa.me/5581996925200
- - Feira do Lindu: https://wa.me/5581999739283  
-====================================================================
+ - Feira do Lindu: https://wa.me/5581999739283
+ - Movimento Jaqueira: https://wa.me/5581996925200
+ - Sextou no Lindu: https://wa.me/5581999739283
 
 ## REGRAS GERAIS — TODAS AS FEIRAS
 
@@ -53,6 +58,8 @@ Se o cliente pergunta qual o contato de uma feira, ou que quer falar com uma rep
  - Feira da Aurora: https://wa.me/5581996925200
  - Viver Aurora: https://wa.me/5581996925200
  - Feira do Lindu: https://wa.me/5581999739283 
+ - Movimento Jaqueira: https://wa.me/5581996925200
+ - Sextou no Lindu: https://wa.me/5581999739283
  
 RESPOSTA_LISTAR_FEIRAS:
 Caso o cliente pergunte: Tem outras?, Quais as outras?, ou duvidas relacionadas a feiras que organizamos, listar as feiras que organizamos e que o atendimento agora é centralizado neste número.
@@ -68,8 +75,6 @@ Se o usuário perguntar o tempo de retorno da curadoria, reponder que em 7 dias 
 
 BANHEIROS
 As feiras contam com banheiros sim, não se preocupe.
-
-
 
 INCLUSO_NO_VALOR:
 - Montagem da barraca (1.40m x 0.70m)
@@ -124,7 +129,9 @@ Contato dos representantes:
  - Feira de Igarassu: https://wa.me/5581995865900
  - Feira da Aurora: https://wa.me/5581996925200
  - Viver Aurora: https://wa.me/5581996925200
- - Feira do Lindu: https://wa.me/5581999739283 
+ - Feira do Lindu: https://wa.me/5581999739283
+ - Movimento Jaqueira: https://wa.me/5581996925200
+ - Sextou no Lindu: https://wa.me/5581999739283
 
 COMO_FAÇO_PARA_PARTICIPAR_DA_FEIRA:
 Sempre que o usuario pergunta algo parecido (como faço para participar ou gostaria de participar), avise que para participar da feira desejada é necessário submeter a uma curadoria, onde é verificado se tem vaga para o segmento do cliente. Coloque o link do contato da representante da feira que usuário esta pedindo. Ou peça para ele informar a feira desejada caso não tenha informado.
@@ -133,7 +140,9 @@ Contato dos representantes:
  - Feira de Igarassu: https://wa.me/5581995865900
  - Feira da Aurora: https://wa.me/5581996925200
  - Viver Aurora: https://wa.me/5581996925200
- - Feira do Lindu: https://wa.me/5581999739283 
+ - Feira do Lindu: https://wa.me/5581999739283
+ - Movimento Jaqueira: https://wa.me/5581996925200
+ - Sextou no Lindu: https://wa.me/5581999739283
 
 AS_FEIRAS_OCORREM_TODOS_AS_SEMANAS_DO_ANO
 Sim, as feiras ocorrem no dia divulgados todas as semanas do ano, podendo ser cancelado com antecedencia em caso de chuva ou se tiver algum evento no local da feira (ocorre poucas vezes no ano mas pode ocorrer).
@@ -259,7 +268,7 @@ VALOR:
 R$200,00 por edição
 
 OBSERVAÇÃO:
-A organização é responsável apenas pela feira de domingo.
+A organização é responsável apenas pela feira de domingo e a de sexta.
 A feira de sábado é organizada por outra equipe.
 
 CONTATO_REPRESENTANTE:
@@ -295,7 +304,71 @@ CONTATO_REPRESENTANTE:
 
 ====================================================================
 
-## Reposta Final
+## EVENTO: Movimento Jaqueira
 
-Se não encontrar a resposta no documento, responder apenas que não encontrou a resposta e que um atendente irá responder em breve.
+NOMES_ALTERNATIVOS:
+    - Feira Fitness Jaqueira
+    - Feira do Sábado de Manhã na Jaqueira
+    - Feira da Jaqueira
+
+LOCAL:
+Parque da Jaqueira
+
+DIA: 
+Sábados
+
+Horário:
+Das 07h as 14h
+
+CONTA_DO_INSTAGRAM:
+@movimentojaqueira
+
+VALOR:
+R$200,00 por edição
+
+OBSERVAÇÃO:
+A organização é responsável apenas pela feira do sábado de manhã.
+A feira do domingo na jaqueira é organizada por outra equipe.
+
+CONTATO_REPRESENTANTE:
+(https://wa.me/5581996925200)
+
+====================================================================
+
+## EVENTO: Sextou no Lindu:
+
+NOMES_ALTERNATIVOS:
+- Feira da Sexta à Noite no Lindu
+- Feirinha do Lindu de Sexta
+- Feira Sextou
+
+Dia:
+Sextas
+
+HORÁRIO:
+17h às 22h
+
+CONTA_DO_INSTAGRAM: 
+@feiradolindu
+
+VALOR:
+R$200,00 por edição
+
+OBSERVAÇÃO:
+A organização é responsável apenas pela feira de sexta e a do domingo.
+A feira de sábado é organizada por outra equipe.
+
+CONTATO_REPRESENTANTE:
+(https://wa.me/5581999739283)
+
+
+====================================================================
+
+## Não encontrou a resposta no documento
+
+Se não encontrar a resposta no documento, responder apenas que não encontrou a resposta e que entre em contato com o representante da Feira desejada:
+    - Sextou no Lindu, Feira do Lindu: https://wa.me/5581999739283
+    - Feira da Aurora, Viver Aurora, Movimento Jaqueira: https://wa.me/5581996925200
+    - Feira Bom Jesus, Feira de Igarassu: https://wa.me/5581995865900
+
 

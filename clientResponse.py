@@ -26,15 +26,41 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 vector_store_id = "vs_6a4619a48bcc81919f1017b18e8d56a2"
 log.warning(f"Usando Vector Store fixo: {vector_store_id}")
 
+
+SEXTOU_LINDU = [
+    "sextalindu",
+    "sextanolindu",
+    "sextadolindu"
+    "sextou",
+    "lindusexta",
+    "lindudasexta",
+    "lindunasexta",
+    "lindusex",
+    "sextalindu"
+]
+
+MOVIMENTO_JAQUEIRA = [
+    "moviemntojaqueira",
+    "sabadojaqueira",
+    "sabadonajaqueira",
+    "sabadodajaqueira",
+    "fitnesjaqueira",
+    "fitnessjaqueira",
+    "fitenessdajaqueira",
+    "fitnessnajaqueira",
+    "jaqueirafitness",
+    "jaqueirademanha",
+    "manhanajaqueira",
+    "jaqueira"
+]
+
 LINDU = [
     "feiradolindu",
     "feiralindu",
     "lindudomingo",
     "lindudom",
     "feirinhadolindu",
-    "lindu",
-    "feirinhalindu",
-    "Feira do Lindu",
+    "feirinhalindu"
 ]
 
 AURORA = [
@@ -141,6 +167,8 @@ links = {
     "VIVER AURORA": "https://wa.me/5581996925200",
     "FEIRA BOM JESUS": "https://wa.me/5581995865900",
     "FEIRA IGARASSU": "https://wa.me/5581995865900",
+    "SEXTOU NO LINDU": "https://wa.me/5581999739283",
+    "MOVIMENTO JAQUEIRA": "https://wa.me/5581996925200"
 }
 
 
@@ -194,7 +222,7 @@ def normalizar_texto(texto):
 def identificar_topico(mensagem):
     mensagem_normalizada = normalizar_texto(mensagem)
 
-    topicosALL = [LINDU, AURORA, VIVER_AURORA, FEIRA_BOM_JESUS, FEIRA_IGARASSU, RESET_TOPICO]
+    topicosALL = [LINDU, AURORA, VIVER_AURORA, FEIRA_BOM_JESUS, FEIRA_IGARASSU, SEXTOU_LINDU, MOVIMENTO_JAQUEIRA, RESET_TOPICO]
 
     for topico in topicosALL:
         for substring in topico:
@@ -271,6 +299,7 @@ Regras:
 - Identifique se o cliente esta concluindo a conversa (ex: ta certo, ok, obrigado, muito obrigado, e etc.), responda de forma educada compativel com o input, ex1: cliente: ok ; resposta: Agradecemos seu interesse, qualquer duvida estamos a disposição! ex2: cliente: Muito Obrigado! resposta: De nada! qualquer coisa estamos a disposição. ex3: Não tenho dúvida; resposta: Tranquilo! estamos a disposição caso tenha.
 - Responda apenas o que o cliente pede, não coloque informações extras se o cliente não pede.
 - Não coloque na resposta "Não encontramos essa informação no documento de apoio" ou algo similar.
+- Caso mande algum contato de nossos representantes, lembrar que é importante tirar todas as dúvidas possiveis por aqui.
 """
 
 def precisa_info(texto: str) -> bool:
@@ -313,10 +342,6 @@ def respClient(pergunta, msgs, number, user_name):
     )
     
     status = not precisa_info(resp.output_text)
-    if precisa_humano(resp.output_text):
-        respMan = 1
-    else:
-        respMan = 0
 
 
     link = ""
