@@ -402,6 +402,9 @@ def respClient(pergunta, msgs, number, user_name):
     sub1 = 'Se quiser, posso te passar também o contato.'
     response = response.replace(sub1, '')
 
+    sub1 = ': Feira da Aurora, Viver Aurora, Feira de Igarassu, Feira Bom Jesus ou Feira do Lindu'
+    response = response.replace(sub1, '')
+
     sub1 = 'Se quiser, também posso te passar o contato.'
     response = response.replace(sub1, '')
 
