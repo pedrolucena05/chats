@@ -70,7 +70,7 @@ def send_whatsapp_message(phone_number_id: str, to: str, text: str) -> dict:
     if not WHATSAPP_ACCESS_TOKEN:
         raise RuntimeError("WHATSAPP_ACCESS_TOKEN não configurado")
 
-    #log.info("Dentro da funlçao de envio")
+    log.info("Dentro da funlçao de envio")
 
     endpoint = f"https://graph.facebook.com/{GRAPH_API_VERSION}/{phone_number_id}/messages"
     headers = {
@@ -86,7 +86,7 @@ def send_whatsapp_message(phone_number_id: str, to: str, text: str) -> dict:
     resp = requests.post(endpoint, json=payload, headers=headers, timeout=10)
     resp.raise_for_status()
 
-    #log.info("Função de envio finalizada com sucesso (dentro da função)")
+    log.info("Função de envio finalizada com sucesso (dentro da função)")
     return resp.json()
 
 
@@ -138,7 +138,7 @@ def send_whatsapp_with_retry(phone_number_id: str, to: str, text: str, max_attem
     while attempt < max_attempts:
         try:
             resp = send_whatsapp_message(phone_number_id, to, text)
-            #log.info(f"Função de envio finalizada com sucesso ({resp})")
+            log.info(f"Função de envio finalizada com sucesso ({resp})")
             return True
         except Exception as e:
             attempt += 1
@@ -149,7 +149,7 @@ def send_whatsapp_with_retry(phone_number_id: str, to: str, text: str, max_attem
             jitter = random.uniform(-0.5 * delay, 0.5 * delay)
             sleep_time = max(0.0, delay + jitter)
             #urrent_app.logger.warning(f"Envio falhou (attempt {attempt}/{max_attempts}) para {to}: {e}. Retry em {sleep_time:.2f}s")
-            #log.info(f"Envio falhou (attempt {attempt}/{max_attempts}) para {to}: {e}. Retry em {sleep_time:.2f}s")
+            log.info(f"Envio falhou (attempt {attempt}/{max_attempts}) para {to}: {e}. Retry em {sleep_time:.2f}s")
             app.logger.info(f"Envio falhou (attempt {attempt}/{max_attempts}) para {to}: {e}. Retry em {sleep_time:.2f}s")
             time.sleep(sleep_time)
     log.error(f"Falha ao enviar mensagem para {to} após {max_attempts} tentativas.")
@@ -171,24 +171,24 @@ def processAndSendMessage(number, user_name, text):
     respMan = None
     lastRespMan = None
 
-    #log.info("\n\nEstou na funcao process and send message")
+    log.info("\n\nEstou na funcao process and send message")
 
     with app.app_context():
-        #log.info("Estou na funcao process and send message [app context]\n")
+        log.info("Estou na funcao process and send message [app context]\n")
         try:
-            #log.info("estou antes do client status")
+            log.info("estou antes do client status")
             lastIn, msgs, respMan = clientStatus(number)
-            #log.info("estou depois do clientStatus")
+            log.info("estou depois do clientStatus")
             lastRespMan = respMan
         except Exception:
             log.info("entrou em exception: inicializando cliente")
             lastIn, msgs, respMan = "", None, None
         
-        #log.info("passei da sessão status")
+        log.info("passei da sessão status")
         try:
-            #log.info(f"Last respman: {lastRespMan}")
+            log.info(f"Last respman: {lastRespMan}")
             if lastRespMan == 0:
-                #log.info("Estou dentro do processamento da mensagem")
+                log.info("Estou dentro do processamento da mensagem")
                 reply , status, respMan = respClient(text, msgs, number, user_name)
                 if respMan == 1:
                     agora = datetime.now()
@@ -198,9 +198,9 @@ def processAndSendMessage(number, user_name, text):
                         store_templateNeeded(number)
                         reply += "\n\nOBS: Você entrou no modo manual, os nossos atendentes estão disponíveis apenas da terça à sexta feira em horário comercial. Na terça feira pela manhã enviaremos uma mensagem para prosseguirmos nosso atendimento."
 
-                #log.info(f"\n\nReply: {reply}")
-                #log.info(f"Status: {status}") 
-                #log.info(f"respMan: {respMan}") 
+                log.info(f"\n\nReply: {reply}")
+                log.info(f"Status: {status}") 
+                log.info(f"respMan: {respMan}") 
         except Exception:
             log.exception("Erro em respClient (worker)")
             reply = "Desculpe, ocorreu um erro ao processar sua mensagem."
