@@ -439,7 +439,7 @@ def respClient(pergunta, msgs, number, user_name):
 
     response = response.replace("()", "")
 
-    return response, status, respMan
+    return response, status, 0
 
 """def respClient(original_msg, respMan, resps_order):
 

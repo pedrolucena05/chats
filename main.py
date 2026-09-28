@@ -224,16 +224,19 @@ def processAndSendMessage(number, user_name, text):
         try:
             store_message(number, reply, 'out', status, respMan, False, user_name)
         except Exception:
+            log.error("Erro ao salvar resposta")
             return
             #current_app.logger.exception("Erro ao salvar resposta (worker)")
 
         # envio via WhatsApp Cloud API com retry exponencial
         phone_number_id = DEFAULT_PHONE_NUMBER_ID or None
         if not phone_number_id:
+            
+            log.warning("PHONE_NUMBER_ID não definido; não será enviado via Cloud API")
             return
-            #current_app.logger.warning("PHONE_NUMBER_ID não definido; não será enviado via Cloud API")
         else:
             try:
+                log.info(f"\n\nDentro")
                 if lastRespMan == 0:
                     ok = send_whatsapp_with_retry(phone_number_id, number, reply)
                     if not ok:
