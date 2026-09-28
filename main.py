@@ -27,7 +27,7 @@ from logConfig import log
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-#LOG_FILE = os.path.join(BASE_DIR, "app.log")
+#LOG_FILE = os.path.join(BASE_DIR, "app.#log")
 
 # App initalizer
 app = create_app()
@@ -70,7 +70,7 @@ def send_whatsapp_message(phone_number_id: str, to: str, text: str) -> dict:
     if not WHATSAPP_ACCESS_TOKEN:
         raise RuntimeError("WHATSAPP_ACCESS_TOKEN não configurado")
 
-    log.info("Dentro da funlçao de envio")
+    #log.info("Dentro da funlçao de envio")
 
     endpoint = f"https://graph.facebook.com/{GRAPH_API_VERSION}/{phone_number_id}/messages"
     headers = {
@@ -86,7 +86,7 @@ def send_whatsapp_message(phone_number_id: str, to: str, text: str) -> dict:
     resp = requests.post(endpoint, json=payload, headers=headers, timeout=10)
     resp.raise_for_status()
 
-    log.info("Função de envio finalizada com sucesso (dentro da função)")
+    #log.info("Função de envio finalizada com sucesso (dentro da função)")
     return resp.json()
 
 
@@ -97,8 +97,8 @@ def require_api_key(fn):
     def wrapper(*args, **kwargs):
         key = request.headers.get("X-API-Key", "")
 
-        log.warning("Acesso à rota: %s", request.path)
-        log.warning("Chave recebida: %s", bool(key))
+        #log.warning("Acesso à rota: %s", request.path)
+        #log.warning("Chave recebida: %s", bool(key))
         log.warning(
             "Chave do servidor carregada: %s",
             bool(DASHBOARD_API_KEY)
@@ -132,13 +132,13 @@ def send_whatsapp_with_retry(phone_number_id: str, to: str, text: str, max_attem
     """
     attempt = 0
 
-    #log.info("\n\nEstou no send whatsapp")
+    ##log.info("\n\nEstou no send whatsapp")
     if text == "" or text == None:
         return True
     while attempt < max_attempts:
         try:
             resp = send_whatsapp_message(phone_number_id, to, text)
-            log.info(f"Função de envio finalizada com sucesso ({resp})")
+            #log.info(f"Função de envio finalizada com sucesso ({resp})")
             return True
         except Exception as e:
             attempt += 1
@@ -149,12 +149,12 @@ def send_whatsapp_with_retry(phone_number_id: str, to: str, text: str, max_attem
             jitter = random.uniform(-0.5 * delay, 0.5 * delay)
             sleep_time = max(0.0, delay + jitter)
             #urrent_app.logger.warning(f"Envio falhou (attempt {attempt}/{max_attempts}) para {to}: {e}. Retry em {sleep_time:.2f}s")
-            log.info(f"Envio falhou (attempt {attempt}/{max_attempts}) para {to}: {e}. Retry em {sleep_time:.2f}s")
+            #log.info(f"Envio falhou (attempt {attempt}/{max_attempts}) para {to}: {e}. Retry em {sleep_time:.2f}s")
             app.logger.info(f"Envio falhou (attempt {attempt}/{max_attempts}) para {to}: {e}. Retry em {sleep_time:.2f}s")
             time.sleep(sleep_time)
-    log.error(f"Falha ao enviar mensagem para {to} após {max_attempts} tentativas.")
+    #log.error(f"Falha ao enviar mensagem para {to} após {max_attempts} tentativas.")
+    ##log.info(f"Envio falhou (attempt {attempt}/{max_attempts}) para {to}: {e}. Retry em {sleep_time:.2f}s")
     #log.info(f"Envio falhou (attempt {attempt}/{max_attempts}) para {to}: {e}. Retry em {sleep_time:.2f}s")
-    log.info(f"Envio falhou (attempt {attempt}/{max_attempts}) para {to}: {e}. Retry em {sleep_time:.2f}s")
     return False
 
 
@@ -171,24 +171,27 @@ def processAndSendMessage(number, user_name, text):
     respMan = None
     lastRespMan = None
 
-    log.info("\n\nEstou na funcao process and send message")
+    #log.info("\n\nEstou na funcao process and send message")
+
+    if not any(char.isalnum() for char in text):
+        return
 
     with app.app_context():
-        log.info("Estou na funcao process and send message [app context]\n")
+        #log.info("Estou na funcao process and send message [app context]\n")
         try:
-            log.info("estou antes do client status")
+            #log.info("estou antes do client status")
             lastIn, msgs, respMan = clientStatus(number)
-            log.info("estou depois do clientStatus")
+            #log.info("estou depois do clientStatus")
             lastRespMan = respMan
         except Exception:
-            log.info("entrou em exception: inicializando cliente")
+            #log.info("entrou em exception: inicializando cliente")
             lastIn, msgs, respMan = "", None, None
         
-        log.info("passei da sessão status")
+        #log.info("passei da sessão status")
         try:
-            log.info(f"Last respman: {lastRespMan}")
+            #log.info(f"Last respman: {lastRespMan}")
             if lastRespMan == 0:
-                log.info("Estou dentro do processamento da mensagem")
+                #log.info("Estou dentro do processamento da mensagem")
                 reply , status, respMan = respClient(text, msgs, number, user_name)
                 if respMan == 1:
                     agora = datetime.now()
@@ -198,11 +201,11 @@ def processAndSendMessage(number, user_name, text):
                         store_templateNeeded(number)
                         reply += "\n\nOBS: Você entrou no modo manual, os nossos atendentes estão disponíveis apenas da terça à sexta feira em horário comercial. Na terça feira pela manhã enviaremos uma mensagem para prosseguirmos nosso atendimento."
 
-                log.info(f"\n\nReply: {reply}")
-                log.info(f"Status: {status}") 
-                log.info(f"respMan: {respMan}") 
+                ##log.info(f"\n\nReply: {reply}")
+                #log.info(f"Status: {status}") 
+                #log.info(f"respMan: {respMan}") 
         except Exception:
-            log.exception("Erro em respClient (worker)")
+            #log.exception("Erro em respClient (worker)")
             reply = "Desculpe, ocorreu um erro ao processar sua mensagem."
 
         
@@ -224,7 +227,7 @@ def processAndSendMessage(number, user_name, text):
         try:
             store_message(number, reply, 'out', status, respMan, False, user_name)
         except Exception:
-            log.error("Erro ao salvar resposta")
+            #log.error("Erro ao salvar resposta")
             return
             #current_app.logger.exception("Erro ao salvar resposta (worker)")
 
@@ -232,11 +235,11 @@ def processAndSendMessage(number, user_name, text):
         phone_number_id = DEFAULT_PHONE_NUMBER_ID or None
         if not phone_number_id:
             
-            log.warning("PHONE_NUMBER_ID não definido; não será enviado via Cloud API")
+            #log.warning("PHONE_NUMBER_ID não definido; não será enviado via Cloud API")
             return
         else:
             try:
-                log.info(f"\n\nDentro")
+                #log.info(f"\n\nDentro")
                 if lastRespMan == 0:
                     ok = send_whatsapp_with_retry(phone_number_id, number, reply)
                     if not ok:
@@ -245,7 +248,7 @@ def processAndSendMessage(number, user_name, text):
                 return
                 #current_app.logger.exception("Exceção inesperada ao tentar enviar via WhatsApp Cloud API")
 
-log.warning("log teste")
+#log.warning("#log teste")
 
 @app.route("/flagdash", methods=["GET"])
 @require_api_key
@@ -717,8 +720,8 @@ def api_store_message():
             name=name
         )
 
-        #log.info(f"TIPO DE msg_data: {type(msg_data)}")
-        #log.info(f"VALOR DE msg_data: {msg_data}")
+        ##log.info(f"TIPO DE msg_data: {type(msg_data)}")
+        ##log.info(f"VALOR DE msg_data: {msg_data}")
 
         return jsonify({"ok": True, "message": msg_data}), 200
 
@@ -797,8 +800,8 @@ def webhook_handler():
             if userName is None:
                 userName = phone
 
-            #log.info(f"VALUE: {json.dumps(value, indent=2, ensure_ascii=False)}")
-            #log.info("CONTACTS: {contacts}")
+            ##log.info(f"VALUE: {json.dumps(value, indent=2, ensure_ascii=False)}")
+            ##log.info("CONTACTS: {contacts}")
             #app.logger.info(f"userName extraído: {userName}")
 
     except Exception:
