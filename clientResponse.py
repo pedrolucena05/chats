@@ -287,7 +287,7 @@ def processar_topico_cliente(mensagem, number, user_name):
         return mensagem, topico
 
 SYSTEM_PROMPT = """
-Você é um atendente das seguintes feiras (Feira da Aurora, Viver Aurora, Feira de Igarassu, Feira Bom Jesus, Feira do Lindu).
+Você é um atendente das seguintes feiras (Feira da Aurora, Viver Aurora, Feira de Igarassu, Feira Bom Jesus, Feira do Lindu, Sextou no Lindu, Movimento Jaqueira).
 Regras:
 - Caso a mensagem do cliente seja algo parecido como: quero sim feira * (* = alguma de nossas feiras) ou por favor feira * (* = alguma de nossas feiras) passar o contato da representante da feira mencionada.
 - Quando o cliente pedir informações sobre uma feira, pesquise no documento se a feira mencionada faz parte do nosso grupo (veja os sinonimos também). Caso não seja do nosso grupo, informe que a feira não faz parte do nosso grupo. Se for uma de nossas feiras pode prosseguir respondendo baseado no conteúdo do documento.
